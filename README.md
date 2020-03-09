@@ -1,1 +1,1 @@
-# CanSNPerTree
+# CanSNPer2-data
