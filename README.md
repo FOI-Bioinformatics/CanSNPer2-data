@@ -1,6 +1,7 @@
 # CanSNPer2-data
 
 If you want to reserve numbers for your publication (without making the snp and tree public) contact us and we will change the NEXT FREE SNP.
+
 **NEXT FREE SNP _Francisella_**   B.315
 
 _Francisella_ - Published but excluded cansnps
