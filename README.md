@@ -1,8 +1,8 @@
 # CanSNPer2-data
 
-NEXT FREE SNP B.315
+**NEXT FREE SNP _Francisella_**   B.315
 
-Francisella - Published but excluded cansnps
+_Francisella_ - Published but excluded cansnps
 |cansnp| publication   | comment                          |
 | -----| ------------- | -------------------------------- |
 |B.14  | Vogler2009    | Identifies same branch as B.24   |
@@ -25,4 +25,3 @@ Francisella - Published but excluded cansnps
 |A.6   | Svensson2009 | |
 |A.II.5| Vogler2009 | |
 |A.II.7| Vogler2009 | |
-
