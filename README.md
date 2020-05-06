@@ -7,8 +7,9 @@ _Francisella_ - Published but excluded cansnps
 | -----| ------------- | -------------------------------- |
 |B.14  | Vogler2009    | Identifies same branch as B.24   |
 |B.15  | Svensson2009  | Identifies same branch as B.1 and Ftind47  |
-|B.17  | Svensson2009  | Identifies same branch as B.4 and Ftind47   |
+|B.17  | Svensson2009  | Identifies same branch as B.4 and Ftind38   |
 |B.18  | Svensson2009  | Identifies same branch as B.11      |
+|B.19  | Svensson2009  | Identifies same branch as B.12 and Ftind33      |
 |B.20  | Svensson2009  | Identifies same branch as B.42     |
 |B.40  | Karlsson2013  |  Identifies same branch as B.7    |
 |B.41  | Karlsson2013  |  Identifies same branch as B.10     |
