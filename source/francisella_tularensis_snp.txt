@@ -114,7 +114,7 @@ B.122	francisella	FOIunpublished	FSC200	895263	T	G
 B.123	francisella	FOIunpublished	FSC200	192685	T	C
 B.124	francisella	FOIunpublished	FSC200	1160546	A	G
 B.125	francisella	FOIunpublished	FSC200	398579	A	G
-B.126	francisella	FOIunpublished	FSC200	1687943	G	T
+B.126	francisella	FOIunpublished	FSC200	1687943	A	C
 B.127	francisella	FOIunpublished	FSC200	540465	T	C
 B.128	francisella	FOIunpublished	FSC200	980065	A	C
 B.129	francisella	FOIunpublished	FSC200	1503462	A	C
@@ -175,7 +175,7 @@ B.183	francisella	FOIunpublished	FSC200	1828536	T	C
 B.184	francisella	FOIunpublished	FSC200	669710	T	A
 B.185	francisella	FOIunpublished	FSC200	1189110	A	G
 B.186	francisella	FOIunpublished	FSC200	1302503	C	T
-B.187	francisella	FOIunpublished	FSC200	50301	T	T
+B.187	francisella	FOIunpublished	FSC200	50301	T	C
 B.188	francisella	FOIunpublished	FSC200	1265422	A	G
 B.189	francisella	FOIunpublished	FSC200	1197085	A	G
 B.190	francisella	FOIunpublished	LVS	761441	T	C
@@ -272,7 +272,7 @@ B.280	francisella	Kevin2020	FTNF002-00	1821176	T	C
 B.281	francisella	Kevin2020	FTNF002-00	781827	A	C
 B.282	francisella	Kevin2020	FTNF002-00	588433	A	G
 B.283	francisella	Kevin2020	FTNF002-00	814941	A	G
-B.284	francisella	Kevin2020	FTNF002-00	1169140	A	G
+B.284	francisella	Kevin2020	FTNF002-00	1169140	A	C
 B.285	francisella	Kevin2020	FTNF002-00	368912	T	G
 B.286	francisella	Kevin2020	FTNF002-00	1485096	T	G
 B.287	francisella	Kevin2020	FTNF002-00	1457583	C	T
@@ -290,7 +290,7 @@ B.298	francisella	Kevin2020	FTNF002-00	11971	A	G
 B.299	francisella	Kevin2020	FTNF002-00	1256879	A	G
 B.300	francisella	Kevin2020	FTNF002-00	163558	T	G
 B.301	francisella	Kevin2020	FTNF002-00	722542	T	C
-B.302	francisella	Kevin2020	FTNF002-00	1506391	T	C
+B.302	francisella	Kevin2020	FTNF002-00	1506391	A	G
 B.303	francisella	Kevin2020	FTNF002-00	977312	T	G
 B.304	francisella	Kevin2020	FTNF002-00	1215368	C	T
 B.305	francisella	Kevin2020	FTNF002-00	278888	T	C
@@ -298,6 +298,7 @@ B.306	francisella	Kevin2020	FTNF002-00	1789988	T	C
 B.307	francisella	Kevin2020	FTNF002-00	946929	T	G
 B.308	francisella	Kevin2020	FTNF002-00	389170	T	C
 B.309	francisella	Kevin2020	FTNF002-00	606973	T	G
+B.314	francisella	Kevin2020	FTNF002-00	282687	A	C
 M.1	francisella	Vogler2009	SCHUS4.2	75124	T	C
 A/M.1	francisella	Vogler2009	SCHUS4.2	1491914	A	G
 T.1	francisella	Svensson2009	SCHUS4.2	1165688	G	A
@@ -306,7 +307,7 @@ A.1	francisella	Vogler2009	SCHUS4.2	397639	T	C
 A.I.1	francisella	Vogler2009	SCHUS4.2	75109	A	G
 A.I.2	francisella	Vogler2009	SCHUS4.2	387310	A	G
 A.I.3	francisella	Birdsell2014	SCHUS4.2	1233898	T	G
-A.I.4	francisella	Birdsell2014	SCHUS4.2	830715	T	C
+A.I.4	francisella	Birdsell2014	SCHUS4.2	830715	A	G
 A.I.5	francisella	Birdsell2014	SCHUS4.2	113671	G	A
 A.I.6	francisella	Birdsell2014	SCHUS4.2	580153	G	A
 A.I.7	francisella	Birdsell2014	SCHUS4.2	1005448	C	T
