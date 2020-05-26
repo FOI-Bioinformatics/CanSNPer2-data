@@ -1,8 +1,11 @@
 # CanSNPer2-data
 
+Data repostiory for CanSNPer2 https://github.com/FOI-Bioinformatics/CanSNPer2
+
 If you want to reserve numbers for your publication (without making the snp and tree public) contact us and we will change the NEXT FREE SNP.
 
 **NEXT FREE SNP _Francisella_**   B.315
+**NEXT FREE SNP _Bacillus_**   A.Br.177 (B.Br.012, C.Br.003) Start with unified naming?
 
 _Francisella_ - Published but excluded cansnps
 |cansnp| publication   | comment                          |
@@ -28,3 +31,4 @@ _Francisella_ - Published but excluded cansnps
 |A.6   | Svensson2009 | |
 |A.II.5| Vogler2009 | |
 |A.II.7| Vogler2009 | |
+
