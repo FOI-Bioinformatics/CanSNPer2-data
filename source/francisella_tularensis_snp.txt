@@ -95,10 +95,10 @@ B.103	francisella	FOIunpublished	FSC200	66665	T	C
 B.104	francisella	FOIunpublished	FSC200	1351812	A	G
 B.105	francisella	FOIunpublished	FSC200	169462	T	G
 B.106	francisella	FOIunpublished	FSC200	782449	A	C
-B.107	francisella	FOIunpublished	FSC200	520610	T	C
-B.108	francisella	FOIunpublished	FSC200	1329609	T	C
-B.109	francisella	FOIunpublished	FSC200	1084081	C	T
-B.110	francisella	FOIunpublished	FSC200	1303873	A	G
+B.107	francisella	FOIunpublished	FTNF002-00	520520	T	C	
+B.108	francisella	FOIunpublished	FTNF002-00	1327297	T	C
+B.109	francisella	FOIunpublished	FTNF002-00	1082513	C	T
+B.110	francisella	FOIunpublished	FTNF002-00	1301561	A	G
 B.111	francisella	FOIunpublished	FSC200	324692	T	C
 B.112	francisella	FOIunpublished	FSC200	908056	T	C
 B.113	francisella	FOIunpublished	FSC200	679064	T	C
@@ -299,6 +299,7 @@ B.307	francisella	Kevin2020	FTNF002-00	946929	T	G
 B.308	francisella	Kevin2020	FTNF002-00	389170	T	C
 B.309	francisella	Kevin2020	FTNF002-00	606973	T	G
 B.314	francisella	Kevin2020	FTNF002-00	282687	A	C
+B.315	francisella	FOIunpublished	FTNF002-00	1721277	C	T
 M.1	francisella	Vogler2009	SCHUS4.2	75124	T	C
 A/M.1	francisella	Vogler2009	SCHUS4.2	1491914	A	G
 T.1	francisella	Svensson2009	SCHUS4.2	1165688	G	A
