@@ -323,6 +323,7 @@ A.I.15	francisella	Birdsell2014	SCHUS4.2	1210286	A	G
 A.I.16	francisella	Birdsell2014	SCHUS4.2	273622	T	C
 A.II.1	francisella	Vogler2009	SCHUS4.2	84150	T	C
 A.II.2	francisella	Vogler2009	SCHUS4.2	201094	T	C
-A.II.3	francisella	Vogler2009	SCHUS4.2	688453	T	C
-A.II.4	francisella	Vogler2009	SCHUS4.2	640666	C	G
+A.II.3	francisella	Vogler2009	SCHUS4.2	688454	C	T
+A.II.4	francisella	Vogler2009	SCHUS4.2	640667	G	C
 A.II.6	francisella	Vogler2009	SCHUS4.2	29478	T	C
+A.II.8	francisella	Birdsell2019	SCHUS4.2	1703186	G	A
