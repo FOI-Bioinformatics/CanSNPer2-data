@@ -1,0 +1,34 @@
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	C1005	Francisella tularensis	C1009	Francisella tularensis subsp. tularensis	Francisella tularensis subsp. tularensis A.I
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	C1005	Francisella tularensis	C1009	Francisella tularensis subsp. tularensis	Francisella tularensis subsp. tularensis A.II
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	C1005	Francisella tularensis	C1009	Francisella tularensis subsp. mediasiatica	
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	C1005	Francisella tularensis	Francisella tularensis subsp. holarctica	Francisella tularensis subsp. holarctica biovar japonica	
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	C1005	Francisella tularensis	Francisella tularensis subsp. holarctica	B2	
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	C1005	Francisella tularensis subsp. novicida			
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	C1003	Francisella sp TX07-6608				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1001	Francisella hispaniensis					
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1002	C1017	Francisella persica				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1002	C1017	Francisella FLE				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C1	C1002	Francisella opportunistica					
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C2	C2001	C2003	Francisella philomiragia				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C2	C2001	C2003	Francisella noatunensis				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C2	C2001	C2004	Francisella sp GA01-2794				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C2	C2001	C2004	Francisella orientalis				
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	F1002	C2	Francisella salimarina						
+Francisellaceae	F5	F4	F3	F2	Francisella	F1001	Francisella endociliophora								
+Francisellaceae	F5	F4	F3	F2	Francisella	C4	Francisella halioticida								
+Francisellaceae	F5	F4	F3	F2	Francisella	C4	C4002	Francisella uliginis							
+Francisellaceae	F5	F4	F3	F2	Francisella	C4	C4002	C4004	Francisella sp LA11-2445						
+Francisellaceae	F5	F4	F3	F2	Francisella	C4	C4002	C4004	Francisella sp SYW-9						
+Francisellaceae	F5	F4	F3	F2	Parafrancisella adeliensis										
+Francisellaceae	F5	F4	F3	Allofrancisella	F3002	Allofrancisella inopinata									
+Francisellaceae	F5	F4	F3	Allofrancisella	F3002	Allofrancisella frigidaquae									
+Francisellaceae	F5	F4	F3	Allofrancisella	Allofrancisella guangzhouensis										
+Francisellaceae	F5	F4	Pseudofrancisella	Pseudofrancisella aestuarii											
+Francisellaceae	F5	F4	Pseudofrancisella	Pseudofrancisella frigidturris											
+Francisellaceae	F5	F5001	F5002	Caedibacter	F5006	Caedibacter litorale									
+Francisellaceae	F5	F5001	F5002	Caedibacter	F5006	Caedibacter sp003574425									
+Francisellaceae	F5	F5001	F5002	Caedibacter	Caedibacter taeniospiralis										
+Francisellaceae	F5	F5001	F5002	Fastidiosibacter lacustris											
+Francisellaceae	F5	F5001	F5003	QLIT01 sp003574485											
+Francisellaceae	F5	F5001	F5003	Fangia hongkongensis											
+Francisellaceae	M0027 sp006227905														
