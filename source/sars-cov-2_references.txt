@@ -1,2 +1,0 @@
-#genome	strain	genbank_id	refseq_id	assembly_name
-WuH19	sars-cov-2	GCA_009858895.3	GCF_009858895.2	ASM985889v3
