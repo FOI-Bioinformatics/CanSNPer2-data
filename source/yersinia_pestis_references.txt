@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+CO92	CO92	GCA_000009065.1	GCF_000009065.1	ASM906v1
