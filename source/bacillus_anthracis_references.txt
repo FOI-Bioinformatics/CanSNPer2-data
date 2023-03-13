@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+Ames	Ames	GCA_000007845.1	GCF_000007845.1	ASM784v1
