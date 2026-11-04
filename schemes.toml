@@ -1,0 +1,39 @@
+# Scheme declarations for CanSNPer2-data.
+#
+# SNP schemes are discovered by convention and need no entry here: a file named
+# source/<name>_snp.txt declares the scheme <name>, and its tree and reference
+# files are inferred as source/<name>_tree.txt and source/<name>_references.txt.
+#
+# An entry is only needed to declare a scheme of another kind, or to override a
+# default. Recognised keys:
+#
+#   kind      "snp" (default) or "taxonomy"
+#   tree      path to the tree file
+#   snp       path to the SNP annotation file   (snp schemes)
+#   genomes   path to the genome-to-node file   (taxonomy schemes)
+#   verify    compare a rebuild against the committed database (default true)
+#   source_type  tree reader to use (default "CanSNPer")
+#   wip       work in progress: validated, but not built unless asked for and
+#             not published (default false)
+#   database_dir  directory holding the database and manifest (default "database")
+
+[francisellaceae]
+kind = "taxonomy"
+wip = true
+tree = "work_in_progress/francisellaceae/francisellaceae_tree.txt"
+genomes = "work_in_progress/francisellaceae/francisellaceae_genomes.txt"
+database_dir = "work_in_progress/francisellaceae"
+# No database has ever been published for this scheme, so there is no baseline
+# to compare a rebuild against. Builds are reported rather than verified.
+verify = false
+
+[yersinia_pestis]
+# These three canSNPs are published with "/" in the derived_base column, both in
+# the source file and in the database built from it. CanSNPer2 compares an
+# aligned base against derived_base and ancestral_base, so a "/" matches
+# neither and these three SNPs can never be called derived. This also affects
+# placement: see source/README.md. The correct bases are not recorded anywhere
+# in this repository. Listing them here keeps the
+# base-column check strict for every other SNP while reporting these on every
+# run instead of failing the build on data that is already published.
+known_issues = ["1.ANT2.b", "1.ORI2.c", "1.ORI3.b"]

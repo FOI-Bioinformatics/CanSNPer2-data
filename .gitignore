@@ -1,0 +1,5 @@
+# The build tools write a log directory into the working directory
+logs/
+
+__pycache__/
+*.pyc
