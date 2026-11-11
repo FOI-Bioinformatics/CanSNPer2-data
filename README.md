@@ -29,10 +29,11 @@ pull request, so a source file that breaks an invariant, or a database that was
 not regenerated after its sources changed, fails the build.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2
-from the `dev_v2.1.0` branch, which no longer depends on flextaxd:
+2.2.0 or later, installed from the `master` branch; it does not depend on
+flextaxd:
 
 ```sh
-pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@dev_v2.1.0
+pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
 ```
 
 progressiveMauve is not needed to build a database, only to type a sample.

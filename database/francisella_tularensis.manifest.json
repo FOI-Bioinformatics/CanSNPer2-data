@@ -1,16 +1,16 @@
 {
-  "built": "2026-11-10",
+  "built": "2026-11-11",
   "counts": {
     "genomes": 0,
-    "nodes": 329,
+    "nodes": 328,
     "rank": 2,
     "snp_annotation": 328,
     "snp_references": 5,
-    "tree": 329
+    "tree": 328
   },
   "kind": "snp",
   "scheme": "francisella_tularensis",
-  "source_commit": "389795ba62152e09cfc218ca0728391a462eee4c",
+  "source_commit": "38450588873a298e72d5d274eec3a2763e2e0c4b",
   "sources": {
     "source/francisella_tularensis_references.txt": "19e13f84fb7df0db65ed7b518881d27708bcb4665f242fba11472e75d850c7c2",
     "source/francisella_tularensis_snp.txt": "4a0c8ae0cc18c6e6489e81d84188f822fc491f516cfd1bba377aafd69301019d",
@@ -18,7 +18,7 @@
   },
   "uncommitted_sources": [],
   "versions": {
-    "cansnper2": "2.1.0",
-    "python": "3.11.14"
+    "cansnper2": "2.2.0",
+    "python": "3.12.16"
   }
 }

@@ -16,8 +16,8 @@ writing a provenance manifest beside it:
 A scheme marked as work in progress in schemes.toml is skipped unless it is named
 with --scheme or --include-wip is given.
 
-Requires CanSNPer2 from the dev_v2.1.0 branch, whose own loader builds a SNP
-scheme. The flextaxd command is only needed to build a taxonomy scheme, which at
+Requires CanSNPer2 2.2.0 or later (the master branch), whose own loader builds
+a SNP scheme. The flextaxd command is only needed to build a taxonomy scheme, which at
 present means the work-in-progress francisellaceae scheme.
 """
 
@@ -119,12 +119,12 @@ def build(scheme, target):
 def check_structure(target):
     """Check the tree in a freshly built database for orphans and cycles.
 
-    flextaxd's own validate_tree is not usable here: it requires every node to
-    descend from node id 1, and no CanSNPer-format database satisfies that. The
-    scheme root is created as a sibling of node 1 and self-linked at its rank,
-    so validate_tree raises on every database in this repository, including the
-    taxonomy one that flextaxd builds itself. The checks below are the parts
-    that do apply to this schema.
+    flextaxd's own validate_tree is not used: it requires every node to descend
+    from node id 1, which does not hold for databases built by CanSNPer2 before
+    2.2.0 or by flextaxd, where the scheme root is a self-linked sibling of an
+    orphan node 1 named 'root'. CanSNPer2 2.2.0 makes the scheme root node 1.
+    The checks below hold for both layouts: every self-linked node is treated
+    as a root.
 
     Returns a list of problems, empty when the tree is sound.
     """

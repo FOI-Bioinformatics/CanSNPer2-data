@@ -1,16 +1,16 @@
 {
-  "built": "2026-11-10",
+  "built": "2026-11-11",
   "counts": {
     "genomes": 0,
-    "nodes": 14,
+    "nodes": 13,
     "rank": 2,
     "snp_annotation": 13,
     "snp_references": 1,
-    "tree": 14
+    "tree": 13
   },
   "kind": "snp",
   "scheme": "bacillus_anthracis",
-  "source_commit": "389795ba62152e09cfc218ca0728391a462eee4c",
+  "source_commit": "38450588873a298e72d5d274eec3a2763e2e0c4b",
   "sources": {
     "source/bacillus_anthracis_references.txt": "3aa8f86bd97ad6fa71ab49d35f06fba0b0ca1894b96197028a590825911a3cd6",
     "source/bacillus_anthracis_snp.txt": "87f2891adfdb22ccd1b8db1969ffc453d76acfcc749a125d1f938167676b4dad",
@@ -18,7 +18,7 @@
   },
   "uncommitted_sources": [],
   "versions": {
-    "cansnper2": "2.1.0",
-    "python": "3.11.14"
+    "cansnper2": "2.2.0",
+    "python": "3.12.16"
   }
 }
