@@ -30,9 +30,10 @@ A/B.Br.001	B.Br.003	B.Br.004
 ```
 
 Every line starts at the same root node. A node may be named on many lines but
-must always appear under the same parent; the reader takes a node's parent from
-whichever line introduces it first, so a node with two parents produces a
-database whose tree depends on line order.
+must always appear under the same parent. The tree reader does not reject a
+node placed under two parents: it creates a second node with the same name, and
+the SNP is attached to only one of them. `validate.py` rejects such a file, and
+`build.py` rejects a database with a repeated node name.
 
 ## `<organism>_snp.txt`
 

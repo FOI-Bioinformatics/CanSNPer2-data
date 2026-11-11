@@ -28,13 +28,18 @@ import importlib.metadata
 import json
 import logging
 import os
+import re
 import shutil
 import sqlite3
 import subprocess
 import sys
 import tempfile
 
-from validate import REPO, discover, validate
+from validate import REPO, discover, read_rows, tree_nodes_and_parents, validate
+
+# Earlier versions add an orphan node named 'root' beside the scheme root, so
+# their databases neither match the committed ones nor pass check_structure.
+MINIMUM_CANSNPER2 = (2, 2, 0)
 
 
 def database_path(scheme):
@@ -53,12 +58,30 @@ def archive_dir(scheme):
 # Building
 # --------------------------------------------------------------------------
 
+def version_tuple(version):
+    """The leading numeric part of a version string, e.g. '2.2.0.dev1' -> (2, 2, 0)."""
+    match = re.match(r"(\d+(?:\.\d+)*)", version)
+    return tuple(int(part) for part in match.group(1).split(".")) if match else ()
+
+
+def require_cansnper2():
+    try:
+        installed = importlib.metadata.version("CanSNPer2")
+    except importlib.metadata.PackageNotFoundError:
+        raise RuntimeError("CanSNPer2 is not installed")
+    if version_tuple(installed) < MINIMUM_CANSNPER2:
+        wanted = ".".join(str(part) for part in MINIMUM_CANSNPER2)
+        raise RuntimeError(f"CanSNPer2 {wanted} or later is required, "
+                           f"found {installed}")
+
+
 def build_snp_scheme(scheme, target):
     """Build a canSNP database with CanSNPer2's own loader.
 
     CanSNPer2.SNPDatabase parses command line arguments at import time, so the
     loader class is imported directly instead of going through that module.
     """
+    require_cansnper2()
     from CanSNPer2.modules.InitiateDatabase import CanSNPDatabase
 
     CanSNPDatabase(
@@ -109,14 +132,41 @@ def build_taxonomy_scheme(scheme, target):
                            f"{result.stdout}\n{result.stderr}")
 
 
+class WarningCollector(logging.Handler):
+    """Keep the warnings a loader logs while it builds one database."""
+
+    def __init__(self):
+        super().__init__(level=logging.WARNING)
+        self.messages = []
+
+    def emit(self, record):
+        self.messages.append(record.getMessage())
+
+
 def build(scheme, target):
-    if scheme.kind == "taxonomy":
-        build_taxonomy_scheme(scheme, target)
-    else:
-        build_snp_scheme(scheme, target)
+    """Build one scheme into target and return the warnings its loader logged.
+
+    The CanSNPer2 loader skips a row it cannot use (a short row, a SNP that is
+    not in the tree, a genome without a reference) with a logged warning only,
+    so the warnings are collected here whatever the console log level is.
+    """
+    root = logging.getLogger()
+    collector = WarningCollector()
+    previous_level = root.level
+    root.setLevel(min(previous_level, logging.WARNING))
+    root.addHandler(collector)
+    try:
+        if scheme.kind == "taxonomy":
+            build_taxonomy_scheme(scheme, target)
+        else:
+            build_snp_scheme(scheme, target)
+    finally:
+        root.removeHandler(collector)
+        root.setLevel(previous_level)
+    return collector.messages
 
 
-def check_structure(target):
+def check_structure(target, single_root=True):
     """Check the tree in a freshly built database for orphans and cycles.
 
     flextaxd's own validate_tree is not used: it requires every node to descend
@@ -124,7 +174,8 @@ def check_structure(target):
     2.2.0 or by flextaxd, where the scheme root is a self-linked sibling of an
     orphan node 1 named 'root'. CanSNPer2 2.2.0 makes the scheme root node 1.
     The checks below hold for both layouts: every self-linked node is treated
-    as a root.
+    as a root. With single_root, which applies to SNP schemes built by
+    CanSNPer2 2.2.0, exactly one root is allowed.
 
     Returns a list of problems, empty when the tree is sound.
     """
@@ -136,8 +187,21 @@ def check_structure(target):
             "SELECT DISTINCT parent, child FROM tree") if parent != child]
         self_linked = {row[0] for row in connection.execute(
             "SELECT parent FROM tree WHERE parent = child")}
+        duplicated = [row[0] for row in connection.execute(
+            "SELECT name FROM nodes GROUP BY name HAVING count(*) > 1 ORDER BY name")]
     finally:
         connection.close()
+
+    # The tree reader creates a second node of the same name rather than
+    # rejecting a node that a source file places under two parents.
+    for name in duplicated:
+        problems.append(f"node name '{name}' is used by more than one node")
+
+    if not self_linked:
+        problems.append("no root: no node is linked to itself")
+    elif single_root and len(self_linked) > 1:
+        listed = ", ".join(sorted(names.get(n, str(n)) for n in self_linked))
+        problems.append(f"{len(self_linked)} roots where one is expected: {listed}")
 
     parents = {}
     for parent, child in edges:
@@ -181,6 +245,27 @@ def check_structure(target):
     return problems
 
 
+def check_counts(scheme, target):
+    """Check that every row of a SNP scheme's sources reached the database.
+
+    The loader skips rows it cannot use, so a database that is missing rows
+    can still be built without an error; for a new scheme there is no
+    committed database for the comparison to catch it against.
+    """
+    if scheme.kind != "snp":
+        return []
+    _, _, tree_rows = read_rows(scheme.path(scheme.tree))
+    tree_nodes, _ = tree_nodes_and_parents(tree_rows)
+    expected = {
+        "nodes": len(tree_nodes),
+        "snp_annotation": len(read_rows(scheme.path(scheme.snp))[2]) - 1,
+        "snp_references": len(read_rows(scheme.path(scheme.references))[2]) - 1,
+    }
+    found = row_counts(target)
+    return [f"{table} has {found.get(table, 0)} rows, the sources define {count}"
+            for table, count in expected.items() if found.get(table, 0) != count]
+
+
 # --------------------------------------------------------------------------
 # Comparison
 # --------------------------------------------------------------------------
@@ -189,7 +274,9 @@ def content(path):
     """Read a database into comparable sets, keyed on names rather than row ids.
 
     snp_annotation.date holds the build date and the surrogate keys depend on
-    insertion order, so neither is part of the comparison.
+    insertion order, so neither is part of the comparison. Each SNP is compared
+    together with the name of the node it is attached to, and node names that
+    occur more than once are listed, since a set of names would merge them.
     """
     connection = sqlite3.connect(path)
     query = connection.execute
@@ -198,6 +285,8 @@ def content(path):
             "SELECT name FROM sqlite_master WHERE type = 'table'")}
         result = {
             "nodes": {row[0] for row in query("SELECT name FROM nodes")},
+            "duplicated node names": {row[0] for row in query(
+                "SELECT name FROM nodes GROUP BY name HAVING count(*) > 1")},
             "edges": set(query("""SELECT p.name, c.name, r.rank FROM tree t
                                   JOIN nodes p ON p.id = t.parent
                                   JOIN nodes c ON c.id = t.child
@@ -210,9 +299,10 @@ def content(path):
         }
         if "snp_annotation" in tables:
             result["snp_annotation"] = set(query(
-                """SELECT a.snp_id, a.position, a.derived_base, a.ancestral_base,
-                          a.reference, g.genome
+                """SELECT n.name, a.snp_id, a.position, a.derived_base,
+                          a.ancestral_base, a.reference, g.genome
                    FROM snp_annotation a
+                   LEFT JOIN nodes n ON n.id = a.node_id
                    LEFT JOIN snp_references g ON g.id = a.genome_i"""))
             result["snp_references"] = set(query(
                 """SELECT genome, strain, genbank_id, refseq_id, assembly_name
@@ -309,35 +399,61 @@ def row_counts(path):
         connection.close()
 
 
+def source_digests(scheme):
+    return {relative: file_digest(scheme.path(relative)) for relative in scheme.files}
+
+
+def read_manifest(scheme):
+    path = manifest_path(scheme)
+    if not os.path.exists(path):
+        return None
+    with open(path) as handle:
+        return json.load(handle)
+
+
+def save_manifest(scheme, manifest):
+    with open(manifest_path(scheme), "w") as handle:
+        json.dump(manifest, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+
+
 def write_manifest(scheme, target):
-    """Record what produced this database, as text beside the binary."""
+    """Record what produced a newly installed database, as text beside the binary."""
     manifest = {
         "scheme": scheme.name,
         "kind": scheme.kind,
         "built": datetime.date.today().isoformat(),
         "source_commit": source_commit(),
         "uncommitted_sources": dirty_sources(scheme),
-        "sources": {relative: file_digest(scheme.path(relative))
-                    for relative in scheme.files},
+        "sources": source_digests(scheme),
         "versions": tool_versions(scheme),
         "counts": row_counts(target),
     }
-    with open(manifest_path(scheme), "w") as handle:
-        json.dump(manifest, handle, indent=2, sort_keys=True)
-        handle.write("\n")
+    save_manifest(scheme, manifest)
+    return manifest
+
+
+def refresh_manifest_sources(scheme, manifest):
+    """Record new source hashes for a database that a rebuild left unchanged.
+
+    This happens when a source edit does not reach the database, for example
+    the strain column of a SNP file, which CanSNPer2 does not store. The
+    database, and so built, versions and counts, still describe the earlier
+    build; only the record of which sources it corresponds to is updated.
+    """
+    manifest["sources"] = source_digests(scheme)
+    manifest["source_commit"] = source_commit()
+    manifest["uncommitted_sources"] = dirty_sources(scheme)
+    save_manifest(scheme, manifest)
     return manifest
 
 
 def sources_changed(scheme):
     """True if the sources no longer hash to what the manifest recorded."""
-    path = manifest_path(scheme)
-    if not os.path.exists(path):
+    manifest = read_manifest(scheme)
+    if manifest is None:
         return True
-    with open(path) as handle:
-        recorded = json.load(handle).get("sources", {})
-    current = {relative: file_digest(scheme.path(relative))
-               for relative in scheme.files}
-    return recorded != current
+    return manifest.get("sources", {}) != source_digests(scheme)
 
 
 def install(scheme, target):
@@ -378,14 +494,21 @@ def process(scheme, write):
     with tempfile.TemporaryDirectory(prefix=f"cansnper2-{scheme.name}-") as workdir:
         target = os.path.join(workdir, f"{scheme.name}.db")
         try:
-            build(scheme, target)
+            loader_warnings = build(scheme, target)
         except Exception as error:
             print(f"    FAIL build: {error}")
             return False
+        if loader_warnings:
+            print(f"    FAIL the loader reported {len(loader_warnings)} warning"
+                  f"{'s' if len(loader_warnings) != 1 else ''}")
+            for message in loader_warnings[:10]:
+                print(f"      - {message}")
+            return False
 
-        structure = check_structure(target)
+        structure = (check_structure(target, single_root=scheme.kind == "snp")
+                     + check_counts(scheme, target))
         if structure:
-            print("    FAIL tree structure of the built database")
+            print("    FAIL structure of the built database")
             for problem in structure:
                 print(f"      - {problem}")
             return False
@@ -413,21 +536,49 @@ def process(scheme, write):
                       "failure for this scheme (verify = false)")
                 report_differences(differences, limit=3)
 
-        if write:
-            if matched:
-                # The committed database already holds this content. Replacing
-                # it would change the SQLite bytes, and so produce a diff, for
-                # no change in meaning.
-                print("    database already up to date, left in place")
-            else:
-                install(scheme, target)
-            manifest = write_manifest(scheme, committed)
-            print(f"    wrote {os.path.basename(manifest_path(scheme))} "
-                  f"({', '.join(f'{k}={v}' for k, v in sorted(manifest['counts'].items()))})")
-            if manifest["uncommitted_sources"]:
-                print("    note: sources have uncommitted changes, so "
-                      "source_commit does not fully describe this build")
+        manifest = read_manifest(scheme)
+        manifest_name = os.path.basename(manifest_path(scheme))
+        if not write:
+            # The comparison above cannot see a source edit that does not reach
+            # the database, so the recorded hashes are checked separately.
+            if os.path.exists(committed):
+                if manifest is None:
+                    print(f"    FAIL {manifest_name} is missing; run build.py --write")
+                    return False
+                if manifest.get("sources", {}) != source_digests(scheme):
+                    print(f"    FAIL {manifest_name} does not record the current "
+                          f"sources; run build.py --write")
+                    return False
+            return True
+
+        if matched:
+            # The committed database already holds this content. Replacing
+            # it would change the SQLite bytes, and so produce a diff, for
+            # no change in meaning.
+            print("    database already up to date, left in place")
+            if manifest is not None:
+                if manifest.get("sources", {}) == source_digests(scheme):
+                    # Rewriting it would put this run's commit, date and tool
+                    # versions on a database that an earlier build produced.
+                    print(f"    {manifest_name} already up to date, left in place")
+                    return True
+                manifest = refresh_manifest_sources(scheme, manifest)
+                print(f"    updated the source hashes in {manifest_name}")
+                note_uncommitted(manifest)
+                return True
+        else:
+            install(scheme, target)
+        manifest = write_manifest(scheme, committed)
+        print(f"    wrote {manifest_name} "
+              f"({', '.join(f'{k}={v}' for k, v in sorted(manifest['counts'].items()))})")
+        note_uncommitted(manifest)
     return True
+
+
+def note_uncommitted(manifest):
+    if manifest["uncommitted_sources"]:
+        print("    note: sources have uncommitted changes, so "
+              "source_commit does not fully describe this build")
 
 
 def main():
@@ -445,8 +596,12 @@ def main():
                         help="show the logging from the build tools")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO if args.verbose else logging.ERROR,
-                        format="%(levelname)s %(name)s: %(message)s")
+    level = logging.INFO if args.verbose else logging.ERROR
+    logging.basicConfig(level=level, format="%(levelname)s %(name)s: %(message)s")
+    # build() lowers the root logger to WARNING to collect loader warnings; the
+    # console keeps the level asked for, and the warnings are reported by process().
+    for handler in logging.getLogger().handlers:
+        handler.setLevel(level)
 
     schemes = discover(args.scheme)
     if not args.scheme and not args.include_wip:
@@ -470,7 +625,7 @@ def main():
               f"{', '.join(failed)}")
         return 1
     print(f"\nAll {len(schemes)} schemes "
-          f"{'built and installed' if args.write else 'match their sources'}.")
+          f"{'are installed and up to date' if args.write else 'match their sources'}.")
     return 0
 
 

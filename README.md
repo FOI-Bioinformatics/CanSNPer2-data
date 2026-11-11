@@ -38,6 +38,12 @@ pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
 
 progressiveMauve is not needed to build a database, only to type a sample.
 
+The two scripts have their own tests, which CI also runs:
+
+```sh
+python -m pytest tests
+```
+
 If you want to reserve numbers for your publication (without making the snp and tree public) contact us and we will change the NEXT FREE SNP.
 
 **NEXT FREE SNP _Francisella_**   B.317

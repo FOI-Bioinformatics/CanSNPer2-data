@@ -20,7 +20,13 @@ Each database has a `<scheme>.manifest.json` beside it recording what produced
 it: the commit the sources were at, the SHA-256 of each source file, the
 installed CanSNPer2 and Python versions, and the row count of every table. The manifest is text, so its diff is reviewable where the database's is
 not, and the recorded hashes let `build.py --changed-only` tell which schemes
-need rebuilding without building them.
+need rebuilding without building them. `python build.py` fails when a manifest
+does not record the current sources, which catches a source edit that does not
+change the database, such as the strain column of a SNP file.
+
+`build.py --write` leaves the manifest of a database it did not replace as it
+is, so `built`, `versions` and `counts` keep describing the build that produced
+the committed file. If only the source hashes are out of date, those are updated.
 
 `uncommitted_sources` lists any of that scheme's source files that had
 uncommitted changes when the database was built. A non-empty list means
@@ -29,7 +35,7 @@ uncommitted changes when the database was built. A non-empty list means
 ## Archive
 
 `archive/` holds the database each rebuild replaced, named
-`<scheme>_<YYMMDD>.db`. The three dated Francisella files predate this
+`<scheme>_<YYMMDD>.db`. The Francisella files dated 2020 predate this
 convention being automated but follow the same pattern.
 
 ## Using a database
