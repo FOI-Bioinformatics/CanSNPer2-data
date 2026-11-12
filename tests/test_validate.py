@@ -133,3 +133,46 @@ def test_one_assembly_under_two_accessions_is_a_problem(make_scheme):
 def test_a_genomes_file_without_its_header_is_a_problem(make_scheme):
     problems = problems_of(make_scheme(genomes="GCA_000000002.1\tB\tmember\n"))
     assert any("unexpected header" in problem for problem in problems)
+
+
+# -- the optional ranked canSNP set ------------------------------------------
+
+SNP_SET_HEADER = "node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
+SNP_SET = SNP_SET_HEADER + (
+    "R\t1\tG\t100\tA\tG\t520\n"
+    "R\t2\tG\t1500\tC\tT\t510\n"
+    "A\t1\tG\t200\tT\tC\t500\n"
+    "B\t1\tG\t300\tC\tT\t495\n"
+    "B\t2\tG\t2500\tG\tA\t480.5\n"
+    "C\t1\tG\t400\tG\tA\t470\n"
+)
+
+
+def test_a_scheme_without_a_snp_set_is_valid(make_scheme):
+    assert validate.validate(make_scheme()) == ([], [])
+
+
+def test_a_snp_set_is_checked_when_present(make_scheme):
+    assert validate.validate(make_scheme(snp_set=SNP_SET)) == ([], [])
+
+
+@pytest.mark.parametrize("old, new, message", [
+    ("R\t1\tG\t100\tA\tG", "R\t1\tG\t101\tA\tG", "rank 1 of node 'R' is not the SNP"),
+    ("B\t2\t", "B\t3\t", "ranks of node 'B' are 1, 3"),
+    ("B\t2\tG\t2500", "B\t2\tG\t1500", "position 1500 on 'G' is listed 2 times"),
+    ("B\t2\tG\t2500\tG\tA", "B\t2\tG\t2500\tA\tA", "derived and ancestral base"),
+    ("B\t2\tG\t2500\tG\tA", "B\t2\tG\t2500\tN\tA", "not both one of A, C, G, T"),
+    ("R\t2\tG", "X\t2\tG", "node 'X' does not appear"),
+    ("R\t2\tG", "R\t2\tH", "genome 'H' is not listed"),
+    ("\t480.5", "\thigh", "score 'high' is not a number"),
+    ("C\t1\tG\t400\tG\tA\t470\n", "", "node 'C' has no canSNP of rank 1"),
+])
+def test_a_snp_set_that_breaks_the_rules_is_a_problem(make_scheme, old, new, message):
+    assert old in SNP_SET
+    problems, _warnings = validate.validate(make_scheme(snp_set=SNP_SET.replace(old, new)))
+    assert any(message in problem for problem in problems), problems
+
+
+def test_a_snp_set_without_its_header_is_a_problem(make_scheme):
+    problems, _warnings = validate.validate(make_scheme(snp_set=SNP_SET[len(SNP_SET_HEADER):]))
+    assert problems

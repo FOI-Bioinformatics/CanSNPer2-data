@@ -28,7 +28,7 @@ def make_scheme(tmp_path):
     database and manifest go to tmp_path/database.
     """
     def make(tree=TREE, snp_rows=None, references=REFERENCES, name="test",
-             raw_snp=None, genomes=None, **options):
+             raw_snp=None, genomes=None, snp_set=None, **options):
         files = {
             "tree": tmp_path / f"{name}_tree.txt",
             "snp": tmp_path / f"{name}_snp.txt",
@@ -44,9 +44,13 @@ def make_scheme(tmp_path):
         genomes_path = tmp_path / f"{name}_genomes.txt"
         if genomes is not None:
             genomes_path.write_text(genomes)
+        snp_set_path = tmp_path / f"{name}_canSNPs.txt"
+        if snp_set is not None:
+            snp_set_path.write_text(snp_set)
         database_dir = tmp_path / "database"
         database_dir.mkdir(exist_ok=True)
         return Scheme(name, tree=str(files["tree"]), snp=str(files["snp"]),
                       references=str(files["references"]), genomes=str(genomes_path),
+                      snp_set=str(snp_set_path),
                       database_dir=str(database_dir), **options)
     return make

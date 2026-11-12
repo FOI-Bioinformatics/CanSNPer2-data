@@ -15,8 +15,8 @@ read as a column break.
 
 A SNP scheme is named after its organism and consists of three files:
 `<organism>_tree.txt`, `<organism>_snp.txt` and `<organism>_references.txt`,
-and optionally a fourth, `<organism>_genomes.txt`, listing the genomes it was
-made from.
+and optionally `<organism>_genomes.txt`, listing the genomes it was made from,
+and `<organism>_canSNPs.txt`, listing more than one canSNP per node.
 Adding those three files is all that is needed to declare a new scheme; both
 scripts discover it by name.
 
@@ -102,6 +102,27 @@ A node may list no genome. CanSNPer2 does not read this file, and the database
 does not depend on it. `CanSNPCreator export --genome-map ... --alignment ...`
 writes it, and `CanSNPCreator audit` reads it to check every canSNP in those
 genomes.
+
+## `<organism>_canSNPs.txt`
+
+Optional. More than one canSNP per node, ranked within the node, for assays
+that type several canSNPs of a branch. One line per canSNP, with this header:
+
+```
+node	rank	genome	position	derived_base	ancestral_base	score
+```
+
+`node` names a node in the tree file, and `rank` counts from 1 within the node,
+in order of the file. `genome`, `position`, `derived_base` and `ancestral_base`
+follow the SNP file: positions are 1-based over the concatenated reference
+genome, and a position marks one node only. `score` is the total the SNP
+scored when the scheme was made, which ranks it and is not comparable between
+schemes scored with different settings.
+
+CanSNPer2 calls one SNP per node and reads only the SNP file, so rank 1 of each
+node must be the SNP that file gives the node, and every node of the SNP file
+must have a rank 1. `CanSNPCreator export --snps-per-node N` (or `all`) writes
+this file, and `CanSNPCreator audit` checks every canSNP in it.
 
 ## Checking a change
 
