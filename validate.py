@@ -52,6 +52,11 @@ class Scheme:
         self.tree = tree or os.path.join("source", f"{name}_tree.txt")
         self.snp = snp or os.path.join("source", f"{name}_snp.txt")
         self.references = references or os.path.join("source", f"{name}_references.txt")
+        # A taxonomy scheme needs its genome-to-node file. An SNP scheme may
+        # list the genomes it was made from, which is optional and checked when
+        # present.
+        if genomes is None and kind == "snp":
+            genomes = os.path.join("source", f"{name}_genomes.txt")
         self.genomes = genomes
 
     @property
@@ -353,6 +358,58 @@ def check_genomes(problems, scheme, tree_nodes):
             problems.append(f"{relative}: genome '{genome}' is listed {count} times")
 
 
+SNP_GENOME_HEADER = ["genome", "node", "role"]
+SNP_GENOME_ROLES = {
+    "representative": "its sequence was in the alignment the canSNPs were found in",
+    "member": "placed at the node through a representative, as dereplication folds it in",
+    "outgroup": "aligned, but placed at no node",
+}
+
+
+def check_snp_genomes(problems, scheme, tree_nodes):
+    """The genomes an SNP scheme was made from, when the scheme lists them.
+
+    Each row names an assembly by its versioned accession, so that the genomes
+    can be fetched again, the node it sits at, and its role. An outgroup sits
+    at no node, so its node column is empty.
+    """
+    relative = scheme.genomes
+    if not relative or not os.path.exists(scheme.path(relative)):
+        return
+    raw, lines, rows = read_rows(scheme.path(relative), problems, relative)
+    check_format(problems, relative, raw, lines)
+    if not check_header(problems, relative, rows, SNP_GENOME_HEADER):
+        return
+
+    assemblies = {}
+    for number, row in enumerate(rows[1:], start=2):
+        if len(row) != 3:
+            problems.append(f"{relative}:{number}: expected 3 columns "
+                            f"(genome, node, role), found {len(row)}")
+            continue
+        genome, node, role = row
+        if not (GENBANK_RE.match(genome) or REFSEQ_RE.match(genome)):
+            problems.append(f"{relative}:{number}: '{genome}' is not a versioned assembly "
+                            f"accession such as GCA_000007125.1")
+            continue
+        if role not in SNP_GENOME_ROLES:
+            problems.append(f"{relative}:{number}: role '{role}' is not one of "
+                            f"{', '.join(SNP_GENOME_ROLES)}")
+        elif role == "outgroup" and node:
+            problems.append(f"{relative}:{number}: an outgroup sits at no node, so its "
+                            f"node column must be empty")
+        elif role != "outgroup" and node not in tree_nodes:
+            problems.append(f"{relative}:{number}: node '{node}' does not appear in "
+                            f"{scheme.tree}")
+        # GCA_ and GCF_ accessions with the same digits are one assembly.
+        assembly = genome[4:].split(".")[0]
+        assemblies.setdefault(assembly, []).append((number, genome))
+    for listed in assemblies.values():
+        if len(listed) > 1:
+            places = ", ".join(f"{genome} on line {number}" for number, genome in listed)
+            problems.append(f"{relative}: one assembly is listed {len(listed)} times: {places}")
+
+
 def validate(scheme):
     """Return the problems and the non-fatal warnings found in one scheme."""
     problems, warnings = [], []
@@ -362,6 +419,7 @@ def validate(scheme):
     else:
         reference_genomes = check_references(problems, scheme)
         check_snp(problems, warnings, scheme, tree_nodes, reference_genomes)
+        check_snp_genomes(problems, scheme, tree_nodes)
     return problems, warnings
 
 

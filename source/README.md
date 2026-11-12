@@ -14,7 +14,9 @@ read as a column break.
 ## Schemes
 
 A SNP scheme is named after its organism and consists of three files:
-`<organism>_tree.txt`, `<organism>_snp.txt` and `<organism>_references.txt`.
+`<organism>_tree.txt`, `<organism>_snp.txt` and `<organism>_references.txt`,
+and optionally a fourth, `<organism>_genomes.txt`, listing the genomes it was
+made from.
 Adding those three files is all that is needed to declare a new scheme; both
 scripts discover it by name.
 
@@ -73,6 +75,33 @@ names by splitting on the first one. `genbank_id` and `refseq_id`
 must be well formed accessions, `GCA_000000000.0` and `GCF_000000000.0`:
 `CanSNPer2-download` builds NCBI paths from the digit triplets, so a malformed
 accession is only noticed when a download fails.
+
+## `<organism>_genomes.txt`
+
+Optional. The genomes a scheme was made from, so that it can be checked again
+against them, and so that a typing result can be related to known genomes.
+One line per genome, with this header:
+
+```
+genome	node	role
+```
+
+`genome` is a versioned assembly accession, `GCA_000000000.0` or
+`GCF_000000000.0`, so that the genome can be fetched again; one assembly is
+listed once, under either accession. `node` names a node in the tree file.
+`role` is one of:
+
+- `representative`: its sequence was in the alignment the canSNPs were found
+  in, as a representative genome of a RepGenR2 run is;
+- `member`: placed at the node through a representative, as dereplication folds
+  it in, without being aligned itself;
+- `outgroup`: aligned, but placed at no node, so that it gives the root its
+  polarity. Its `node` is empty.
+
+A node may list no genome. CanSNPer2 does not read this file, and the database
+does not depend on it. `CanSNPCreator export --genome-map ... --alignment ...`
+writes it, and `CanSNPCreator audit` reads it to check every canSNP in those
+genomes.
 
 ## Checking a change
 

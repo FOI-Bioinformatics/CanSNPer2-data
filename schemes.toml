@@ -10,7 +10,8 @@
 #   kind      "snp" (default) or "taxonomy"
 #   tree      path to the tree file
 #   snp       path to the SNP annotation file   (snp schemes)
-#   genomes   path to the genome-to-node file   (taxonomy schemes)
+#   genomes   path to the genome-to-node file   (taxonomy schemes; for snp
+#             schemes the optional source/<name>_genomes.txt by default)
 #   verify    compare a rebuild against the committed database (default true)
 #   source_type  tree reader to use (default "CanSNPer")
 #   wip       work in progress: validated, but not built unless asked for and

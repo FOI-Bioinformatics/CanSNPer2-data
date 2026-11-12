@@ -94,3 +94,42 @@ def test_discover_stops_with_a_message_on_an_unknown_key(tmp_path, monkeypatch, 
         validate.discover()
     assert stop.value.code == 2
     assert "unknown key 'knwon_issues'" in capsys.readouterr().err
+
+
+# -- the genomes an SNP scheme was made from ---------------------------------
+
+GENOMES_HEADER = "genome\tnode\trole\n"
+
+
+def test_a_scheme_without_a_genomes_file_is_valid(make_scheme):
+    assert problems_of(make_scheme()) == []
+
+
+def test_a_genomes_file_is_checked_when_present(make_scheme):
+    genomes = (GENOMES_HEADER + "GCA_000000002.1\tB\trepresentative\n"
+               "GCF_000000003.2\tB\tmember\nGCA_000000004.1\t\toutgroup\n")
+    assert problems_of(make_scheme(genomes=genomes)) == []
+
+
+@pytest.mark.parametrize("row,message", [
+    ("strain-7\tB\trepresentative", "not a versioned assembly accession"),
+    ("GCA_000000002\tB\trepresentative", "not a versioned assembly accession"),
+    ("GCA_000000002.1\tZ\trepresentative", "node 'Z' does not appear"),
+    ("GCA_000000002.1\tB\ttype strain", "role 'type strain' is not one of"),
+    ("GCA_000000002.1\tB\toutgroup", "outgroup sits at no node"),
+    ("GCA_000000002.1\tB", "expected 3 columns"),
+])
+def test_a_malformed_genomes_row_is_a_problem(make_scheme, row, message):
+    problems = problems_of(make_scheme(genomes=GENOMES_HEADER + row + "\n"))
+    assert any(message in problem for problem in problems), problems
+
+
+def test_one_assembly_under_two_accessions_is_a_problem(make_scheme):
+    genomes = GENOMES_HEADER + "GCA_000000002.1\tB\tmember\nGCF_000000002.1\tA\tmember\n"
+    problems = problems_of(make_scheme(genomes=genomes))
+    assert any("one assembly is listed 2 times" in problem for problem in problems)
+
+
+def test_a_genomes_file_without_its_header_is_a_problem(make_scheme):
+    problems = problems_of(make_scheme(genomes="GCA_000000002.1\tB\tmember\n"))
+    assert any("unexpected header" in problem for problem in problems)
