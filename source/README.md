@@ -59,7 +59,9 @@ three can never be called derived. In tests with simulated sequence, samples on
 these branches were placed at a node above them, and a sample at `1.ORI2.d`, which
 descends from `1.ORI2.c`, was placed at `1.ORI2.b`. No warning was given. The
 correct bases have not been established; CO92 carries the ancestral base at all
-three positions, so it cannot supply them.
+three positions, so it cannot supply them. An attempt to read the derived bases
+from RefSeq assemblies did not recover them, so the three rows are left as
+published until the bases are taken from the original description of the SNPs.
 
 ## `<organism>_references.txt`
 
