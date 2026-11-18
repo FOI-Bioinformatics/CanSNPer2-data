@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+ATCC49188	ATCC49188	GCA_000017405.1	GCF_000017405.1	ASM1740v1

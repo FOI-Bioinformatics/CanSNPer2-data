@@ -1,0 +1,42 @@
+Bant
+Bant	Bant.anthropi
+Bant	Bant.anthropi	Bant.anthropi.T
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.1	Bant.anthropi.T.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.1	Bant.anthropi.T.1.1.1.1	Bant.anthropi.T.1.1.1.1.1.1.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.1	Bant.anthropi.T.1.1.1.1	Bant.anthropi.T.1.1.1.1.1.1.1.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.1	Bant.anthropi.T.1.1.1.1	Bant.anthropi.T.1.1.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.2	Bant.anthropi.T.1.1.2.2
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.2	Bant.anthropi.T.1.1.2.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.1.1	Bant.anthropi.T.1.1.2	Bant.anthropi.T.1.1.2.1	Bant.anthropi.T.1.1.2.1.1
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.E
+Bant	Bant.anthropi	Bant.anthropi.T	Bant.anthropi.T.1	Bant.anthropi.T.E	Bant.anthropi.T.E.1
+Bant	Bant.anthropi	Bant.anthropi.env
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.2	Bant.anthropi.env.1.1.1.1.1.1.2.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.2	Bant.anthropi.env.1.1.1.1.1.1.2.1.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.1.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1	Bant.anthropi.env.1.1.1.1.1.1.1.2	Bant.anthropi.env.1.1.1.1.1.1.1.2.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.1	Bant.anthropi.env.1.1.1	Bant.anthropi.env.1.1.1.1	Bant.anthropi.env.1.1.1.1.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2	Bant.anthropi.env.1.2.2
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2	Bant.anthropi.env.1.2.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2	Bant.anthropi.env.1.2.1	Bant.anthropi.env.1.2.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2	Bant.anthropi.env.1.2.1	Bant.anthropi.env.1.2.1.1	Bant.anthropi.env.1.2.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2	Bant.anthropi.env.1.2.1	Bant.anthropi.env.1.2.1.1	Bant.anthropi.env.1.2.1.1.1	Bant.anthropi.env.1.2.1.1.1.1
+Bant	Bant.anthropi	Bant.anthropi.env	Bant.anthropi.env.1	Bant.anthropi.env.1.2	Bant.anthropi.env.1.2.1	Bant.anthropi.env.1.2.1.2
+Bant	Bant.cytisi
+Bant	Bant.cytisi	Bant.cytisi.1
+Bant	Bant.cytisi	Bant.cytisi.1	Bant.cytisi.1.1
+Bant	Bant.cytisi	Bant.cytisi.1	Bant.cytisi.1.1	Bant.cytisi.1.1.1
