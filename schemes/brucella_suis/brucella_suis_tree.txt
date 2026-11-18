@@ -1,0 +1,31 @@
+Bsu
+Bsu	Bsu.1
+Bsu	Bsu.1	Bsu.bv5
+Bsu	Bsu.1	Bsu.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.3
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.2
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.2	Bsu.bv2.2.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.2	Bsu.bv2.2.1	Bsu.bv2.2.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.1	Bsu.bv2.1.2
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.1	Bsu.bv2.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.1	Bsu.bv2.1.1	Bsu.bv2.1.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.1	Bsu.bv2.1.1	Bsu.bv2.1.1.1	Bsu.bv2.1.1.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.bv2	Bsu.bv2.1	Bsu.bv2.1.1	Bsu.bv2.1.1.1	Bsu.bv2.1.1.1.2
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv1	Bsu.bv1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.bv4
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.2
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.2	Bsu.canis.2.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.2	Bsu.canis.2.1	Bsu.canis.2.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.1	Bsu.canis.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.1	Bsu.canis.1.1	Bsu.canis.1.1.3
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.1	Bsu.canis.1.1	Bsu.canis.1.1.1
+Bsu	Bsu.1	Bsu.1.1	Bsu.1.1.1	Bsu.bv3	Bsu.bv3.1	Bsu.bv3.1.1	Bsu.canis	Bsu.canis.1	Bsu.canis.1.1	Bsu.canis.1.1.2

@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+1330	1330	GCA_000007505.1	GCF_000007505.1	ASM750v1
