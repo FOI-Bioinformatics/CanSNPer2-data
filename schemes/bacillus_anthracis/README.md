@@ -17,6 +17,12 @@ The canSNP scheme of Van Ert et al. (2007), which divides *B. anthracis* into
 the A and B branches and their sub-lineages. Nodes carry the published names,
 from the root `A/B.Br.001` to the `A.Br` and `B.Br` branch points.
 
+### Node names
+
+The next free node names in the published *B. anthracis* nomenclature are
+`A.Br.177`, `B.Br.012` and `C.Br.003`. This scheme holds 13 of the named
+nodes.
+
 ## Origin
 
 All 13 canSNPs and their positions on the Ames genome are taken from Van Ert et
@@ -46,3 +52,4 @@ None known.
   tabs instead of semicolons.
 - 2026-11-11: database rebuilt with CanSNPer2 2.2.0 (#13).
 - 2026-11-19: files moved to `schemes/bacillus_anthracis/` (#16); README added.
+- 2026-11-19: next free node names moved here from the repository README.
