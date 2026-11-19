@@ -1,0 +1,22 @@
+{
+  "built": "2026-11-10",
+  "counts": {
+    "genomes": 505,
+    "nodes": 68,
+    "rank": 2,
+    "tree": 68
+  },
+  "kind": "taxonomy",
+  "scheme": "francisellaceae",
+  "source_commit": "389795ba62152e09cfc218ca0728391a462eee4c",
+  "sources": {
+    "schemes/francisellaceae/francisellaceae_genomes.txt": "1d75dd3adc6bf56fadd90bee05be4fb02adb426bad08c724b8ceadf15c325b6d",
+    "schemes/francisellaceae/francisellaceae_tree.txt": "bf3c9086a65049bb66aa1763afc879950ef0512dac1c18f5950287b0fbc7ffde"
+  },
+  "uncommitted_sources": [],
+  "versions": {
+    "cansnper2": "2.1.0",
+    "flextaxd": "0.4.4.dev0",
+    "python": "3.11.14"
+  }
+}

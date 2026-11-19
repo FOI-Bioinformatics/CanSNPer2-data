@@ -23,6 +23,14 @@
 #   database_dir  directory holding the database and manifest (default "database")
 #   readme    path to the README of the scheme (README.md in its folder by default)
 
+[francisellaceae]
+kind = "taxonomy"
+# Built with flextaxd, which continuous integration does not install.
+wip = true
+# No database has ever been published for this scheme, so there is no baseline
+# to compare a rebuild against. Builds are reported rather than verified.
+verify = false
+
 [yersinia_pestis]
 # These three canSNPs are published with "/" in the derived_base column, both in
 # the source file and in the database built from it. CanSNPer2 compares an
