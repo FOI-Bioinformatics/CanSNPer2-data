@@ -160,9 +160,12 @@ integration does not install. Such a scheme is marked `wip = true` in
 The README of every scheme gives its Status, `draft` or `verified`:
 
 - A new scheme is added to `dev` by pull request, with Status `draft`.
-- A scheme is `verified` when its canSNPs are published, and it has been typed
-  with CanSNPer2 against genomes whose lineage is known independently, with
-  results that agree; its README describes both under Origin and Validation.
+- A scheme is `verified` when two things hold, and its README describes both,
+  under Origin and under Validation:
+  - every canSNP is published, or its origin is recorded in the README, as the
+    canSNPs that are not published must be;
+  - the scheme has been typed with CanSNPer2 against genomes whose lineage is
+    known independently, and the calls agree with it.
 - A verified scheme is moved to `master`, which holds verified schemes only.
 
 A taxonomy scheme has no canSNPs; it is verified when its genome assignments
