@@ -2,6 +2,13 @@
 
 Data repository for CanSNPer2 https://github.com/FOI-Bioinformatics/CanSNPer2
 
+## Branches
+
+| Branch | Contents |
+| ------ | -------- |
+| `master` | Verified schemes. |
+| `dev` | The verified schemes and draft schemes that have not yet been verified. New schemes are added here by pull request and moved to `master` once verified. |
+
 ## Repository layout
 
 | Path | Contents |
