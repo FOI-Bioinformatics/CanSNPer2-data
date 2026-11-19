@@ -6,8 +6,8 @@ Data repository for CanSNPer2 https://github.com/FOI-Bioinformatics/CanSNPer2
 
 | Path | Contents |
 | ---- | -------- |
-| `source/` | The canSNP schemes as tab-separated text. This is what you edit. See `source/README.md` for the formats. |
-| `database/` | The SQLite databases generated from `source/`, with a provenance manifest beside each one. |
+| `schemes/<name>/` | One folder per canSNP scheme, holding its files as tab-separated text. This is what you edit. See `schemes/README.md` for the formats. |
+| `database/` | The SQLite databases generated from `schemes/`, with a provenance manifest beside each one. |
 | `database/archive/` | The database each rebuild replaced. |
 | `updates/` | Tree modification files, for changing a database without rebuilding it. |
 | `work_in_progress/` | Schemes under development. These are not supported and not published. |
@@ -15,17 +15,17 @@ Data repository for CanSNPer2 https://github.com/FOI-Bioinformatics/CanSNPer2
 
 ## Changing a scheme
 
-Edit the text files under `source/`, then check and rebuild:
+Edit the text files under `schemes/<name>/`, then check and rebuild:
 
 ```sh
-python validate.py          # check the source files
+python validate.py          # check the scheme files
 python build.py             # rebuild and compare, changing nothing
 python build.py --write     # install the rebuilt databases and manifests
 ```
 
-Commit the changed source files together with the database and manifest that
+Commit the changed scheme files together with the database and manifest that
 `--write` produced. Continuous integration runs the first two commands on every
-pull request, so a source file that breaks an invariant, or a database that was
+pull request, so a scheme file that breaks an invariant, or a database that was
 not regenerated after its sources changed, fails the build.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2

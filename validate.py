@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate the canSNP scheme sources in this repository.
 
-Checks the text files under source/ for format problems and for the cross-file
+Checks the text files under schemes/ for format problems and for the cross-file
 invariants that the database loaders assume but do not enforce. Run with no
 arguments to check every scheme:
 
@@ -21,7 +21,9 @@ import tomllib
 from collections import Counter
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-SOURCE_DIR = os.path.join(REPO, "source")
+# Each SNP scheme has a folder schemes/<name>/ holding <name>_tree.txt and the
+# other files of the scheme.
+SCHEMES_DIR = os.path.join(REPO, "schemes")
 CONFIG = os.path.join(REPO, "schemes.toml")
 
 SNP_HEADER = ["snp_id", "strain", "reference", "genome", "position",
@@ -49,19 +51,20 @@ class Scheme:
         self.known_issues = set(known_issues or ())
         self.wip = wip
         self.database_dir = database_dir
-        self.tree = tree or os.path.join("source", f"{name}_tree.txt")
-        self.snp = snp or os.path.join("source", f"{name}_snp.txt")
-        self.references = references or os.path.join("source", f"{name}_references.txt")
+        folder = os.path.join("schemes", name)
+        self.tree = tree or os.path.join(folder, f"{name}_tree.txt")
+        self.snp = snp or os.path.join(folder, f"{name}_snp.txt")
+        self.references = references or os.path.join(folder, f"{name}_references.txt")
         # A taxonomy scheme needs its genome-to-node file. An SNP scheme may
         # list the genomes it was made from, which is optional and checked when
         # present.
         if genomes is None and kind == "snp":
-            genomes = os.path.join("source", f"{name}_genomes.txt")
+            genomes = os.path.join(folder, f"{name}_genomes.txt")
         self.genomes = genomes
         # An SNP scheme may also list more than one canSNP per node, ranked,
         # which is optional and checked when present.
         if snp_set is None and kind == "snp":
-            snp_set = os.path.join("source", f"{name}_canSNPs.txt")
+            snp_set = os.path.join(folder, f"{name}_canSNPs.txt")
         self.snp_set = snp_set
 
     @property
@@ -116,10 +119,22 @@ def discover(only=None):
         for problem in config_problems:
             print(f"error: {problem}", file=sys.stderr)
         raise SystemExit(2)
-    names = set()
-    for entry in sorted(os.listdir(SOURCE_DIR)):
-        if entry.endswith("_snp.txt"):
-            names.add(entry[: -len("_snp.txt")])
+    names, misplaced = set(), []
+    for root, _dirs, files in os.walk(SCHEMES_DIR):
+        for entry in sorted(files):
+            if not entry.endswith("_snp.txt"):
+                continue
+            name = entry[: -len("_snp.txt")]
+            if os.path.normpath(root) == os.path.join(os.path.normpath(SCHEMES_DIR), name):
+                names.add(name)
+            else:
+                misplaced.append(os.path.relpath(os.path.join(root, entry), REPO))
+    if misplaced:
+        # A file outside its own folder would otherwise not be checked or built.
+        for path in sorted(misplaced):
+            print(f"error: {path} is not in the folder of its scheme; an SNP "
+                  f"scheme <name> belongs in schemes/<name>/", file=sys.stderr)
+        raise SystemExit(2)
     names.update(config)
 
     schemes = []

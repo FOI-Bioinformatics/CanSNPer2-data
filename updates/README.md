@@ -12,6 +12,6 @@ CanSNPer2-database --database database/francisella_tularensis.db \
 ```
 
 For most changes this is not the route to take. Editing the files under
-`source/` and running `python build.py --write` keeps the sources and the
+`schemes/` and running `python build.py --write` keeps the sources and the
 database in step, and is what the validation in CI checks. A modification file
 applied directly to a database leaves the sources describing something else.

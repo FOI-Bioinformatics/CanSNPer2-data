@@ -10,11 +10,11 @@
   },
   "kind": "snp",
   "scheme": "francisella_tularensis",
-  "source_commit": "38450588873a298e72d5d274eec3a2763e2e0c4b",
+  "source_commit": "e33d821351ca0d256b026bc51aa75572f805e7ac",
   "sources": {
-    "source/francisella_tularensis_references.txt": "19e13f84fb7df0db65ed7b518881d27708bcb4665f242fba11472e75d850c7c2",
-    "source/francisella_tularensis_snp.txt": "4a0c8ae0cc18c6e6489e81d84188f822fc491f516cfd1bba377aafd69301019d",
-    "source/francisella_tularensis_tree.txt": "5b59747e468d5fcef452b5f5a3dcdc9d10a4a6ab5ae67bec8ec4f19d4fe72887"
+    "schemes/francisella_tularensis/francisella_tularensis_references.txt": "19e13f84fb7df0db65ed7b518881d27708bcb4665f242fba11472e75d850c7c2",
+    "schemes/francisella_tularensis/francisella_tularensis_snp.txt": "4a0c8ae0cc18c6e6489e81d84188f822fc491f516cfd1bba377aafd69301019d",
+    "schemes/francisella_tularensis/francisella_tularensis_tree.txt": "5b59747e468d5fcef452b5f5a3dcdc9d10a4a6ab5ae67bec8ec4f19d4fe72887"
   },
   "uncommitted_sources": [],
   "versions": {

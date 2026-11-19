@@ -1,8 +1,9 @@
 # Scheme declarations for CanSNPer2-data.
 #
 # SNP schemes are discovered by convention and need no entry here: a file named
-# source/<name>_snp.txt declares the scheme <name>, and its tree and reference
-# files are inferred as source/<name>_tree.txt and source/<name>_references.txt.
+# schemes/<name>/<name>_snp.txt declares the scheme <name>, and its tree and
+# reference files are inferred as <name>_tree.txt and <name>_references.txt in
+# the same folder.
 #
 # An entry is only needed to declare a scheme of another kind, or to override a
 # default. Recognised keys:
@@ -11,9 +12,9 @@
 #   tree      path to the tree file
 #   snp       path to the SNP annotation file   (snp schemes)
 #   genomes   path to the genome-to-node file   (taxonomy schemes; for snp
-#             schemes the optional source/<name>_genomes.txt by default)
+#             schemes the optional <name>_genomes.txt in its folder by default)
 #   snp_set   path to the ranked canSNPs of each node (snp schemes; the
-#             optional source/<name>_canSNPs.txt by default)
+#             optional <name>_canSNPs.txt in its folder by default)
 #   verify    compare a rebuild against the committed database (default true)
 #   source_type  tree reader to use (default "CanSNPer")
 #   wip       work in progress: validated, but not built unless asked for and
@@ -35,7 +36,7 @@ verify = false
 # the source file and in the database built from it. CanSNPer2 compares an
 # aligned base against derived_base and ancestral_base, so a "/" matches
 # neither and these three SNPs can never be called derived. This also affects
-# placement: see source/README.md. The correct bases are not recorded anywhere
+# placement: see schemes/README.md. The correct bases are not recorded anywhere
 # in this repository. Listing them here keeps the
 # base-column check strict for every other SNP while reporting these on every
 # run instead of failing the build on data that is already published.
