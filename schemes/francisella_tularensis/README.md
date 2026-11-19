@@ -20,6 +20,11 @@ which make up 301 of the 328 nodes. Nodes carry the names used in the
 publications below. The canSNP positions are given on five reference genomes,
 each chosen to be close to the lineages whose canSNPs it carries.
 
+### Node names
+
+The next free node name in subspecies *holarctica* is `B.317`; `B.316` is
+reserved.
+
 ## Origin
 
 The scheme was compiled at FOI from published canSNPs and canSNPs that FOI has
@@ -45,6 +50,35 @@ canSNP:
 | Birdsell2019 | 1 |
 | Busch2016 | 1 |
 | Sissonen2015 | 1 |
+
+### Published canSNPs not included
+
+These published canSNPs are not in the scheme. Most identify the same branch
+as a canSNP that is included; for the others, the reason was not recorded.
+
+| canSNP | Source | Identifies |
+|---|---|---|
+| `B.14` | Vogler2009 | the same branch as `B.24` |
+| `B.15` | Svensson2009 | the same branch as `B.1` and Ftind47 |
+| `B.17` | Svensson2009 | the same branch as `B.4` and Ftind38 |
+| `B.18` | Svensson2009 | the same branch as `B.11` |
+| `B.19` | Svensson2009 | the same branch as `B.12` and Ftind33 |
+| `B.20` | Svensson2009 | the same branch as `B.42` |
+| `B.40` | Karlsson2013 | the same branch as `B.7` |
+| `B.41` | Karlsson2013 | the same branch as `B.10` |
+| `B.43` | Karlsson2013 | the same branch as `B.27` |
+| `B.69` | Sissonen2015 | the same branch as `B.11` |
+| `B.310` | Kevin2020 | the same branch as `B.215` |
+| `B.311` | Kevin2020 | the same branch as `B.168` |
+| `B.312` | Kevin2020 | the same branch as `B.66` |
+| `B.313` | Kevin2020 | the same branch as `B.190` |
+| `A.2` | Svensson2009 | not recorded |
+| `A.3` | Svensson2009 | not recorded |
+| `A.4` | Svensson2009 | not recorded |
+| `A.5` | Svensson2009 | not recorded |
+| `A.6` | Svensson2009 | not recorded |
+| `A.II.5` | Vogler2009 | not recorded |
+| `A.II.7` | Vogler2009 | not recorded |
 
 ## Validation
 
@@ -117,3 +151,5 @@ subject and should be confirmed.
 - 2026-11-11: database rebuilt with CanSNPer2 2.2.0 (#13).
 - 2026-11-19: files moved to `schemes/francisella_tularensis/` (#16); README
   added.
+- 2026-11-19: next free node name and the published canSNPs not included
+  moved here from the repository README.
