@@ -32,5 +32,11 @@ jobs:
       - name: Validate scheme sources
         run: python validate.py
 
+      # master holds verified schemes only, so a scheme whose README gives its
+      # Status as draft fails on a pull request into master or a push to it.
+      - name: Require verified schemes on master
+        if: github.base_ref == 'master' || (github.event_name == 'push' && github.ref_name == 'master')
+        run: python validate.py --require-verified
+
       - name: Rebuild every scheme and compare with the committed databases
         run: python build.py
