@@ -179,4 +179,5 @@ these genomes below species level.
 - 2026-11-19: renamed from `brucella` to `brucella_classical`, so that
   `brucella` can name a scheme for the whole genus (#23).
 - 2026-11-19: typed against all 1,785 genomes of the genus in GTDB r232;
-  Status set to verified.
+  Status set to verified (#28).
+- 2026-11-19: moved to `master` as a verified scheme.
