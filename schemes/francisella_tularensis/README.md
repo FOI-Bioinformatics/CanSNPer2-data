@@ -87,11 +87,37 @@ compares it with the committed one (CanSNPer2 2.2.0). When the build tooling
 was added (#13), the database rebuilt from these files was identical in nodes,
 edges, SNP annotations and references to the one committed before.
 
-In November 2026, 937 *F. tularensis* genomes were typed with CanSNPer2 using
-the Mauve, minimap2 and MUMmer4 aligners, and each genome received the same
-final call with all three. This shows that the calls do not depend on the
-aligner; it does not show that they are correct. The calls have not been
-compared here with an independent typing of those genomes.
+Typed with CanSNPer2 2.2.2 (`--aligner minimap2`, default settings) on
+2026-11-19:
+
+- **One representative per species of the genus.** Of the 26 *Francisella*
+  species representatives of GTDB r232, only *F. tularensis* NIH B-38, a
+  subsp. *tularensis* strain, was called, at `A.II.4`. The other 25 species,
+  among them *F. hispaniensis*, *F. philomiragia* and *F. persica*, received
+  no call.
+- **The species cluster.** All 937 genomes of the GTDB r232 species
+  `s__Francisella tularensis` were typed, and the call of each was compared
+  with the subspecies in its NCBI record:
+
+| Subspecies in the NCBI record | Genomes | Called on the `A` branch | on `B` | at `M.1` or below | No call |
+|---|---|---|---|---|---|
+| subsp. *tularensis* | 48 | 48 | 0 | 0 | 0 |
+| subsp. *holarctica* | 309 | 0 | 306 | 0 | 3 |
+| subsp. *mediasiatica* | 16 | 0 | 0 | 16 | 0 |
+| subsp. *novicida* | 42 | 0 | 0 | 0 | 42 |
+| no subspecies recorded | 521 | 38 | 477 | 1 | 5 |
+| recorded only as *Francisella* | 1 | 0 | 0 | 0 | 1 |
+
+  No genome was called on a branch that contradicts its recorded subspecies.
+  The subspecies *novicida* has no branch in the scheme, so no call is the
+  expected result for those 42 genomes.
+
+In November 2026, the same 937 genomes were also typed with the Mauve,
+minimap2 and MUMmer4 aligners, and each genome received the same final call
+with all three, so the calls do not depend on the aligner.
+
+The calls below subspecies level have not been compared with an independent
+typing of these genomes.
 
 ## Known issues
 
@@ -153,3 +179,5 @@ subject and should be confirmed.
   added.
 - 2026-11-19: next free node name and the published canSNPs not included
   moved here from the repository README.
+- 2026-11-19: typed against the GTDB r232 species representatives of the genus
+  and the whole species cluster; the result is under Validation.
