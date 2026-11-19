@@ -13,7 +13,7 @@ Data repository for CanSNPer2 https://github.com/FOI-Bioinformatics/CanSNPer2
 
 | Path | Contents |
 | ---- | -------- |
-| `schemes/<name>/` | One folder per canSNP scheme, holding its files as tab-separated text. This is what you edit. See `schemes/README.md` for the formats. |
+| `schemes/<name>/` | One folder per canSNP scheme, holding its files as tab-separated text and a `README.md` describing it. This is what you edit. See `schemes/README.md` for the formats. |
 | `database/` | The SQLite databases generated from `schemes/`, with a provenance manifest beside each one. |
 | `database/archive/` | The database each rebuild replaced. |
 | `updates/` | Tree modification files, for changing a database without rebuilding it. |
@@ -34,6 +34,12 @@ Commit the changed scheme files together with the database and manifest that
 `--write` produced. Continuous integration runs the first two commands on every
 pull request, so a scheme file that breaks an invariant, or a database that was
 not regenerated after its sources changed, fails the build.
+
+Each scheme folder has a `README.md` in a fixed layout, with a Status of `draft`
+or `verified`; `schemes/TEMPLATE.md` is a copy to start from. When a scheme
+changes, update its README as well, including Last changed and Changes. On pull
+requests into `master`, continuous integration also runs
+`python validate.py --require-verified`, which fails on a draft scheme.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2
 2.2.0 or later, installed from the `master` branch; it does not depend on

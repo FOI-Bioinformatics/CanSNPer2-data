@@ -1,6 +1,6 @@
 # Databases
 
-These SQLite files are generated from the text files under `source/` by
+These SQLite files are generated from the text files under `schemes/` by
 `build.py`. They are not edited by hand: a change belongs in the source files,
 after which the database is rebuilt.
 

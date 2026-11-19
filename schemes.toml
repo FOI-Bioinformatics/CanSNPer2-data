@@ -36,7 +36,7 @@ verify = false
 # the source file and in the database built from it. CanSNPer2 compares an
 # aligned base against derived_base and ancestral_base, so a "/" matches
 # neither and these three SNPs can never be called derived. This also affects
-# placement: see schemes/README.md. The correct bases are not recorded anywhere
+# placement: see schemes/yersinia_pestis/README.md. The correct bases are not recorded anywhere
 # in this repository. Listing them here keeps the
 # base-column check strict for every other SNP while reporting these on every
 # run instead of failing the build on data that is already published.
