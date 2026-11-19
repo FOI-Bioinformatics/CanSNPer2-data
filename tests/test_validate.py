@@ -1,5 +1,7 @@
 """Tests for validate.py."""
 
+import os
+
 import pytest
 
 import validate
@@ -84,11 +86,11 @@ def test_config_entry_that_is_not_a_table_is_reported():
 
 
 def test_discover_stops_with_a_message_on_an_unknown_key(tmp_path, monkeypatch, capsys):
-    source = tmp_path / "source"
+    source = tmp_path / "schemes"
     source.mkdir()
     config = tmp_path / "schemes.toml"
     config.write_text('[x]\nkind = "snp"\nknwon_issues = []\n')
-    monkeypatch.setattr(validate, "SOURCE_DIR", str(source))
+    monkeypatch.setattr(validate, "SCHEMES_DIR", str(source))
     monkeypatch.setattr(validate, "CONFIG", str(config))
     with pytest.raises(SystemExit) as stop:
         validate.discover()
@@ -176,3 +178,38 @@ def test_a_snp_set_that_breaks_the_rules_is_a_problem(make_scheme, old, new, mes
 def test_a_snp_set_without_its_header_is_a_problem(make_scheme):
     problems, _warnings = validate.validate(make_scheme(snp_set=SNP_SET[len(SNP_SET_HEADER):]))
     assert problems
+
+
+# -- one folder per scheme under schemes/ ------------------------------------
+
+def _scheme_folder(root, folder, name):
+    d = root / folder
+    d.mkdir(parents=True)
+    for kind in ("tree", "snp", "references"):
+        (d / f"{name}_{kind}.txt").write_text("")
+
+
+def test_discover_finds_a_scheme_by_its_folder(tmp_path, monkeypatch):
+    schemes = tmp_path / "schemes"
+    _scheme_folder(schemes, "abc", "abc")
+    monkeypatch.setattr(validate, "REPO", str(tmp_path))
+    monkeypatch.setattr(validate, "SCHEMES_DIR", str(schemes))
+    monkeypatch.setattr(validate, "CONFIG", str(tmp_path / "none.toml"))
+    found = validate.discover()
+    assert [s.name for s in found] == ["abc"]
+    assert found[0].snp == os.path.join("schemes", "abc", "abc_snp.txt")
+
+
+def test_discover_reports_a_snp_file_in_the_wrong_folder(tmp_path, monkeypatch, capsys):
+    schemes = tmp_path / "schemes"
+    _scheme_folder(schemes, "abc", "xyz")
+    (schemes / "loose_snp.txt").write_text("")
+    monkeypatch.setattr(validate, "REPO", str(tmp_path))
+    monkeypatch.setattr(validate, "SCHEMES_DIR", str(schemes))
+    monkeypatch.setattr(validate, "CONFIG", str(tmp_path / "none.toml"))
+    with pytest.raises(SystemExit) as stop:
+        validate.discover()
+    assert stop.value.code == 2
+    err = capsys.readouterr().err
+    assert "schemes/abc/xyz_snp.txt" in err
+    assert "schemes/loose_snp.txt" in err

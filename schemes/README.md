@@ -1,4 +1,4 @@
-# Scheme sources
+# Schemes
 
 These tab-separated text files are the authored form of every canSNP scheme in
 this repository. The SQLite databases under `database/` are generated from them
@@ -13,12 +13,15 @@ read as a column break.
 
 ## Schemes
 
-A SNP scheme is named after its organism and consists of three files:
+A SNP scheme is named after its organism and has its own folder,
+`schemes/<organism>/`, which holds three files:
 `<organism>_tree.txt`, `<organism>_snp.txt` and `<organism>_references.txt`,
 and optionally `<organism>_genomes.txt`, listing the genomes it was made from,
-and `<organism>_canSNPs.txt`, listing more than one canSNP per node.
-Adding those three files is all that is needed to declare a new scheme; both
-scripts discover it by name.
+and `<organism>_canSNPs.txt`, listing more than one canSNP per node. The
+folder may also hold a `README.md` describing how the scheme was made.
+Adding the folder with those three files is all that is needed to declare a
+new scheme; both scripts discover it by name. A `_snp.txt` file outside the
+folder of its name is reported as an error.
 
 ## `<organism>_tree.txt`
 
