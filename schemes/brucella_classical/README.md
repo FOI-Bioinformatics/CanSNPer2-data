@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Scheme | `brucella_classical` |
-| Status | draft |
+| Status | verified |
 | Organisms | *Brucella*, classical species (NCBI taxon 234) |
 | Reference genome | *B. melitensis* 16M (GCF_000007125.1) |
 | Nodes | 24 |
@@ -46,8 +46,59 @@ used. The two branch-J assays of that paper point at the same site,
 checked against the base of 16M at its position. 16M is derived exactly along
 its own path, `Root`, `cysW_288`, `1688H`, `6214F`, `2995G`, `8872G`.
 
-With CanSNPer2 2.2.2 (`--aligner minimap2`), 24 *Brucella* reference and type
-strains were typed:
+### The genus of GTDB r232
+
+Typed with CanSNPer2 2.2.2 (`--aligner minimap2`) on 2026-11-19 against all
+1,785 genomes of the genus *Brucella* in GTDB r232: the 1,337 of the species
+cluster `s__Brucella melitensis`, which holds the classical species, and 448
+of 43 other species, which are the former genus *Ochrobactrum*.
+
+| | Default (`--min_required_hits 3`) | `--min_required_hits 2` |
+|---|---|---|
+| the species cluster, 1,337 genomes | 304 called | 1,237 called |
+| other *Brucella* species, 448 genomes | none called | none called |
+
+Not one genome of the 448 outside the cluster received a call at either
+threshold. The default threshold calls only 304 of the cluster because the
+species-level nodes lie directly below the root; see Known issues.
+
+At `--min_required_hits 2`, the species-level node each genome reached is this,
+against the species in its NCBI record:
+
+| NCBI species | Genomes | Node reached |
+|---|---|---|
+| *B. melitensis* | 701 | 697 `cysW_288`, 2 `abc_246`, 1 `abc_205`, 1 no call |
+| *B. abortus* | 378 | 362 `abc_205`, 11 `cysW_288`, 1 `abc_246`, 4 no call |
+| *B. suis* | 97 | 45 `abc_246`, 1 `cysW_288`, 51 no call |
+| *B. canis* | 32 | 31 `abc_246`, 1 no call |
+| *B. ceti* | 24 | 24 `trpE_290` |
+| *B. ovis* | 18 | 18 `cysW_234` |
+| *B. pinnipedialis* | 8 | 8 `trpE_290` |
+| *B. neotomae* | 6 | 5 `rpoB_2673`, 1 no call |
+| *B. microti*, *B. inopinata*, *B. vulpis*, *B. amazoniensis* | 13 | 1 `abc_246`, 12 no call |
+| recorded only as *Brucella* sp. | 60 | 18 `cysW_288`, 10 `trpE_290`, 1 `abc_246`, 1 `abc_205`, 30 no call |
+
+Fifteen genomes were called on the branch of another species than their NCBI
+record names. Each was compared by average nucleotide identity (ANI) with
+*B. melitensis* 16M, *B. abortus* 2308, *B. suis* 1330 and *B. canis* ATCC
+23365, and in every case the ANI agrees with the call rather than with the
+name: the eleven deposited as *B. abortus* and called at `cysW_288` are
+closest to 16M (99.79 to 99.91%), the two deposited as *B. melitensis* and
+called below `abc_246` are closest to *B. suis* or *B. canis*, the one
+deposited as *B. melitensis* and called at `5754E` is 99.96% to 2308, and
+strain 104M, deposited as *B. abortus*, is 99.99% to *B. suis* 1330. No call
+contradicts the identity of its genome.
+
+Of the 100 genomes of the cluster that `--min_required_hits 2` does not call,
+94 carry fewer than two derived canSNPs: 51 are *B. suis*, whose biovars 2 and
+5 no canSNP of the scheme marks, and 12 are the atypical species *B. microti*,
+*B. inopinata*, *B. vulpis* and *B. amazoniensis*, which the scheme does not
+cover.
+
+### Reference and type strains
+
+Earlier, 24 *Brucella* reference and type strains were typed, and every call
+agreed with the species of the strain:
 
 | Strain | Species and biovar | Call, default | Call, `--min_required_hits 2` |
 |---|---|---|---|
@@ -76,11 +127,8 @@ strains were typed:
 | F60 | *B. vulpis* | NA | NA |
 | BO1 | *B. inopinata* | NA | NA |
 
-Every call agrees with the species of the strain. With the default
-`--min_required_hits 3`, 17 strains are not called; see Known issues. *B. suis*
-bv2 and bv5 and the atypical species are derived at `Root` only, as no canSNP
-in the scheme marks their lineages. The 76 *B. anthropi* and *B. cytisi*
-genomes of the `brucella_anthropi` scheme received no call at either setting.
+The scheme has not been checked against published *Brucella* canSNP typing of
+these genomes below species level.
 
 ## Known issues
 
@@ -88,6 +136,15 @@ genomes of the `brucella_anthropi` scheme received no call at either setting.
   `trpE_290` and `rpoB_2673`, carry two derived canSNPs on their path including
   `Root`, so CanSNPer2 does not call them with its default
   `--min_required_hits 3`. Use `--min_required_hits 2` to type to these nodes.
+  Over the species cluster of GTDB r232 this is the difference between 304 and
+  1,237 of 1,337 genomes called.
+- No canSNP of the scheme marks the lineages of *B. suis* biovars 2 and 5, so
+  genomes of those biovars stop above `abc_246`, nor the atypical species
+  *B. microti*, *B. inopinata*, *B. vulpis* and *B. amazoniensis*, which stop
+  at `Root`.
+- Fifteen genomes of the species cluster are deposited under a species name
+  that neither their call nor their ANI supports; the scheme places them with
+  their ANI. See Validation.
 - `Root` is not a published canSNP: CanSNPer 1 gives no reference for it.
 - `2922C` and `991C` give the ancestral base on the other strand in CanSNPer
   1.0.10 (C and G). They are corrected here to G and C; the corrected alleles
@@ -120,4 +177,6 @@ genomes of the `brucella_anthropi` scheme received no call at either setting.
 - 2026-11-19: ported from CanSNPer 1.0.10, with the alleles of `2922C` and
   `991C` corrected and positions given on the concatenated 16M genome (#20).
 - 2026-11-19: renamed from `brucella` to `brucella_classical`, so that
-  `brucella` can name a scheme for the whole genus.
+  `brucella` can name a scheme for the whole genus (#23).
+- 2026-11-19: typed against all 1,785 genomes of the genus in GTDB r232;
+  Status set to verified.
