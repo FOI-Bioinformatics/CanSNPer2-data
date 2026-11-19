@@ -5,7 +5,7 @@ import os
 import pytest
 
 import validate
-from conftest import SNP_HEADER, SNP_ROWS
+from conftest import SNP_HEADER, SNP_ROWS, readme_text
 
 
 def problems_of(scheme):
@@ -155,7 +155,8 @@ def test_a_scheme_without_a_snp_set_is_valid(make_scheme):
 
 
 def test_a_snp_set_is_checked_when_present(make_scheme):
-    assert validate.validate(make_scheme(snp_set=SNP_SET)) == ([], [])
+    scheme = make_scheme(snp_set=SNP_SET, readme=readme_text(per_node="up to 2"))
+    assert validate.validate(scheme) == ([], [])
 
 
 @pytest.mark.parametrize("old, new, message", [
@@ -213,3 +214,57 @@ def test_discover_reports_a_snp_file_in_the_wrong_folder(tmp_path, monkeypatch, 
     err = capsys.readouterr().err
     assert "schemes/abc/xyz_snp.txt" in err
     assert "schemes/loose_snp.txt" in err
+
+
+# -- the README of each scheme ------------------------------------------------
+
+
+def test_a_conforming_readme_is_valid(make_scheme):
+    assert problems_of(make_scheme()) == []
+
+
+def test_a_missing_readme_is_reported(make_scheme):
+    assert any("has no README.md" in p for p in problems_of(make_scheme(readme=False)))
+
+
+def test_facts_must_match_the_scheme_files(make_scheme):
+    readme = readme_text(name="other", nodes="5", reference="strain X (GCA_000000009.1)",
+                         per_node="up to 3", changed="19 Nov 2026")
+    problems = "\n".join(problems_of(make_scheme(readme=readme)))
+    assert "Scheme is `other`" in problems
+    assert "Nodes is 5" in problems
+    assert "Reference genome names no accession" in problems
+    assert "canSNPs per node is 'up to 3'" in problems
+    assert "Last changed" in problems
+
+
+def test_status_must_be_draft_or_verified(make_scheme):
+    problems = problems_of(make_scheme(readme=readme_text(status="final")))
+    assert any("Status" in p and "draft or verified" in p for p in problems)
+
+
+def test_sections_must_all_be_present_in_order(make_scheme):
+    sections = ["Description", "Validation", "Origin", "Known issues", "References"]
+    problems = "\n".join(problems_of(make_scheme(readme=readme_text(sections=sections))))
+    assert "sections must be" in problems
+
+
+def test_an_empty_section_is_reported(make_scheme):
+    readme = readme_text().replace("Text about known issues.", "")
+    assert any("'Known issues' is empty" in p for p in problems_of(make_scheme(readme=readme)))
+
+
+def test_canSNPs_per_node_follows_the_ranked_file(make_scheme):
+    snp_set = ("node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
+               "R\t1\tG\t100\tA\tG\t1\nA\t1\tG\t200\tT\tC\t1\nA\t2\tG\t250\tT\tC\t1\n"
+               "B\t1\tG\t300\tC\tT\t1\nC\t1\tG\t400\tG\tA\t1\n")
+    assert problems_of(make_scheme(snp_set=snp_set, readme=readme_text(per_node="up to 2"))) == []
+    problems = problems_of(make_scheme(snp_set=snp_set))
+    assert any("canSNPs per node is '1'" in p for p in problems)
+
+
+def test_a_draft_is_rejected_only_when_verified_schemes_are_required(make_scheme):
+    scheme = make_scheme(readme=readme_text(status="draft"))
+    assert validate.validate(scheme)[0] == []
+    problems, _ = validate.validate(scheme, require_verified=True)
+    assert any("is a draft" in p for p in problems)

@@ -43,7 +43,7 @@ class Scheme:
 
     def __init__(self, name, kind="snp", tree=None, snp=None, genomes=None,
                  references=None, snp_set=None, verify=True, source_type="CanSNPer",
-                 known_issues=None, wip=False, database_dir="database"):
+                 known_issues=None, wip=False, database_dir="database", readme=None):
         self.name = name
         self.kind = kind
         self.verify = verify
@@ -66,6 +66,11 @@ class Scheme:
         if snp_set is None and kind == "snp":
             snp_set = os.path.join(folder, f"{name}_canSNPs.txt")
         self.snp_set = snp_set
+        # An SNP scheme is described by a README.md in its folder, in the
+        # layout given in schemes/README.md.
+        if readme is None and kind == "snp":
+            readme = os.path.join(folder, "README.md")
+        self.readme = readme
 
     @property
     def files(self):
@@ -510,8 +515,135 @@ def check_snp_set(problems, scheme, tree_nodes, reference_genomes):
                             f"{scheme.snp} gives it")
 
 
-def validate(scheme):
-    """Return the problems and the non-fatal warnings found in one scheme."""
+# The README of an SNP scheme: a title, a table of these facts in this order,
+# and these sections in this order. schemes/README.md describes them.
+README_FACTS = ["Scheme", "Status", "Organisms", "Reference genome", "Nodes",
+                "canSNPs per node", "Origin", "Last changed"]
+README_SECTIONS = ["Description", "Origin", "Validation", "Known issues",
+                   "References", "Changes"]
+STATUSES = ("draft", "verified")
+ACCESSION_RE = re.compile(r"GC[AF]_\d{9}\.\d{1,2}")
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def parse_readme(text):
+    """Split a scheme README into its title, its facts table and its sections.
+
+    Returns (title, facts, sections): facts is a list of (key, value) pairs in
+    the order of the table, and sections a list of (heading, body) pairs for
+    the second-level headings.
+    """
+    title, facts, sections = None, [], []
+    lines = text.splitlines()
+    index = 0
+    while index < len(lines) and not lines[index].strip():
+        index += 1
+    if index < len(lines) and lines[index].startswith("# "):
+        title = lines[index][2:].strip()
+        index += 1
+    # The facts table is the first table after the title.
+    while index < len(lines) and not lines[index].startswith("|") \
+            and not lines[index].startswith("## "):
+        index += 1
+    rows = []
+    while index < len(lines) and lines[index].startswith("|"):
+        rows.append([cell.strip() for cell in lines[index].strip().strip("|").split("|")])
+        index += 1
+    # Skip the empty header row and the separator row.
+    for cells in rows[2:]:
+        if len(cells) == 2:
+            facts.append((cells[0], cells[1]))
+    current = None
+    for line in lines[index:]:
+        if line.startswith("## "):
+            current = [line[3:].strip(), []]
+            sections.append(current)
+        elif current is not None:
+            current[1].append(line)
+    return title, facts, [(heading, "\n".join(body).strip()) for heading, body in sections]
+
+
+def readme_status(scheme):
+    """The Status given in a scheme's README, or None."""
+    if not scheme.readme or not os.path.exists(scheme.path(scheme.readme)):
+        return None
+    with open(scheme.path(scheme.readme), encoding="utf-8") as handle:
+        return dict(parse_readme(handle.read())[1]).get("Status")
+
+
+def check_readme(problems, scheme, tree_nodes, require_verified=False):
+    """Check the README of an SNP scheme against the layout and the scheme files."""
+    relative = scheme.readme
+    path = scheme.path(relative)
+    if not os.path.exists(path):
+        problems.append(f"{scheme.name} has no README.md; expected {relative}, "
+                        f"in the layout described in schemes/README.md")
+        return
+    with open(path, encoding="utf-8") as handle:
+        title, facts, sections = parse_readme(handle.read())
+    if not title:
+        problems.append(f"{relative}: must start with a '# ' title")
+    keys = [key for key, _value in facts]
+    if keys != README_FACTS:
+        problems.append(f"{relative}: the facts table must have the rows "
+                        f"{', '.join(README_FACTS)}, in that order; found "
+                        f"{', '.join(keys) or 'none'}")
+    values = dict(facts)
+
+    scheme_value = values.get("Scheme")
+    if scheme_value is not None and scheme_value != f"`{scheme.name}`":
+        problems.append(f"{relative}: Scheme is {scheme_value}, expected `{scheme.name}`")
+    status = values.get("Status")
+    if status is not None and status not in STATUSES:
+        problems.append(f"{relative}: Status is '{status}'; it must be draft or verified")
+    if require_verified and status == "draft":
+        problems.append(f"{relative}: {scheme.name} is a draft; only verified "
+                        f"schemes belong on master")
+    nodes = values.get("Nodes")
+    if nodes is not None and nodes != str(len(tree_nodes)):
+        problems.append(f"{relative}: Nodes is {nodes}, but the tree file has "
+                        f"{len(tree_nodes)} nodes")
+    reference = values.get("Reference genome")
+    if reference is not None:
+        accessions = set()
+        for row in read_rows(scheme.path(scheme.references))[2][1:]:
+            accessions.update(row[2:4])
+        named = set(ACCESSION_RE.findall(reference))
+        if not named & accessions:
+            problems.append(f"{relative}: Reference genome names no accession from "
+                            f"{scheme.references}")
+    per_node = values.get("canSNPs per node")
+    if per_node is not None:
+        expected = "1"
+        if scheme.snp_set and os.path.exists(scheme.path(scheme.snp_set)):
+            ranks = [int(row[1]) for row in read_rows(scheme.path(scheme.snp_set))[2][1:]
+                     if len(row) > 1 and row[1].isdigit()]
+            if ranks and max(ranks) > 1:
+                expected = f"up to {max(ranks)}"
+        if per_node != expected:
+            problems.append(f"{relative}: canSNPs per node is '{per_node}', "
+                            f"expected '{expected}' from the scheme files")
+    changed = values.get("Last changed")
+    if changed is not None and not DATE_RE.match(changed):
+        problems.append(f"{relative}: Last changed is '{changed}'; use YYYY-MM-DD")
+
+    headings = [heading for heading, _body in sections]
+    if headings != README_SECTIONS:
+        problems.append(f"{relative}: the sections must be "
+                        f"{', '.join(README_SECTIONS)}, in that order; found "
+                        f"{', '.join(headings) or 'none'}")
+    for heading, body in sections:
+        if heading in README_SECTIONS and not body:
+            problems.append(f"{relative}: section '{heading}' is empty; write "
+                            f"'None known.' or similar where there is nothing to report")
+
+
+def validate(scheme, require_verified=False):
+    """Return the problems and the non-fatal warnings found in one scheme.
+
+    With require_verified, an SNP scheme whose README gives its Status as draft
+    is a problem, as on master, which holds verified schemes only.
+    """
     problems, warnings = [], []
     tree_nodes = check_tree(problems, scheme)
     if scheme.kind == "taxonomy":
@@ -521,6 +653,8 @@ def validate(scheme):
         check_snp(problems, warnings, scheme, tree_nodes, reference_genomes)
         check_snp_genomes(problems, scheme, tree_nodes)
         check_snp_set(problems, scheme, tree_nodes, reference_genomes)
+        if not scheme.wip:
+            check_readme(problems, scheme, tree_nodes, require_verified)
     return problems, warnings
 
 
@@ -529,13 +663,16 @@ def main():
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--scheme", action="append", metavar="NAME",
                         help="validate only this scheme; repeatable")
+    parser.add_argument("--require-verified", action="store_true",
+                        help="fail on a scheme whose README gives its Status as "
+                             "draft; used for master, which holds verified schemes")
     args = parser.parse_args()
 
     schemes = discover(args.scheme)
     failed = 0
     warned = 0
     for scheme in schemes:
-        problems, warnings = validate(scheme)
+        problems, warnings = validate(scheme, args.require_verified)
         label = f"{scheme.name} (work in progress)" if scheme.wip else scheme.name
         if problems:
             failed += 1
