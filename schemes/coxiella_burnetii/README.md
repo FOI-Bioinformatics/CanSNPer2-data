@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Scheme | `coxiella_burnetii` |
-| Status | draft |
+| Status | verified |
 | Organisms | *Coxiella burnetii* (NCBI taxon 777) |
 | Reference genome | RSA 493 (GCF_000007765.2) |
 | Nodes | 11 |
@@ -33,15 +33,43 @@ give the same positions and alleles on AE016828.2 as CanSNPer 1.
 checked against the base of RSA 493 at its position. RSA 493 is derived
 exactly along its own path, `Root`, `C.7`, `C.9`, `C.10`.
 
-With CanSNPer2 2.2.2 (`--aligner minimap2`), 156 *C. burnetii* RefSeq
-assemblies were typed. With the default `--min_required_hits 3`, 151 were
-called (C.11 60, C.10 40, C.4 20, C.3 18, C.8 9, C.9 3, C.5 1) and 5 were not.
-With `--min_required_hits 2`, four of those five were called (`C.6` three
-times, `C.1` once). For 124 of the 125 genomes that a CanSNPCreator typing
-report also placed, the call is the same; the exception, GCF_000820465.1, is
-placed at `C.1` by the report and at `C.3` by CanSNPer2, which finds the
-derived base of `C.3`. Karlsson et al. (2014, Table 4) assign strains to
-groups, and an earlier typing run agreed with those assignments.
+Typed with CanSNPer2 2.2.2 (`--aligner minimap2`) on 2026-11-19 against all
+300 genomes of the genus *Coxiella* in GTDB r232: the 156 of the species
+cluster `s__Coxiella burnetii`, and 144 of twelve other species, which are
+tick endosymbionts, among them *Candidatus* Coxiella mudrowiae.
+
+| | Default (`--min_required_hits 3`) | `--min_required_hits 2` |
+|---|---|---|
+| *C. burnetii*, 156 genomes | 151 called | 155 called |
+| other *Coxiella* species, 144 genomes | none called | none called |
+
+The calls of the species cluster at the default threshold are `C.11` 60 times,
+`C.10` 40, `C.4` 20, `C.3` 18, `C.8` 9, `C.9` 3 and `C.5` once. The four
+genomes that only `--min_required_hits 2` calls are placed at `C.6` three
+times and `C.1` once, the two nodes directly below the root; see Known issues.
+
+Genomes of the same strain received the same call, and the strains of the
+known genomic groups fell on separate nodes:
+
+| Strain | Genomes | Node |
+|---|---|---|
+| Nine Mile clone, including RSA 493, RSA 439 phase II with its passage series, RSA 514 and RSA 363 | 17 | `C.10` |
+| Dugway 5J108-111, 7D77-80 and 7E65-68 | 3 | `C.6` |
+| CbuG Q212 and Scurry Q217 | 2 | `C.8` |
+| CbuK Q154 | 1 | `C.4` |
+| Henzerling, Z3055 | 2 | `C.11` |
+| MSU Goat Q177 | 1 | `C.4` |
+| Namibia | 1 | `C.5` |
+
+Dugway, the most divergent of these strains, is placed at `C.6`, which
+descends directly from the root.
+
+Of the 125 genomes that a CanSNPCreator typing report also placed, 122
+received the same call. The three others do not contradict it: two are the
+Dugway genomes that the default threshold leaves uncalled, and
+GCF_000820465.1 is called at `C.3` where the report gives its parent `C.1`.
+Karlsson et al. (2014, Table 4) assign strains to groups, and an earlier
+typing run agreed with those assignments.
 
 ## Known issues
 
@@ -55,7 +83,13 @@ groups, and an earlier typing run agreed with those assignments.
   Use `--min_required_hits 2` to type to these nodes.
 - Karlsson et al. (2014) name the branches `C.12` to `C.15` but give no assay
   for them, so genomes on those branches stop at a node above.
-- GCF_000826165.1 has N at five of the ten positions and is not called.
+- GCF_000826165.1 has N at five of the ten positions and is not called. It is
+  the only genome of the species cluster that `--min_required_hits 2` does not
+  call either.
+- Three genomes carry the organism name of RSA 493 but are not placed at
+  `C.10`: two are called at `C.8` and one is GCF_000826165.1 above. They are
+  probably deposits that reuse the name of the reference strain; this has not
+  been examined further.
 
 ## References
 
@@ -70,4 +104,6 @@ groups, and an earlier typing run agreed with those assignments.
 ## Changes
 
 - 2026-11-19: ported from CanSNPer 1.0.10, with positions moved from
-  AE016828.2 to AE016828.3.
+  AE016828.2 to AE016828.3 (#20).
+- 2026-11-19: typed against all 300 genomes of the genus in GTDB r232; Status
+  set to verified.
