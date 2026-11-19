@@ -10,11 +10,11 @@
   },
   "kind": "snp",
   "scheme": "bacillus_anthracis",
-  "source_commit": "38450588873a298e72d5d274eec3a2763e2e0c4b",
+  "source_commit": "e33d821351ca0d256b026bc51aa75572f805e7ac",
   "sources": {
-    "source/bacillus_anthracis_references.txt": "3aa8f86bd97ad6fa71ab49d35f06fba0b0ca1894b96197028a590825911a3cd6",
-    "source/bacillus_anthracis_snp.txt": "87f2891adfdb22ccd1b8db1969ffc453d76acfcc749a125d1f938167676b4dad",
-    "source/bacillus_anthracis_tree.txt": "d6781159c6be44f2757de5846d8650f257a006131dba3a060804442204e4c39d"
+    "schemes/bacillus_anthracis/bacillus_anthracis_references.txt": "3aa8f86bd97ad6fa71ab49d35f06fba0b0ca1894b96197028a590825911a3cd6",
+    "schemes/bacillus_anthracis/bacillus_anthracis_snp.txt": "87f2891adfdb22ccd1b8db1969ffc453d76acfcc749a125d1f938167676b4dad",
+    "schemes/bacillus_anthracis/bacillus_anthracis_tree.txt": "d6781159c6be44f2757de5846d8650f257a006131dba3a060804442204e4c39d"
   },
   "uncommitted_sources": [],
   "versions": {
