@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+16M	16M	GCA_000007125.1	GCF_000007125.1	ASM712v1
