@@ -1,8 +1,8 @@
-# Brucella canSNP scheme
+# Classical Brucella canSNP scheme
 
 | | |
 |---|---|
-| Scheme | `brucella` |
+| Scheme | `brucella_classical` |
 | Status | draft |
 | Organisms | *Brucella*, classical species (NCBI taxon 234) |
 | Reference genome | *B. melitensis* 16M (GCF_000007125.1) |
@@ -14,7 +14,10 @@
 ## Description
 
 The canSNP scheme for the classical *Brucella* species that CanSNPer 1.0.10
-shipped. Seven canSNPs from Foster et al. (2008) separate the species-level
+shipped. The classical species are *B. melitensis*, *B. abortus*, *B. suis*,
+*B. canis*, *B. ovis*, *B. neotomae* and the species from marine mammals,
+*B. ceti* and *B. pinnipedialis*; the scheme does not cover the atypical
+species or the former genus *Ochrobactrum*, now part of *Brucella*. Seven canSNPs from Foster et al. (2008) separate the species-level
 lineages (named after the gene and position, for example `abc_205` for
 *B. abortus*, `cysW_288` for *B. melitensis*, `abc_246` for *B. suis* and
 *B. canis*). Sixteen canSNPs from Foster et al. (2012) resolve clades within
@@ -115,4 +118,6 @@ genomes of the `brucella_anthropi` scheme received no call at either setting.
 ## Changes
 
 - 2026-11-19: ported from CanSNPer 1.0.10, with the alleles of `2922C` and
-  `991C` corrected and positions given on the concatenated 16M genome.
+  `991C` corrected and positions given on the concatenated 16M genome (#20).
+- 2026-11-19: renamed from `brucella` to `brucella_classical`, so that
+  `brucella` can name a scheme for the whole genus.
