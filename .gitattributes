@@ -1,9 +1,7 @@
 # Scheme sources are tab separated text and must stay LF-terminated. Carriage
 # returns reach the database loaders as part of node names and SNP identifiers.
 schemes/**/*.txt text eol=lf
-work_in_progress/**/*.txt text eol=lf
 
 # Databases are generated SQLite files. Marking them binary keeps git from
 # attempting a line-ending conversion or a textual diff.
 database/*.db binary
-work_in_progress/**/*.db binary

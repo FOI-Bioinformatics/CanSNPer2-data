@@ -11,25 +11,17 @@
 #   kind      "snp" (default) or "taxonomy"
 #   tree      path to the tree file
 #   snp       path to the SNP annotation file   (snp schemes)
-#   genomes   path to the genome-to-node file   (taxonomy schemes; for snp
-#             schemes the optional <name>_genomes.txt in its folder by default)
+#   genomes   path to the genome-to-node file   (<name>_genomes.txt in its
+#             folder by default; required for taxonomy schemes, optional for snp)
 #   snp_set   path to the ranked canSNPs of each node (snp schemes; the
 #             optional <name>_canSNPs.txt in its folder by default)
 #   verify    compare a rebuild against the committed database (default true)
 #   source_type  tree reader to use (default "CanSNPer")
-#   wip       work in progress: validated, but not built unless asked for and
-#             not published (default false)
+#   wip       validated, but built only when named with --scheme or when
+#             --include-wip is given, for a scheme whose build needs tools that
+#             continuous integration does not install (default false)
 #   database_dir  directory holding the database and manifest (default "database")
-
-[francisellaceae]
-kind = "taxonomy"
-wip = true
-tree = "work_in_progress/francisellaceae/francisellaceae_tree.txt"
-genomes = "work_in_progress/francisellaceae/francisellaceae_genomes.txt"
-database_dir = "work_in_progress/francisellaceae"
-# No database has ever been published for this scheme, so there is no baseline
-# to compare a rebuild against. Builds are reported rather than verified.
-verify = false
+#   readme    path to the README of the scheme (README.md in its folder by default)
 
 [yersinia_pestis]
 # These three canSNPs are published with "/" in the derived_base column, both in

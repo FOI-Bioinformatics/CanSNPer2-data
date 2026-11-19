@@ -13,12 +13,12 @@ writing a provenance manifest beside it:
     python build.py --write
     python build.py --write --scheme bacillus_anthracis
 
-A scheme marked as work in progress in schemes.toml is skipped unless it is named
-with --scheme or --include-wip is given.
+A scheme marked wip in schemes.toml, one whose build needs tools that continuous
+integration does not install, is skipped unless it is named with --scheme or
+--include-wip is given.
 
 Requires CanSNPer2 2.2.0 or later (the master branch), whose own loader builds
-a SNP scheme. The flextaxd command is only needed to build a taxonomy scheme, which at
-present means the work-in-progress francisellaceae scheme.
+a SNP scheme. The flextaxd command is only needed to build a taxonomy scheme.
 """
 
 import argparse
@@ -479,7 +479,7 @@ def install(scheme, target):
 
 def process(scheme, write):
     """Build one scheme. Returns True if it is in the state we want."""
-    print(f"{scheme.name}{' (work in progress)' if scheme.wip else ''}:")
+    print(f"{scheme.name}{' (built on request)' if scheme.wip else ''}:")
 
     problems, warnings = validate(scheme)
     for warning in warnings:
@@ -589,7 +589,7 @@ def main():
     parser.add_argument("--write", action="store_true",
                         help="install the built databases and write manifests")
     parser.add_argument("--include-wip", action="store_true",
-                        help="also build schemes marked as work in progress")
+                        help="also build schemes marked wip in schemes.toml")
     parser.add_argument("--changed-only", action="store_true",
                         help="skip schemes whose sources still hash to their manifest")
     parser.add_argument("--verbose", action="store_true",
@@ -607,7 +607,7 @@ def main():
     if not args.scheme and not args.include_wip:
         for scheme in schemes:
             if scheme.wip:
-                print(f"{scheme.name}: work in progress, skipping "
+                print(f"{scheme.name}: built on request only, skipping "
                       f"(use --scheme {scheme.name} or --include-wip)")
         schemes = [s for s in schemes if not s.wip]
     if args.changed_only:

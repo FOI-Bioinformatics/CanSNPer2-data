@@ -3,8 +3,8 @@ name: release
 # On a tag, checks that the committed databases still match a rebuild from source,
 # then publishes those committed databases and their manifests as release assets.
 # The databases stay committed in the repository as well, so existing download
-# links keep working. Work-in-progress schemes are not published, and a scheme
-# whose README gives its Status as draft stops the release.
+# links keep working. A scheme whose README gives its Status as draft stops the
+# release, so only verified schemes are published.
 
 on:
   push:

@@ -3,7 +3,8 @@ name: validate
 # Checks that the scheme sources are well formed and that every committed
 # database still matches the sources beside it. progressiveMauve is not needed:
 # it is only used when typing a sample, never when building a database.
-# Work-in-progress schemes are validated but not built, so flextaxd is not needed.
+# Schemes marked wip in schemes.toml, which need flextaxd to build, are
+# validated but not built.
 
 on:
   pull_request:
