@@ -95,7 +95,7 @@ B.103	francisella	FOIunpublished	FSC200	66665	T	C
 B.104	francisella	FOIunpublished	FSC200	1351812	A	G
 B.105	francisella	FOIunpublished	FSC200	169462	T	G
 B.106	francisella	FOIunpublished	FSC200	782449	A	C
-B.107	francisella	FOIunpublished	FTNF002-00	520520	T	C	
+B.107	francisella	FOIunpublished	FTNF002-00	520520	T	C
 B.108	francisella	FOIunpublished	FTNF002-00	1327297	T	C
 B.109	francisella	FOIunpublished	FTNF002-00	1082513	C	T
 B.110	francisella	FOIunpublished	FTNF002-00	1301561	A	G

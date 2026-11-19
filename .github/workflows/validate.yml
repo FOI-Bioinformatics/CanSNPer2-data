@@ -1,0 +1,36 @@
+name: validate
+
+# Checks that the scheme sources are well formed and that every committed
+# database still matches the sources beside it. progressiveMauve is not needed:
+# it is only used when typing a sample, never when building a database.
+# Work-in-progress schemes are validated but not built, so flextaxd is not needed.
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+
+jobs:
+  schemes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install CanSNPer2 and pytest
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
+          python -m pip install pytest
+
+      - name: Test the validation and build tools
+        run: python -m pytest tests
+
+      - name: Validate scheme sources
+        run: python validate.py
+
+      - name: Rebuild every scheme and compare with the committed databases
+        run: python build.py
