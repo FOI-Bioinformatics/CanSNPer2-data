@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+RSA493	RSA 493	GCA_000007765.2	GCF_000007765.2	ASM776v2

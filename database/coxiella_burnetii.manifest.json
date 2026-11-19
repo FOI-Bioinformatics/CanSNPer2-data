@@ -1,0 +1,24 @@
+{
+  "built": "2026-11-19",
+  "counts": {
+    "genomes": 0,
+    "nodes": 11,
+    "rank": 2,
+    "snp_annotation": 11,
+    "snp_references": 1,
+    "tree": 11
+  },
+  "kind": "snp",
+  "scheme": "coxiella_burnetii",
+  "source_commit": "b6c1031e2f89f6d738d483dd6745af9c6bf5dd68",
+  "sources": {
+    "schemes/coxiella_burnetii/coxiella_burnetii_references.txt": "373d96515ffba1152208aecdf6a93937a458a0b9616fc6c47dd3b89c07cd6de5",
+    "schemes/coxiella_burnetii/coxiella_burnetii_snp.txt": "5f71e586937e96d6f3ba50dfee6f9f0fc1bab64e396d17e0ba9dcceddc78970f",
+    "schemes/coxiella_burnetii/coxiella_burnetii_tree.txt": "57a076c9e2531c54d375949944a4ae67e1c7d344d872ed9369d12c1de35b8bb3"
+  },
+  "uncommitted_sources": [],
+  "versions": {
+    "cansnper2": "2.2.2",
+    "python": "3.13.18"
+  }
+}
