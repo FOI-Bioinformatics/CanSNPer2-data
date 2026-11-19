@@ -123,7 +123,7 @@ this file, and `CanSNPCreator audit` checks every canSNP in it.
 
 ## `README.md`
 
-Every SNP scheme has a `README.md` in its folder, in this layout, so that each
+Every scheme has a `README.md` in its folder, in this layout, so that each
 scheme is described in the same way. `TEMPLATE.md` in this folder is a copy to
 start from.
 
@@ -156,10 +156,10 @@ The facts table has these rows, in this order:
   draft scheme is kept on `dev` until it is verified.
 - **Organisms**: the species the scheme covers, with NCBI taxon IDs.
 - **Reference genome**: strain and assembly accession of each reference genome
-  the canSNP positions are given on.
+  the canSNP positions are given on; `none` for a taxonomy scheme.
 - **Nodes**: the number of nodes in the tree file.
 - **canSNPs per node**: `1`, or `up to N` when `<organism>_canSNPs.txt` ranks
-  more than one.
+  more than one; `none` for a taxonomy scheme.
 - **Origin**: in a few words, the publications the canSNPs come from, or the
   tool that made the scheme.
 - **Last changed**: the date of the last change to the scheme, `YYYY-MM-DD`.
