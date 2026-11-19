@@ -47,3 +47,11 @@ CanSNPer2 --database database/francisella_tularensis.db sample.fasta --summary
 
 The `genomes` table is empty in these databases, which is expected:
 `CanSNPer2-download` reads reference genomes from `snp_references`.
+
+## Changing a database directly
+
+`CanSNPer2-database --mod_file` can change the tree of an existing database
+without rebuilding it. This repository does not use it: a database changed that
+way no longer matches the scheme files it was built from, and `build.py` reports
+the difference. Change the scheme files and run `python build.py --write`
+instead.

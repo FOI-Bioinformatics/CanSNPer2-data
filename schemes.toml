@@ -24,12 +24,7 @@
 #   readme    path to the README of the scheme (README.md in its folder by default)
 
 [yersinia_pestis]
-# These three canSNPs are published with "/" in the derived_base column, both in
-# the source file and in the database built from it. CanSNPer2 compares an
-# aligned base against derived_base and ancestral_base, so a "/" matches
-# neither and these three SNPs can never be called derived. This also affects
-# placement: see schemes/yersinia_pestis/README.md. The correct bases are not recorded anywhere
-# in this repository. Listing them here keeps the
-# base-column check strict for every other SNP while reporting these on every
-# run instead of failing the build on data that is already published.
+# Published with "/" in the derived_base column, so CanSNPer2 can never call
+# them derived; schemes/yersinia_pestis/README.md describes the effect. Listing
+# them keeps the base check strict for every other SNP.
 known_issues = ["1.ANT2.b", "1.ORI2.c", "1.ORI3.b"]
