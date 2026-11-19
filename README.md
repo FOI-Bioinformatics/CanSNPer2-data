@@ -17,7 +17,6 @@ Data repository for CanSNPer2 https://github.com/FOI-Bioinformatics/CanSNPer2
 | `database/` | The SQLite databases generated from `schemes/`, with a provenance manifest beside each one. |
 | `database/archive/` | The database each rebuild replaced. |
 | `updates/` | Tree modification files, for changing a database without rebuilding it. |
-| `work_in_progress/` | Schemes under development. These are not supported and not published. |
 | `schemes.toml` | Declares schemes that are not plain SNP schemes, and records known data issues. |
 
 ## Changing a scheme

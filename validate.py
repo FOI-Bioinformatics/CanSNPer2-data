@@ -58,7 +58,7 @@ class Scheme:
         # A taxonomy scheme needs its genome-to-node file. An SNP scheme may
         # list the genomes it was made from, which is optional and checked when
         # present.
-        if genomes is None and kind == "snp":
+        if genomes is None:
             genomes = os.path.join(folder, f"{name}_genomes.txt")
         self.genomes = genomes
         # An SNP scheme may also list more than one canSNP per node, ranked,
@@ -66,9 +66,9 @@ class Scheme:
         if snp_set is None and kind == "snp":
             snp_set = os.path.join(folder, f"{name}_canSNPs.txt")
         self.snp_set = snp_set
-        # An SNP scheme is described by a README.md in its folder, in the
+        # Every scheme is described by a README.md in its folder, in the
         # layout given in schemes/README.md.
-        if readme is None and kind == "snp":
+        if readme is None:
             readme = os.path.join(folder, "README.md")
         self.readme = readme
 
@@ -572,7 +572,7 @@ def readme_status(scheme):
 
 
 def check_readme(problems, scheme, tree_nodes, require_verified=False):
-    """Check the README of an SNP scheme against the layout and the scheme files."""
+    """Check the README of a scheme against the layout and the scheme files."""
     relative = scheme.readme
     path = scheme.path(relative)
     if not os.path.exists(path):
@@ -604,7 +604,13 @@ def check_readme(problems, scheme, tree_nodes, require_verified=False):
         problems.append(f"{relative}: Nodes is {nodes}, but the tree file has "
                         f"{len(tree_nodes)} nodes")
     reference = values.get("Reference genome")
-    if reference is not None:
+    if scheme.kind == "taxonomy":
+        # A taxonomy scheme has no reference genome and no canSNPs.
+        for key in ("Reference genome", "canSNPs per node"):
+            if values.get(key) not in (None, "none"):
+                problems.append(f"{relative}: {key} is '{values[key]}', expected "
+                                f"'none' for a taxonomy scheme")
+    elif reference is not None:
         accessions = set()
         for row in read_rows(scheme.path(scheme.references))[2][1:]:
             accessions.update(row[2:4])
@@ -613,7 +619,7 @@ def check_readme(problems, scheme, tree_nodes, require_verified=False):
             problems.append(f"{relative}: Reference genome names no accession from "
                             f"{scheme.references}")
     per_node = values.get("canSNPs per node")
-    if per_node is not None:
+    if per_node is not None and scheme.kind != "taxonomy":
         expected = "1"
         if scheme.snp_set and os.path.exists(scheme.path(scheme.snp_set)):
             ranks = [int(row[1]) for row in read_rows(scheme.path(scheme.snp_set))[2][1:]
@@ -641,7 +647,7 @@ def check_readme(problems, scheme, tree_nodes, require_verified=False):
 def validate(scheme, require_verified=False):
     """Return the problems and the non-fatal warnings found in one scheme.
 
-    With require_verified, an SNP scheme whose README gives its Status as draft
+    With require_verified, a scheme whose README gives its Status as draft
     is a problem, as on master, which holds verified schemes only.
     """
     problems, warnings = [], []
@@ -653,8 +659,7 @@ def validate(scheme, require_verified=False):
         check_snp(problems, warnings, scheme, tree_nodes, reference_genomes)
         check_snp_genomes(problems, scheme, tree_nodes)
         check_snp_set(problems, scheme, tree_nodes, reference_genomes)
-        if not scheme.wip:
-            check_readme(problems, scheme, tree_nodes, require_verified)
+    check_readme(problems, scheme, tree_nodes, require_verified)
     return problems, warnings
 
 
@@ -673,7 +678,7 @@ def main():
     warned = 0
     for scheme in schemes:
         problems, warnings = validate(scheme, args.require_verified)
-        label = f"{scheme.name} (work in progress)" if scheme.wip else scheme.name
+        label = f"{scheme.name} (built on request)" if scheme.wip else scheme.name
         if problems:
             failed += 1
             print(f"FAIL {label} ({len(problems)} problem"
