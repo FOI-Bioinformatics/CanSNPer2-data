@@ -106,4 +106,5 @@ typing run agreed with those assignments.
 - 2026-11-19: ported from CanSNPer 1.0.10, with positions moved from
   AE016828.2 to AE016828.3 (#20).
 - 2026-11-19: typed against all 300 genomes of the genus in GTDB r232; Status
-  set to verified.
+  set to verified (#26).
+- 2026-11-19: moved to `master` as a verified scheme.
