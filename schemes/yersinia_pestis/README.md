@@ -30,8 +30,27 @@ compares it with the committed one (CanSNPer2 2.2.0). When the build tooling
 was added (#13), the database rebuilt from these files was identical in nodes,
 edges, SNP annotations and references to the one committed before. Samples
 simulated on the branches named under Known issues were typed with CanSNPer2;
-the result is described there. The scheme has not been tested here against a
-set of typed *Y. pestis* genomes.
+the result is described there.
+
+Typed with CanSNPer2 2.2.2 (`--aligner minimap2`, default settings) on
+2026-11-19:
+
+- **One representative per species of the genus.** Of the 28 *Yersinia*
+  species representatives of GTDB r232, only *Y. pestis* NCTC 5923 was
+  called, at `1.ORI1.a`. The other 27 species received no call.
+- **The species cluster.** All 1,039 genomes of the GTDB r232 species
+  `s__Yersinia pestis` were typed. That cluster also holds
+  *Y. pseudotuberculosis*, which the scheme separates from *Y. pestis*: of
+  the 921 genomes that NCBI records as *Y. pestis*, 855 (93%) were called,
+  and of the 113 recorded as *Y. pseudotuberculosis*, 111 received no call.
+  The two that were called are 99.8% identical to CO92 by average nucleotide
+  identity, so they are *Y. pestis* deposited under the wrong name. The four
+  *Y. wautersii* genomes and one further genome received no call.
+
+Of the 66 *Y. pestis* genomes without a call, 56 carry fewer than three
+derived canSNPs, which the default `--min_required_hits 3` requires; see Known
+issues for the rest. The calls have not been compared with an independent
+typing of these genomes.
 
 ## Known issues
 
@@ -47,6 +66,12 @@ to read the derived bases from RefSeq assemblies did not recover them, so the
 three rows are left as published until the bases are taken from the original
 description of the SNPs.
 
+Ten *Y. pestis* genomes of the species cluster are ancestral at the `root`
+canSNP (CO92 position 257,340) although they are derived at `0.PE3.a` or
+below. CanSNPer2 needs an unbroken path from the root, so these genomes
+receive no call. The canSNP of the root node is therefore not derived in every
+*Y. pestis*.
+
 ## References
 
 - Morelli G, Song Y, Mazzoni CJ, et al. *Yersinia pestis* genome sequencing
@@ -59,3 +84,5 @@ description of the SNPs.
 - 2026-11-04: files normalised to LF line endings without trailing whitespace.
 - 2026-11-11: database rebuilt with CanSNPer2 2.2.0 (#13).
 - 2026-11-19: files moved to `schemes/yersinia_pestis/` (#16); README added.
+- 2026-11-19: typed against the GTDB r232 species representatives of the genus
+  and the whole species cluster; the result is under Validation.
