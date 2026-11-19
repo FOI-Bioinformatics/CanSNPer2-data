@@ -268,3 +268,44 @@ def test_a_draft_is_rejected_only_when_verified_schemes_are_required(make_scheme
     assert validate.validate(scheme)[0] == []
     problems, _ = validate.validate(scheme, require_verified=True)
     assert any("is a draft" in p for p in problems)
+
+
+# -- the README of a taxonomy scheme ------------------------------------------
+
+def _taxonomy_scheme(tmp_path, readme):
+    (tmp_path / "tax_tree.txt").write_text("R\nR\tA\nR\tB\n")
+    (tmp_path / "tax_genomes.txt").write_text("g1.fasta\tA\ng2.fasta\tB\n")
+    if readme is not False:
+        (tmp_path / "README.md").write_text(readme)
+    return validate.Scheme("tax", kind="taxonomy", tree=str(tmp_path / "tax_tree.txt"),
+                           genomes=str(tmp_path / "tax_genomes.txt"),
+                           readme=str(tmp_path / "README.md"))
+
+
+def test_a_taxonomy_scheme_needs_a_readme(tmp_path):
+    problems, _ = validate.validate(_taxonomy_scheme(tmp_path, False))
+    assert any("has no README.md" in p for p in problems)
+
+
+def test_a_taxonomy_readme_names_no_reference_genome(tmp_path):
+    readme = readme_text(name="tax", nodes="3", reference="none", per_node="none")
+    assert validate.validate(_taxonomy_scheme(tmp_path, readme))[0] == []
+    readme = readme_text(name="tax", nodes="3", reference="none", per_node="1")
+    problems, _ = validate.validate(_taxonomy_scheme(tmp_path, readme))
+    assert any("canSNPs per node is '1'" in p for p in problems)
+
+
+def test_a_draft_taxonomy_scheme_is_rejected_when_verified_is_required(tmp_path):
+    readme = readme_text(name="tax", status="draft", nodes="3", reference="none",
+                         per_node="none")
+    scheme = _taxonomy_scheme(tmp_path, readme)
+    assert validate.validate(scheme)[0] == []
+    problems, _ = validate.validate(scheme, require_verified=True)
+    assert any("is a draft" in p for p in problems)
+
+
+def test_a_taxonomy_scheme_defaults_to_its_folder():
+    scheme = validate.Scheme("tax", kind="taxonomy")
+    assert scheme.tree == os.path.join("schemes", "tax", "tax_tree.txt")
+    assert scheme.genomes == os.path.join("schemes", "tax", "tax_genomes.txt")
+    assert scheme.readme == os.path.join("schemes", "tax", "README.md")
