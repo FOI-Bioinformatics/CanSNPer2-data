@@ -31,6 +31,9 @@ jobs:
       - name: Validate scheme sources
         run: python validate.py --require-verified
 
+      - name: Check the SNP bases against the reference genomes
+        run: python check_bases.py
+
       - name: Rebuild every scheme and compare with the committed databases
         run: python build.py
 

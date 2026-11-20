@@ -28,14 +28,24 @@ Edit the text files under `schemes/<name>/`, then check and rebuild:
 
 ```sh
 python validate.py          # check the scheme files
+python check_bases.py       # check the SNP bases against the reference genomes
 python build.py             # rebuild and compare, changing nothing
 python build.py --write     # install the rebuilt databases and manifests
 ```
 
 Commit the changed scheme files together with the database and manifest that
-`--write` produced. Continuous integration runs the first two commands on every
-pull request, so a scheme file that breaks an invariant, or a database that was
-not regenerated after its sources changed, fails the build.
+`--write` produced. Continuous integration runs the first three commands on every
+pull request, so a scheme file that breaks an invariant, a SNP whose reference
+genome has neither its derived nor its ancestral base, or a database that was not
+regenerated after its sources changed, fails the build.
+
+`check_bases.py` downloads the GenBank assembly of every reference genome from
+NCBI into `.references/` (once; `--cache` names another folder) and checks the
+base at every position of `<name>_snp.txt` and `<name>_canSNPs.txt`. Positions
+count over the sequences of the assembly file (chromosomes, plasmids) joined in
+file order, so positions counted over the sequences in another order fail at
+about half of the SNPs. It prints the sequences of each reference with the number
+of SNPs on each.
 
 Each scheme folder has a `README.md` in a fixed layout, with a Status of `draft`
 or `verified`; `schemes/TEMPLATE.md` is a copy to start from. When a scheme
@@ -54,7 +64,7 @@ pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
 No aligner is needed to build a database. Typing a sample needs one of the
 aligners CanSNPer2 supports: progressiveMauve, minimap2 or MUMmer4.
 
-The two scripts have their own tests, which CI also runs:
+The scripts have their own tests, which CI also runs:
 
 ```sh
 python -m pytest tests
