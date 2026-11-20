@@ -16,7 +16,6 @@ root	Yersinia_pestis	Morelli2010	CO92	257340	C	T
 1.ANT1.b	Yersinia_pestis	Morelli2010	CO92	1756795	A	G
 1.ANT1.c	Yersinia_pestis	Morelli2010	CO92	218072	A	G
 1.ANT2.a	Yersinia_pestis	Morelli2010	CO92	935991	A	G
-1.ANT2.b	Yersinia_pestis	Morelli2010	CO92	4191752	/	A
 1.ANT3.a	Yersinia_pestis	Morelli2010	CO92	155757	A	G
 1.IN2.a	Yersinia_pestis	Morelli2010	CO92	2356003	T	A
 1.IN3.a	Yersinia_pestis	Morelli2010	CO92	2625399	A	C
@@ -31,7 +30,6 @@ root	Yersinia_pestis	Morelli2010	CO92	257340	C	T
 1.ORI1.h	Yersinia_pestis	Morelli2010	CO92	2619611	T	G
 1.ORI2.a	Yersinia_pestis	Morelli2010	CO92	3291254	T	G
 1.ORI2.b	Yersinia_pestis	Morelli2010	CO92	285653	C	T
-1.ORI2.c	Yersinia_pestis	Morelli2010	CO92	2030090	/	A
 1.ORI2.d	Yersinia_pestis	Morelli2010	CO92	217822	T	G
 1.ORI2.e	Yersinia_pestis	Morelli2010	CO92	420884	T	C
 1.ORI2.f	Yersinia_pestis	Morelli2010	CO92	234148	T	C
@@ -51,7 +49,6 @@ root	Yersinia_pestis	Morelli2010	CO92	257340	C	T
 1.ORI2.t	Yersinia_pestis	Morelli2010	CO92	3132060	T	C
 1.ORI2.u	Yersinia_pestis	Morelli2010	CO92	3981864	T	A
 1.ORI3.a	Yersinia_pestis	Morelli2010	CO92	1942127	T	C
-1.ORI3.b	Yersinia_pestis	Morelli2010	CO92	434961	/	A
 1.ORI3.c	Yersinia_pestis	Morelli2010	CO92	1284874	A	C
 1.ORI3.d	Yersinia_pestis	Morelli2010	CO92	1348724	T	C
 1.ORI3.e	Yersinia_pestis	Morelli2010	CO92	3210209	G	A
