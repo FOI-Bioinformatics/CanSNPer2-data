@@ -16,6 +16,8 @@ try:
 except RuntimeError as error:
     pytest.skip(f"needs CanSNPer2: {error}", allow_module_level=True)
 
+from CanSNPer2.modules.DatabaseConnection import SourceFileError  # noqa: E402
+
 
 @pytest.fixture
 def built(make_scheme, tmp_path):
@@ -37,21 +39,43 @@ def test_minimal_scheme_builds_cleanly(built):
     assert build.check_counts(scheme, target) == []
 
 
-def test_loader_warnings_are_collected_and_rows_counted(built):
-    # a SNP on a genome without a reference is skipped by the loader with a
-    # logged warning only; build() returns it and check_counts sees the gap
+def test_a_snp_on_an_unknown_genome_is_not_built_silently(built):
+    # CanSNPer2 with source file checks (CanSNPer2#66) refuses the files; an
+    # earlier CanSNPer2 skips the row with a logged warning, which build()
+    # returns and check_counts sees as a gap
     rows = list(SNP_ROWS)
     rows[3] = "C\ts\tTest2026\tOTHER\t400\tG\tA"
-    scheme, target, warnings = built(snp_rows=rows)
+    try:
+        scheme, target, warnings = built(snp_rows=rows)
+    except SourceFileError as error:
+        assert "genome 'OTHER' is not listed" in str(error)
+        return
     assert warnings, "the skipped row must be reported"
     assert build.check_counts(scheme, target) == [
         "snp_annotation has 3 rows, the sources define 4"]
 
 
-def test_node_with_two_parents_gives_a_repeated_name(built):
-    # validate.py rejects this source; the database check is the second line
+def test_check_counts_sees_a_missing_row(built):
+    scheme, target, _warnings = built()
+    assert build.check_counts(scheme, target) == []
+    connection = sqlite3.connect(target)
+    connection.execute("DELETE FROM snp_annotation WHERE snp_id = 'C'")
+    connection.commit()
+    connection.close()
+    assert build.check_counts(scheme, target) == [
+        "snp_annotation has 3 rows, the sources define 4"]
+
+
+def test_node_with_two_parents_is_not_built_silently(built):
+    # validate.py rejects this source; CanSNPer2 with source file checks
+    # refuses it too, and with an earlier CanSNPer2 the database check is the
+    # second line
     tree = "R\nR\tA\nR\tC\nR\tA\tB\nR\tC\tB\n"
-    _scheme, target, _warnings = built(tree=tree)
+    try:
+        _scheme, target, _warnings = built(tree=tree)
+    except SourceFileError as error:
+        assert "node 'B' is given more than one parent" in str(error)
+        return
     assert "node name 'B' is used by more than one node" in build.check_structure(target)
 
 
