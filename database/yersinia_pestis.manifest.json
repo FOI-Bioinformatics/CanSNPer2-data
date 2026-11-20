@@ -1,24 +1,27 @@
 {
-  "built": "2026-11-11",
+  "built": "2026-11-20",
   "counts": {
     "genomes": 0,
-    "nodes": 100,
+    "nodes": 97,
     "rank": 2,
-    "snp_annotation": 100,
+    "snp_annotation": 97,
     "snp_references": 1,
-    "tree": 100
+    "tree": 97
   },
   "kind": "snp",
   "scheme": "yersinia_pestis",
-  "source_commit": "e33d821351ca0d256b026bc51aa75572f805e7ac",
+  "source_commit": "945fde47cff2cce6c4b4c6de529724a2de189a9a",
   "sources": {
     "schemes/yersinia_pestis/yersinia_pestis_references.txt": "62b94ff7b497c33bf33a576240092d644487580c61330747daebc2ae146eed28",
-    "schemes/yersinia_pestis/yersinia_pestis_snp.txt": "bbfed854d670b1f6f516b12d18a6a1d380c64b8b8186c33bdf359ad1a6c53626",
-    "schemes/yersinia_pestis/yersinia_pestis_tree.txt": "8d17df3c9e641a38fb6867408bbb81b253a7ca85bc50082e9298d4710d633646"
+    "schemes/yersinia_pestis/yersinia_pestis_snp.txt": "f7535330bf7a79b9abb52f173b67a851ae61ae985f0fed56379618bac5b1b02d",
+    "schemes/yersinia_pestis/yersinia_pestis_tree.txt": "dfae993493f8727b52461b3f76aee8a3af46a4cee212169db8164633e9880e3e"
   },
-  "uncommitted_sources": [],
+  "uncommitted_sources": [
+    "schemes/yersinia_pestis/yersinia_pestis_snp.txt",
+    "schemes/yersinia_pestis/yersinia_pestis_tree.txt"
+  ],
   "versions": {
     "cansnper2": "2.2.0",
-    "python": "3.12.16"
+    "python": "3.13.18"
   }
 }
