@@ -44,7 +44,7 @@ def test_a_snp_on_an_unknown_genome_is_not_built_silently(built):
     # earlier CanSNPer2 skips the row with a logged warning, which build()
     # returns and check_counts sees as a gap
     rows = list(SNP_ROWS)
-    rows[3] = "C\ts\tTest2026\tOTHER\t400\tG\tA"
+    rows[3] = "C\ts\tTest2026\tOTHER\tseq2\t150\tG\tA"
     try:
         scheme, target, warnings = built(snp_rows=rows)
     except SourceFileError as error:
@@ -150,7 +150,7 @@ def test_manifest_lifecycle(make_scheme, monkeypatch):
     # the strain column is not stored, so the database still matches; the
     # comparison mode must still notice that the manifest is out of date
     rows = list(SNP_ROWS)
-    rows[0] = "R\tanother strain\tTest2026\tG\t100\tA\tG"
+    rows[0] = "R\tanother strain\tTest2026\tG\tseq1\t100\tA\tG"
     with open(scheme.path(scheme.snp), "w") as handle:
         handle.write(SNP_HEADER + "".join(row + "\n" for row in rows))
     assert not build.process(scheme, write=False)

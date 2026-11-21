@@ -26,16 +26,45 @@ def test_repository_schemes_are_valid():
 def test_non_ascii_digit_position_is_reported_not_raised(make_scheme):
     # "1²" passes str.isdigit() but int() rejects it; this used to end the run
     rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\t1²\tT\tC"
+    rows[1] = "A\ts\tTest2026\tG\tseq1\t1²\tT\tC"
     problems = problems_of(make_scheme(snp_rows=rows))
-    assert any("position '1²' is not a positive integer" in p for p in problems)
+    assert any("sequence_position '1²' is not a positive integer" in p for p in problems)
 
 
 def test_positions_with_leading_zeros_count_as_the_same_position(make_scheme):
     rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\t0100\tT\tC"
+    rows[1] = "A\ts\tTest2026\tG\tseq1\t0100\tT\tC"
     problems = problems_of(make_scheme(snp_rows=rows))
-    assert any("position 100 on 'G' is annotated 2 times" in p for p in problems)
+    assert any("position 100 on 'G' sequence 'seq1' is annotated 2 times" in p for p in problems)
+
+
+def test_old_header_names_the_conversion_command(make_scheme):
+    old = ("snp_id\tstrain\treference\tgenome\tposition\tderived_base\tancestral_base\n")
+    raw = (old + "R\ts\tTest2026\tG\t100\tA\tG\n").encode()
+    problems = problems_of(make_scheme(raw_snp=raw))
+    old_header = [p for p in problems if "CanSNPer2-database --convert" in p]
+    assert len(old_header) == 1 and "_snp.txt" in old_header[0]
+    snp_set = ("node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
+               "R\t1\tG\t100\tA\tG\t1\n")
+    problems = problems_of(make_scheme(snp_set=snp_set, readme=readme_text(per_node="up to 2")))
+    assert any("_canSNPs.txt" in p and "CanSNPer2-database --convert" in p for p in problems)
+
+
+def test_uniqueness_on_genome_sequence_position(make_scheme):
+    # the same position on another sequence is another SNP
+    rows = list(SNP_ROWS)
+    rows[1] = "A\ts\tTest2026\tG\tseq2\t100\tT\tC"
+    assert problems_of(make_scheme(snp_rows=rows)) == []
+    rows[1] = "A\ts\tTest2026\tG\tseq1\t100\tT\tC"
+    problems = problems_of(make_scheme(snp_rows=rows))
+    assert any("position 100 on 'G' sequence 'seq1' is annotated 2 times" in p for p in problems)
+
+
+def test_an_empty_sequence_name_is_a_problem(make_scheme):
+    rows = list(SNP_ROWS)
+    rows[1] = "A\ts\tTest2026\tG\t\t200\tT\tC"
+    problems = problems_of(make_scheme(snp_rows=rows))
+    assert any("sequence is empty" in p for p in problems)
 
 
 def test_file_that_is_not_utf8_is_reported_not_raised(make_scheme):
@@ -59,7 +88,7 @@ def test_node_with_two_parents_is_rejected(make_scheme):
 
 def test_known_issue_is_reported_as_a_warning(make_scheme):
     rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\t200\t/\tC"
+    rows[1] = "A\ts\tTest2026\tG\tseq1\t200\t/\tC"
     problems, warnings = validate.validate(make_scheme(snp_rows=rows, known_issues=["A"]))
     assert problems == []
     assert any("derived_base '/'" in w for w in warnings)
@@ -139,14 +168,14 @@ def test_a_genomes_file_without_its_header_is_a_problem(make_scheme):
 
 # -- the optional ranked canSNP set ------------------------------------------
 
-SNP_SET_HEADER = "node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
+SNP_SET_HEADER = "node\trank\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\tscore\n"
 SNP_SET = SNP_SET_HEADER + (
-    "R\t1\tG\t100\tA\tG\t520\n"
-    "R\t2\tG\t1500\tC\tT\t510\n"
-    "A\t1\tG\t200\tT\tC\t500\n"
-    "B\t1\tG\t300\tC\tT\t495\n"
-    "B\t2\tG\t2500\tG\tA\t480.5\n"
-    "C\t1\tG\t400\tG\tA\t470\n"
+    "R\t1\tG\tseq1\t100\tA\tG\t520\n"
+    "R\t2\tG\tseq1\t1500\tC\tT\t510\n"
+    "A\t1\tG\tseq1\t200\tT\tC\t500\n"
+    "B\t1\tG\tseq2\t50\tC\tT\t495\n"
+    "B\t2\tG\tseq2\t2500\tG\tA\t480.5\n"
+    "C\t1\tG\tseq2\t150\tG\tA\t470\n"
 )
 
 
@@ -160,15 +189,15 @@ def test_a_snp_set_is_checked_when_present(make_scheme):
 
 
 @pytest.mark.parametrize("old, new, message", [
-    ("R\t1\tG\t100\tA\tG", "R\t1\tG\t101\tA\tG", "rank 1 of node 'R' is not the SNP"),
+    ("R\t1\tG\tseq1\t100\tA\tG", "R\t1\tG\tseq1\t101\tA\tG", "rank 1 of node 'R' is not the SNP"),
     ("B\t2\t", "B\t3\t", "ranks of node 'B' are 1, 3"),
-    ("B\t2\tG\t2500", "B\t2\tG\t1500", "position 1500 on 'G' is listed 2 times"),
-    ("B\t2\tG\t2500\tG\tA", "B\t2\tG\t2500\tA\tA", "derived and ancestral base"),
-    ("B\t2\tG\t2500\tG\tA", "B\t2\tG\t2500\tN\tA", "not both one of A, C, G, T"),
+    ("B\t2\tG\tseq2\t2500", "B\t2\tG\tseq2\t50", "position 50 on 'G' sequence 'seq2' is listed 2 times"),
+    ("B\t2\tG\tseq2\t2500\tG\tA", "B\t2\tG\tseq2\t2500\tA\tA", "derived and ancestral base"),
+    ("B\t2\tG\tseq2\t2500\tG\tA", "B\t2\tG\tseq2\t2500\tN\tA", "not both one of A, C, G, T"),
     ("R\t2\tG", "X\t2\tG", "node 'X' does not appear"),
     ("R\t2\tG", "R\t2\tH", "genome 'H' is not listed"),
     ("\t480.5", "\thigh", "score 'high' is not a number"),
-    ("C\t1\tG\t400\tG\tA\t470\n", "", "node 'C' has no canSNP of rank 1"),
+    ("C\t1\tG\tseq2\t150\tG\tA\t470\n", "", "node 'C' has no canSNP of rank 1"),
 ])
 def test_a_snp_set_that_breaks_the_rules_is_a_problem(make_scheme, old, new, message):
     assert old in SNP_SET
@@ -255,9 +284,9 @@ def test_an_empty_section_is_reported(make_scheme):
 
 
 def test_canSNPs_per_node_follows_the_ranked_file(make_scheme):
-    snp_set = ("node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
-               "R\t1\tG\t100\tA\tG\t1\nA\t1\tG\t200\tT\tC\t1\nA\t2\tG\t250\tT\tC\t1\n"
-               "B\t1\tG\t300\tC\tT\t1\nC\t1\tG\t400\tG\tA\t1\n")
+    snp_set = ("node\trank\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\tscore\n"
+               "R\t1\tG\tseq1\t100\tA\tG\t1\nA\t1\tG\tseq1\t200\tT\tC\t1\nA\t2\tG\tseq1\t250\tT\tC\t1\n"
+               "B\t1\tG\tseq2\t50\tC\tT\t1\nC\t1\tG\tseq2\t150\tG\tA\t1\n")
     assert problems_of(make_scheme(snp_set=snp_set, readme=readme_text(per_node="up to 2"))) == []
     problems = problems_of(make_scheme(snp_set=snp_set))
     assert any("canSNPs per node is '1'" in p for p in problems)

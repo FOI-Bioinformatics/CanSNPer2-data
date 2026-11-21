@@ -11,12 +11,12 @@ from validate import Scheme  # noqa: E402
 TREE = "R\nR\tA\nR\tA\tB\nR\tC\n"
 REFERENCES = ("genome\tstrain\tgenbank_id\trefseq_id\tassembly_name\n"
               "G\tstrain G\tGCA_000000001.1\tGCF_000000001.1\tASM1v1\n")
-SNP_HEADER = "snp_id\tstrain\treference\tgenome\tposition\tderived_base\tancestral_base\n"
+SNP_HEADER = "snp_id\tstrain\treference\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\n"
 SNP_ROWS = [
-    "R\ts\tTest2026\tG\t100\tA\tG",
-    "A\ts\tTest2026\tG\t200\tT\tC",
-    "B\ts\tTest2026\tG\t300\tC\tT",
-    "C\ts\tTest2026\tG\t400\tG\tA",
+    "R\ts\tTest2026\tG\tseq1\t100\tA\tG",
+    "A\ts\tTest2026\tG\tseq1\t200\tT\tC",
+    "B\ts\tTest2026\tG\tseq2\t50\tC\tT",
+    "C\ts\tTest2026\tG\tseq2\t150\tG\tA",
 ]
 
 

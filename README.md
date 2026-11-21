@@ -41,11 +41,12 @@ regenerated after its sources changed, fails the build.
 
 `check_bases.py` downloads the GenBank assembly of every reference genome from
 NCBI into `.references/` (once; `--cache` names another folder) and checks the
-base at every position of `<name>_snp.txt` and `<name>_canSNPs.txt`. Positions
-count over the sequences of the assembly file (chromosomes, plasmids) joined in
-file order, so positions counted over the sequences in another order fail at
-about half of the SNPs. It prints the sequences of each reference with the number
-of SNPs on each.
+base at every position of `<name>_snp.txt` and `<name>_canSNPs.txt`. Each SNP
+names a sequence of the assembly (a chromosome or plasmid, by its GenBank
+accession) and a position on it, so the order of the sequences in the assembly
+file does not matter. A sequence that the assembly lacks is reported as a
+problem. It prints the sequences of each reference with the number of SNPs on
+each.
 
 Each scheme folder has a `README.md` in a fixed layout, with a Status of `draft`
 or `verified`; `schemes/TEMPLATE.md` is a copy to start from. When a scheme
