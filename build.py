@@ -96,8 +96,7 @@ def require_cansnper2():
         importlib.import_module("CanSNPer2.modules.SchemeInfo")
     except ImportError:
         raise RuntimeError(f"CanSNPer2 {installed} does not write scheme_info; "
-                           f"install a CanSNPer2 2.3.0 that does, for example "
-                           f"from the dev_2.3.0 branch")
+                           f"install CanSNPer2 2.3.0 or later")
 
 
 def scheme_source():

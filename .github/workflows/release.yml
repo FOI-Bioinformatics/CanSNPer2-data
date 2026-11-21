@@ -30,8 +30,7 @@ jobs:
       - name: Install CanSNPer2
         run: |
           python -m pip install --upgrade pip
-          # set back to master when 2.3.0 is released
-          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@dev_2.3.0
+          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
 
       - name: Validate scheme sources
         run: python validate.py --require-verified
