@@ -9,9 +9,9 @@ import pytest
 import check_bases
 from conftest import SNP_HEADER
 
-# Two sequences of 250 bases; the SNP positions of the test scheme (100, 200, 300,
-# 400) count over both, joined in file order: 100 and 200 are on seq1, 300 and 400
-# on seq2 (positions 50 and 150 there).
+# Two sequences of 250 bases. The SNPs of the test scheme are at seq1:100, seq1:200,
+# seq2:50 and seq2:150, counted along each sequence. The keys of BASES are the
+# positions along the two sequences joined in file order (seq2 starts at 251).
 BASES = {100: "G", 200: "C", 300: "T", 400: "A"}   ## the ancestral bases of SNP_ROWS
 
 
@@ -46,16 +46,24 @@ def test_a_scheme_whose_reference_has_the_snp_bases_passes(make_scheme, cache):
     assert "G: seq1 250 bp (2 SNPs), seq2 250 bp (2 SNPs)" in report
 
 
-def test_a_reference_with_its_sequences_in_another_order_fails(make_scheme, cache):
-    problems, _warnings, _report = check_bases.check_scheme(make_scheme(), cache(genome(swap=True)), retrieve=never_download)
-    assert len(problems) >= 3
-    assert any("position 100" in p and "neither the derived (A) nor the ancestral (G)" in p for p in problems)
+def test_a_reference_with_its_sequences_in_another_order_passes(make_scheme, cache):
+    problems, _warnings, report = check_bases.check_scheme(make_scheme(), cache(genome(swap=True)), retrieve=never_download)
+    assert problems == []
+    assert "G: seq2 250 bp (2 SNPs), seq1 250 bp (2 SNPs)" in report
+
+
+def test_a_missing_sequence_is_a_problem(make_scheme, cache):
+    rows = ["R\ts\tTest2026\tG\tseq1\t100\tA\tG", "A\ts\tTest2026\tG\tplasmid\t200\tT\tC",
+            "B\ts\tTest2026\tG\tseq2\t50\tC\tT", "C\ts\tTest2026\tG\tseq2\t150\tG\tA"]
+    problems, _warnings, _report = check_bases.check_scheme(make_scheme(snp_rows=rows), cache(genome()), retrieve=never_download)
+    assert len(problems) == 1
+    assert "sequence 'plasmid'" in problems[0] and "seq1, seq2" in problems[0]
 
 
 def test_a_single_wrong_base_fails(make_scheme, cache):
     problems, _warnings, _report = check_bases.check_scheme(make_scheme(), cache(genome(change={200: "A"})), retrieve=never_download)
     assert len(problems) == 1
-    assert "_snp.txt:3: SNP A at position 200 of G" in problems[0]
+    assert "_snp.txt:3: SNP A at seq1 position 200 of G" in problems[0]
     assert "has A" in problems[0]
 
 
@@ -67,19 +75,19 @@ def test_a_known_issue_is_a_warning(make_scheme, cache):
 
 
 def test_a_position_beyond_the_reference_fails(make_scheme, cache):
-    rows = ["R\ts\tTest2026\tG\t100\tA\tG", "A\ts\tTest2026\tG\t200\tT\tC",
-            "B\ts\tTest2026\tG\t300\tC\tT", "C\ts\tTest2026\tG\t900\tG\tA"]
+    rows = ["R\ts\tTest2026\tG\tseq1\t100\tA\tG", "A\ts\tTest2026\tG\tseq1\t200\tT\tC",
+            "B\ts\tTest2026\tG\tseq2\t50\tC\tT", "C\ts\tTest2026\tG\tseq2\t900\tG\tA"]
     problems, _warnings, _report = check_bases.check_scheme(make_scheme(snp_rows=rows), cache(genome()), retrieve=never_download)
-    assert any("position 900" in p and "500 bases" in p for p in problems)
+    assert any("position 900" in p and "seq2" in p and "250 bases" in p for p in problems)
 
 
 def test_the_ranked_canSNPs_are_checked_as_well(make_scheme, cache):
-    snp_set = ("node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
-               "A\t1\tG\t200\tT\tC\t1.0\n"
-               "A\t2\tG\t220\tC\tG\t0.9\n")
+    snp_set = ("node\trank\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\tscore\n"
+               "A\t1\tG\tseq1\t200\tT\tC\t1.0\n"
+               "A\t2\tG\tseq1\t220\tC\tG\t0.9\n")
     problems, _warnings, _report = check_bases.check_scheme(make_scheme(snp_set=snp_set), cache(genome()), retrieve=never_download)
     assert len(problems) == 1
-    assert "_canSNPs.txt:3: SNP A (rank 2) at position 220 of G" in problems[0]
+    assert "_canSNPs.txt:3: SNP A (rank 2) at seq1 position 220 of G" in problems[0]
 
 
 def test_a_missing_genome_is_downloaded_once(make_scheme, tmp_path):

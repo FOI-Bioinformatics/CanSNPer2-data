@@ -13,17 +13,24 @@ writing a provenance manifest beside it:
     python build.py --write
     python build.py --write --scheme bacillus_anthracis
 
+--write refuses a scheme whose source files, README or schemes.toml have
+uncommitted changes: the database records the commit of its sources in its
+scheme_info table, so the sources are committed first and built after.
+
 A scheme marked wip in schemes.toml, one whose build needs tools that continuous
 integration does not install, is skipped unless it is named with --scheme or
 --include-wip is given.
 
-Requires CanSNPer2 2.2.0 or later (the master branch), whose own loader builds
-a SNP scheme. The flextaxd command is only needed to build a taxonomy scheme.
+Requires CanSNPer2 2.3.0 or later, whose own loader builds a SNP scheme,
+stores each SNP as a reference sequence and a position on that sequence, and
+records the scheme in a scheme_info table. The flextaxd command is only needed
+to build a taxonomy scheme.
 """
 
 import argparse
 import datetime
 import hashlib
+import importlib
 import importlib.metadata
 import json
 import logging
@@ -35,11 +42,23 @@ import subprocess
 import sys
 import tempfile
 
-from validate import REPO, discover, read_rows, tree_nodes_and_parents, validate
+from validate import CONFIG, REPO, discover, read_rows, tree_nodes_and_parents, validate
 
-# Earlier versions add an orphan node named 'root' beside the scheme root, so
-# their databases neither match the committed ones nor pass check_structure.
-MINIMUM_CANSNPER2 = (2, 2, 0)
+# Versions before 2.2.0 add an orphan node named 'root' beside the scheme root,
+# so their databases neither match the committed ones nor pass check_structure.
+# Versions before 2.3.0 count SNP positions along the reference sequences
+# joined in file order and do not read the per-sequence SNP files. Development
+# commits of 2.3.0 from before the scheme_info table carry the same version, so
+# require_cansnper2 also checks that the module writing that table is present.
+MINIMUM_CANSNPER2 = (2, 3, 0)
+
+# The repository recorded as the source of every database built here.
+DATA_REPOSITORY = "FOI-Bioinformatics/CanSNPer2-data"
+
+# scheme_info keys that describe the build rather than the scheme: the date and
+# the CanSNPer2 version, which the manifest records as well. They are left out
+# of the comparison with the committed database.
+BUILD_ONLY_KEYS = ("built", "built_with")
 
 
 def database_path(scheme):
@@ -73,6 +92,42 @@ def require_cansnper2():
         wanted = ".".join(str(part) for part in MINIMUM_CANSNPER2)
         raise RuntimeError(f"CanSNPer2 {wanted} or later is required, "
                            f"found {installed}")
+    try:
+        importlib.import_module("CanSNPer2.modules.SchemeInfo")
+    except ImportError:
+        raise RuntimeError(f"CanSNPer2 {installed} does not write scheme_info; "
+                           f"install CanSNPer2 2.3.0 or later")
+
+
+def scheme_source():
+    """This repository as CanSNPer2 reads a local folder of schemes.
+
+    CanSNPer2-download takes the status of a scheme from its README and the
+    known issues from schemes.toml through this class, so a database built
+    here records them in the same way.
+    """
+    from CanSNPer2.modules.FetchScheme import LocalSchemeSource
+    return LocalSchemeSource(REPO)
+
+
+def scheme_info(scheme):
+    """The scheme_info keys of a database built from this scheme.
+
+    ref is not written: the branch a database is built on goes stale once it is
+    merged, and commit already identifies the sources.
+    """
+    source = scheme_source()
+    commit = source_commit(scheme) or "unknown"
+    if commit != "unknown" and dirty_sources(scheme):
+        # the convention of CanSNPer2 for a checkout with uncommitted changes
+        commit += "+uncommitted"
+    return {
+        "scheme": scheme.name,
+        "status": source.status(scheme.readme) or "unknown",
+        "source": DATA_REPOSITORY,
+        "commit": commit,
+        "known_issues": source.known_issues(scheme.name),
+    }
 
 
 def build_snp_scheme(scheme, target):
@@ -92,6 +147,7 @@ def build_snp_scheme(scheme, target):
         references=scheme.path(scheme.references),
         source_type=scheme.source_type,
         verbose=False,
+        scheme_info=scheme_info(scheme),
     )
 
 
@@ -274,7 +330,8 @@ def content(path):
     """Read a database into comparable sets, keyed on names rather than row ids.
 
     snp_annotation.date holds the build date and the surrogate keys depend on
-    insertion order, so neither is part of the comparison. Each SNP is compared
+    insertion order, so neither is part of the comparison, and neither are the
+    scheme_info keys in BUILD_ONLY_KEYS. Each SNP is compared
     together with the name of the node it is attached to, and node names that
     occur more than once are listed, since a set of names would merge them.
     """
@@ -298,8 +355,17 @@ def content(path):
                                     LEFT JOIN nodes n ON n.id = g.id""")),
         }
         if "snp_annotation" in tables:
+            # A database built before CanSNPer2 2.3.0 has a single position
+            # column, counted along the joined reference sequences. It is read
+            # with no sequence, so that it differs from a rebuild instead of
+            # stopping the comparison.
+            columns = {row[1] for row in query("PRAGMA table_info(snp_annotation)")}
+            if "sequence_position" in columns:
+                location = "a.sequence, a.sequence_position"
+            else:
+                location = "NULL, a.position"
             result["snp_annotation"] = set(query(
-                """SELECT n.name, a.snp_id, a.position, a.derived_base,
+                f"""SELECT n.name, a.snp_id, {location}, a.derived_base,
                           a.ancestral_base, a.reference, g.genome
                    FROM snp_annotation a
                    LEFT JOIN nodes n ON n.id = a.node_id
@@ -307,6 +373,14 @@ def content(path):
             result["snp_references"] = set(query(
                 """SELECT genome, strain, genbank_id, refseq_id, assembly_name
                    FROM snp_references"""))
+        if "snp_annotation" in tables or "scheme_info" in tables:
+            # A database without the table, built before CanSNPer2 2.3.0,
+            # gives an empty set and so differs from a rebuild.
+            result["scheme_info"] = set()
+            if "scheme_info" in tables:
+                result["scheme_info"] = {
+                    (key, value) for key, value in query("SELECT key, value FROM scheme_info")
+                    if key not in BUILD_ONLY_KEYS}
         return result
     finally:
         connection.close()
@@ -348,25 +422,57 @@ def file_digest(path):
         return hashlib.sha256(handle.read()).hexdigest()
 
 
-def source_commit():
+def git(repo, *arguments):
+    """The output of a git command in repo, or None when it fails."""
     try:
-        result = subprocess.run(["git", "-C", REPO, "rev-parse", "HEAD"],
+        result = subprocess.run(["git", "-C", repo] + list(arguments),
                                 capture_output=True, text=True)
-        if result.returncode == 0:
-            return result.stdout.strip()
     except OSError:
-        pass
-    return None
+        return None
+    return result.stdout if result.returncode == 0 else None
 
 
-def dirty_sources(scheme):
-    """Return this scheme's source files that have uncommitted changes."""
+def inside(repo, paths):
+    """The paths that lie in repo; git refuses a path outside its checkout."""
+    top = os.path.realpath(repo)
+    return [path for path in paths
+            if os.path.commonpath([top, os.path.realpath(path)]) == top]
+
+
+def source_commit(scheme, repo=REPO):
+    """The last commit that changed the source files of the scheme.
+
+    This, rather than HEAD, is recorded, so that committing the rebuilt
+    database, or a change to another scheme, does not make the database
+    describe a different commit. None when it cannot be found.
+    """
+    paths = inside(repo, [scheme.path(relative) for relative in scheme.files])
+    if not paths:
+        return None
+    commit = (git(repo, "log", "-1", "--format=%H", "--", *paths) or "").strip()
+    return commit or None
+
+
+def recorded_inputs(scheme):
+    """Every file whose content the database records: the source files, and
+    the README and schemes.toml that give its status and known issues."""
     paths = [scheme.path(relative) for relative in scheme.files]
-    result = subprocess.run(["git", "-C", REPO, "status", "--porcelain", "--"] + paths,
-                            capture_output=True, text=True)
-    if result.returncode != 0:
+    if scheme.readme:
+        paths.append(scheme.path(scheme.readme))
+    paths.append(CONFIG)
+    return paths
+
+
+def dirty_sources(scheme, repo=REPO):
+    """The files of recorded_inputs that have uncommitted changes or are not
+    committed at all, relative to the top of the checkout."""
+    paths = inside(repo, recorded_inputs(scheme))
+    if not paths:
         return []
-    return [line[3:].strip() for line in result.stdout.splitlines() if line.strip()]
+    status = git(repo, "status", "--porcelain", "--untracked-files=all", "--", *paths)
+    if status is None:
+        return []
+    return sorted(line[3:].strip() for line in status.splitlines() if line.strip())
 
 
 def tool_versions(scheme):
@@ -417,33 +523,54 @@ def save_manifest(scheme, manifest):
         handle.write("\n")
 
 
+def database_record(scheme, target):
+    """The manifest keys that describe the database file itself: its SHA-256
+    and, for a database that records one, its format."""
+    record = {"database_sha256": file_digest(target)}
+    if scheme.kind == "snp":
+        from CanSNPer2.modules.SchemeInfo import read_scheme_info
+        info_format = read_scheme_info(target).get("format")
+        if info_format:
+            record["format"] = info_format
+    return record
+
+
 def write_manifest(scheme, target):
     """Record what produced a newly installed database, as text beside the binary."""
     manifest = {
         "scheme": scheme.name,
         "kind": scheme.kind,
         "built": datetime.date.today().isoformat(),
-        "source_commit": source_commit(),
-        "uncommitted_sources": dirty_sources(scheme),
+        "source_commit": source_commit(scheme),
         "sources": source_digests(scheme),
         "versions": tool_versions(scheme),
         "counts": row_counts(target),
     }
+    manifest.update(database_record(scheme, target))
     save_manifest(scheme, manifest)
     return manifest
 
 
-def refresh_manifest_sources(scheme, manifest):
-    """Record new source hashes for a database that a rebuild left unchanged.
+def manifest_is_current(scheme, manifest, target):
+    """True if the manifest records the current sources and the database file."""
+    if manifest.get("sources", {}) != source_digests(scheme):
+        return False
+    if manifest.get("source_commit") != source_commit(scheme):
+        return False
+    record = database_record(scheme, target)
+    return all(manifest.get(key) == value for key, value in record.items())
 
-    This happens when a source edit does not reach the database, for example
-    the strain column of a SNP file, which CanSNPer2 does not store. The
-    database, and so built, versions and counts, still describe the earlier
-    build; only the record of which sources it corresponds to is updated.
+
+def refresh_manifest(scheme, manifest, target):
+    """Update the record of the sources and of the database file for a
+    database that a rebuild left unchanged, for example a manifest written
+    before database_sha256 was recorded. built, versions and counts still
+    describe the earlier build, which produced the database, and are kept.
     """
     manifest["sources"] = source_digests(scheme)
-    manifest["source_commit"] = source_commit()
-    manifest["uncommitted_sources"] = dirty_sources(scheme)
+    manifest["source_commit"] = source_commit(scheme)
+    manifest.pop("uncommitted_sources", None)
+    manifest.update(database_record(scheme, target))
     save_manifest(scheme, manifest)
     return manifest
 
@@ -490,6 +617,22 @@ def process(scheme, write):
         for problem in problems[:5]:
             print(f"      - {problem}")
         return False
+
+    if write:
+        # The database records the source commit, which does not describe
+        # files with uncommitted changes.
+        dirty = dirty_sources(scheme)
+        if dirty:
+            listed = ", ".join(dirty)
+            print(f"    FAIL {listed} {'has' if len(dirty) == 1 else 'have'} "
+                  f"uncommitted changes; commit the sources first, then run "
+                  f"build.py --write")
+            return False
+        if source_commit(scheme) is None:
+            print(f"    FAIL no commit of the source files of {scheme.name} was "
+                  f"found; run build.py --write in a git checkout in which they "
+                  f"are committed")
+            return False
 
     with tempfile.TemporaryDirectory(prefix=f"cansnper2-{scheme.name}-") as workdir:
         target = os.path.join(workdir, f"{scheme.name}.db")
@@ -549,6 +692,10 @@ def process(scheme, write):
                     print(f"    FAIL {manifest_name} does not record the current "
                           f"sources; run build.py --write")
                     return False
+                if manifest.get("database_sha256") != file_digest(committed):
+                    print(f"    FAIL {manifest_name} does not match the SHA-256 of "
+                          f"{os.path.basename(committed)}; run build.py --write")
+                    return False
             return True
 
         if matched:
@@ -557,28 +704,21 @@ def process(scheme, write):
             # no change in meaning.
             print("    database already up to date, left in place")
             if manifest is not None:
-                if manifest.get("sources", {}) == source_digests(scheme):
-                    # Rewriting it would put this run's commit, date and tool
-                    # versions on a database that an earlier build produced.
+                if manifest_is_current(scheme, manifest, committed):
+                    # Rewriting it would put this run's date and tool versions
+                    # on a database that an earlier build produced.
                     print(f"    {manifest_name} already up to date, left in place")
                     return True
-                manifest = refresh_manifest_sources(scheme, manifest)
-                print(f"    updated the source hashes in {manifest_name}")
-                note_uncommitted(manifest)
+                refresh_manifest(scheme, manifest, committed)
+                print(f"    updated the record of the sources and the database "
+                      f"in {manifest_name}")
                 return True
         else:
             install(scheme, target)
         manifest = write_manifest(scheme, committed)
         print(f"    wrote {manifest_name} "
               f"({', '.join(f'{k}={v}' for k, v in sorted(manifest['counts'].items()))})")
-        note_uncommitted(manifest)
     return True
-
-
-def note_uncommitted(manifest):
-    if manifest["uncommitted_sources"]:
-        print("    note: sources have uncommitted changes, so "
-              "source_commit does not fully describe this build")
 
 
 def main():

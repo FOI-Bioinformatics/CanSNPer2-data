@@ -61,17 +61,34 @@ the SNP is attached to only one of them. `validate.py` rejects such a file, and
 One line per canSNP, with this header:
 
 ```
-snp_id	strain	reference	genome	position	derived_base	ancestral_base
+snp_id	strain	reference	genome	sequence	sequence_position	derived_base	ancestral_base
 ```
 
 `snp_id` must name a node in the tree file, and every node in the tree file must
 have exactly one SNP here. `genome` must name a row in the references file.
-`position` is a positive integer, one-based, on that reference genome. For a
-reference genome of several chromosomes or contigs, positions count over the
-sequences concatenated in the order of its assembly file.
+`sequence` is the GenBank accession of the reference sequence (chromosome,
+plasmid or contig) that holds the SNP, as it is named in the assembly file of
+that genome, for example `AE008917.1` for chromosome I of Brucella melitensis
+16M. `sequence_position` is a positive integer, one-based, on that sequence.
+Each sequence of a reference genome thus has its own coordinates, and the order
+of the sequences in the assembly file does not matter.
 `derived_base` and `ancestral_base` are single characters from A, C, G and T and
 must differ from each other. No two SNPs may annotate the same position on the
-same reference genome.
+same sequence of a reference genome.
+
+Before CanSNPer2 2.3.0 the file had a single `position` column, counted along
+the sequences of the reference genome joined in the order of its assembly file.
+CanSNPer2 2.3.0 and `validate.py` refuse that format. A file in it can be
+converted with
+
+```
+CanSNPer2-database --convert --annotation <name>_snp.txt \
+    --references <name>_references.txt --refdir <folder> -o <outdir>
+```
+
+which checks each SNP against its reference genome (`<folder>/<genome>.fna`,
+downloaded from NCBI when missing) and writes the converted file to `<outdir>`.
+The same command converts a `<name>_canSNPs.txt` file.
 
 A SNP whose bases are published in another form can be listed under
 `known_issues` in `schemes.toml`, which reports it as a warning instead of an
@@ -88,9 +105,12 @@ genome	strain	genbank_id	refseq_id	assembly_name
 `genome` is the short name used in the SNP file and may not contain an
 underscore, because CanSNPer2 recovers the reference name from alignment file
 names by splitting on the first one. `genbank_id` and `refseq_id`
-must be well formed accessions, `GCA_000000000.0` and `GCF_000000000.0`:
-`CanSNPer2-download` builds NCBI paths from the digit triplets, so a malformed
-accession is only noticed when a download fails.
+must be well formed accessions: `genbank_id` of the form `GCA_000000000.0`
+(`GCF_000000000.0` is accepted as well, as CanSNPer2 does) and `refseq_id` of
+the form `GCF_000000000.0`. `CanSNPer2-download` builds NCBI paths from the
+digit triplets, so a malformed accession is only noticed when a download fails.
+Two rows may not give the same `genbank_id`: CanSNPer2 downloads one reference
+per row and refuses a references file that repeats one.
 
 ## `<name>_genomes.txt`
 
@@ -127,13 +147,13 @@ Optional. More than one canSNP per node, ranked within the node, for assays
 that type several canSNPs of a branch. One line per canSNP, with this header:
 
 ```
-node	rank	genome	position	derived_base	ancestral_base	score
+node	rank	genome	sequence	sequence_position	derived_base	ancestral_base	score
 ```
 
 `node` names a node in the tree file, and `rank` counts from 1 within the node,
-in order of the file. `genome`, `position`, `derived_base` and `ancestral_base`
-follow the SNP file: positions are 1-based over the concatenated reference
-genome, and a position marks one node only. `score` is the total the SNP
+in order of the file. `genome`, `sequence`, `sequence_position`, `derived_base`
+and `ancestral_base` follow the SNP file: a position is 1-based on the named
+reference sequence, and a position marks one node only. `score` is the total the SNP
 scored when the scheme was made, which ranks it and is not comparable between
 schemes scored with different settings.
 

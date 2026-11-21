@@ -15,7 +15,11 @@ jobs:
   schemes:
     runs-on: ubuntu-latest
     steps:
+      # The full history: each database records the last commit that changed
+      # its sources, which build.py looks up to compare it with a rebuild.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:

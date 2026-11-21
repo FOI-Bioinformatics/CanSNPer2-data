@@ -9,7 +9,7 @@
 | Nodes | 13 |
 | canSNPs per node | 1 |
 | Origin | published (Van Ert et al. 2007) |
-| Last changed | 2023-03-13 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -84,3 +84,6 @@ typing of these genomes.
 - 2026-11-19: next free node names moved here from the repository README.
 - 2026-11-19: typed against the GTDB r232 species representatives of the genus
   and the whole species cluster; the result is under Validation.
+- 2026-11-21: SNP positions given per reference sequence (AE016879.1)
+  with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
+  2.3.0.

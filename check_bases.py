@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Check the SNP bases of the schemes against their reference genomes.
 
-A SNP position counts along the sequences of its reference genome (chromosomes,
-plasmids) joined end to end in the order of the NCBI assembly file, which is the
-file CanSNPer2-download fetches. validate.py checks the scheme files without the
-genomes; this script downloads the GenBank assembly of every reference genome
-(once, into a cache folder) and checks that the base of the genome at each SNP
-position is the derived or the ancestral base of that SNP, in <name>_snp.txt and
-in <name>_canSNPs.txt. Positions counted over the sequences in another order, or
-on another genome, fail at about half of the SNPs.
+A SNP is placed by the name of a sequence of its reference genome (a chromosome
+or plasmid, named by its GenBank accession) and a 1-based position on that
+sequence. validate.py checks the scheme files without the genomes; this script
+downloads the GenBank assembly of every reference genome (once, into a cache
+folder) and checks that the base of the named sequence at each SNP position is
+the derived or the ancestral base of that SNP, in <name>_snp.txt and in
+<name>_canSNPs.txt. The order of the sequences in the assembly file does not
+matter. A sequence name that is not in the assembly, or positions on another
+genome, are reported as problems.
 
     python check_bases.py
     python check_bases.py --scheme brucella_classical --cache ~/.cache/cansnper2-data
@@ -84,20 +85,22 @@ def read_fasta(path):
 
 
 def scheme_snps(scheme):
-    """The SNPs of a scheme as (file, line, label, snp_id, genome, position, derived,
-    ancestral), from the SNP file and the ranked canSNPs when the scheme has them."""
+    """The SNPs of a scheme as (file, line, label, snp_id, genome, sequence, position,
+    derived, ancestral), from the SNP file and the ranked canSNPs when the scheme has them."""
     snps = []
     _raw, _lines, rows = validate.read_rows(scheme.path(scheme.snp))
     for number, row in enumerate(rows[1:], start=2):
         if len(row) == len(validate.SNP_HEADER):
-            snp_id, _strain, _reference, genome, position, derived, ancestral = row
-            snps.append((scheme.snp, number, f"SNP {snp_id}", snp_id, genome, position, derived, ancestral))
+            snp_id, _strain, _reference, genome, sequence, position, derived, ancestral = row
+            snps.append((scheme.snp, number, f"SNP {snp_id}", snp_id, genome, sequence,
+                         position, derived, ancestral))
     if scheme.snp_set and os.path.exists(scheme.path(scheme.snp_set)):
         _raw, _lines, rows = validate.read_rows(scheme.path(scheme.snp_set))
         for number, row in enumerate(rows[1:], start=2):
             if len(row) == len(validate.SNP_SET_HEADER):
-                node, rank, genome, position, derived, ancestral, _score = row
-                snps.append((scheme.snp_set, number, f"SNP {node} (rank {rank})", node, genome, position, derived, ancestral))
+                node, rank, genome, sequence, position, derived, ancestral, _score = row
+                snps.append((scheme.snp_set, number, f"SNP {node} (rank {rank})", node, genome,
+                             sequence, position, derived, ancestral))
     return snps
 
 
@@ -126,31 +129,29 @@ def check_scheme(scheme, cache, retrieve=download):
             problems.append(f"{scheme.references}: could not get {genbank} ({assembly}) "
                             f"for genome '{genome}': {error}")
             continue
-        joined = "".join(seq for _name, seq in records)
-        starts, start = [], 0
-        for name, seq in records:
-            starts.append((name, start, start + len(seq)))
-            start += len(seq)
+        sequences = dict(records)
         on_sequence = {name: 0 for name, _seq in records}
 
-        for relative, number, label, snp_id, _genome, position, derived, ancestral in by_genome[genome]:
+        for relative, number, label, snp_id, _genome, sequence, position, derived, ancestral in by_genome[genome]:
             if not validate.POSITION_RE.match(position) or int(position) < 1:
                 continue  # validate.py reports it
             pos = int(position)
             report_to = warnings if snp_id in scheme.known_issues else problems
-            where = f"{relative}:{number}: {label} at position {pos} of {genome}"
-            if pos > len(joined):
-                report_to.append(f"{where}: the reference {genbank} has {len(joined)} bases")
+            where = f"{relative}:{number}: {label} at {sequence} position {pos} of {genome}"
+            if sequence not in sequences:
+                report_to.append(f"{where}: the reference {genbank} has no sequence "
+                                 f"'{sequence}'; its sequences are "
+                                 f"{', '.join(name for name, _seq in records)}")
                 continue
-            for name, first, last in starts:
-                if first < pos <= last:
-                    on_sequence[name] += 1
-                    sequence, local = name, pos - first
-            base = joined[pos - 1]
+            if pos > len(sequences[sequence]):
+                report_to.append(f"{where}: the sequence {sequence} of {genbank} has "
+                                 f"{len(sequences[sequence])} bases")
+                continue
+            on_sequence[sequence] += 1
+            base = sequences[sequence][pos - 1]
             if base not in (derived, ancestral):
-                report_to.append(f"{where}: the reference {genbank} has {base} ({sequence} "
-                                 f"position {local}), neither the derived ({derived}) nor "
-                                 f"the ancestral ({ancestral}) base")
+                report_to.append(f"{where}: the reference {genbank} has {base}, neither "
+                                 f"the derived ({derived}) nor the ancestral ({ancestral}) base")
         listed = ", ".join(f"{name} {len(seq)} bp ({on_sequence[name]} SNP"
                            f"{'s' if on_sequence[name] != 1 else ''})" for name, seq in records)
         report.append(f"{genome}: {listed}")
