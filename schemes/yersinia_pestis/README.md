@@ -9,7 +9,7 @@
 | Nodes | 97 |
 | canSNPs per node | 1 |
 | Origin | published (Morelli et al. 2010) |
-| Last changed | 2026-11-20 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -110,3 +110,6 @@ receive no call. The canSNP of the root node is therefore not derived in every
   and the whole species cluster; the result is under Validation.
 - 2026-11-20: removed `1.ANT2.b`, `1.ORI2.c` and `1.ORI3.b`, published without
   a derived base; `1.ORI2.d` now descends from `1.ORI2.b`.
+- 2026-11-21: SNP positions given per reference sequence (AL590842.1)
+  with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
+  2.3.0.

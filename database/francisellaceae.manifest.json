@@ -6,14 +6,14 @@
     "rank": 2,
     "tree": 68
   },
+  "database_sha256": "89849c06feb60ff1791bc027e9fc17e7df80a0333f0904698081374347ff007f",
   "kind": "taxonomy",
   "scheme": "francisellaceae",
-  "source_commit": "389795ba62152e09cfc218ca0728391a462eee4c",
+  "source_commit": "fa8f4e7e6d02cf71d8a0e77e80b52a8c07d1d455",
   "sources": {
     "schemes/francisellaceae/francisellaceae_genomes.txt": "1d75dd3adc6bf56fadd90bee05be4fb02adb426bad08c724b8ceadf15c325b6d",
     "schemes/francisellaceae/francisellaceae_tree.txt": "bf3c9086a65049bb66aa1763afc879950ef0512dac1c18f5950287b0fbc7ffde"
   },
-  "uncommitted_sources": [],
   "versions": {
     "cansnper2": "2.1.0",
     "flextaxd": "0.4.4.dev0",

@@ -15,7 +15,11 @@ jobs:
   schemes:
     runs-on: ubuntu-latest
     steps:
+      # The full history: each database records the last commit that changed
+      # its sources, which build.py looks up to compare it with a rebuild.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -32,6 +36,16 @@ jobs:
 
       - name: Validate scheme sources
         run: python validate.py
+
+      # The genomes are fetched from NCBI once per change of a references file.
+      - name: Cache the reference genomes
+        uses: actions/cache@v4
+        with:
+          path: .references
+          key: references-${{ hashFiles('schemes/**/*_references.txt') }}
+
+      - name: Check the SNP bases against the reference genomes
+        run: python check_bases.py
 
       # master holds verified schemes only, so a scheme whose README gives its
       # Status as draft fails on a pull request into master or a push to it.

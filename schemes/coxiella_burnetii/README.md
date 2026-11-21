@@ -9,7 +9,7 @@
 | Nodes | 11 |
 | canSNPs per node | 1 |
 | Origin | published (Karlsson et al. 2014), ported from CanSNPer 1.0.10 |
-| Last changed | 2026-11-19 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -108,3 +108,6 @@ typing run agreed with those assignments.
 - 2026-11-19: typed against all 300 genomes of the genus in GTDB r232; Status
   set to verified (#26).
 - 2026-11-19: moved to `master` as a verified scheme.
+- 2026-11-21: SNP positions given per reference sequence (AE016828.3)
+  with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
+  2.3.0.

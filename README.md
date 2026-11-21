@@ -28,14 +28,27 @@ Edit the text files under `schemes/<name>/`, then check and rebuild:
 
 ```sh
 python validate.py          # check the scheme files
+python check_bases.py       # check the SNP bases against the reference genomes
 python build.py             # rebuild and compare, changing nothing
 python build.py --write     # install the rebuilt databases and manifests
 ```
 
-Commit the changed scheme files together with the database and manifest that
-`--write` produced. Continuous integration runs the first two commands on every
-pull request, so a scheme file that breaks an invariant, or a database that was
-not regenerated after its sources changed, fails the build.
+Commit the changed scheme files before `build.py --write`, which refuses
+uncommitted sources because each database records the commit of its sources.
+Then commit the database and manifest that `--write` produced. Continuous
+integration runs the first three commands on every pull request, so a scheme
+file that breaks an invariant, a SNP whose reference genome has neither its
+derived nor its ancestral base, or a database that was not regenerated after its
+sources changed, fails the build.
+
+`check_bases.py` downloads the GenBank assembly of every reference genome from
+NCBI into `.references/` (once; `--cache` names another folder) and checks the
+base at every position of `<name>_snp.txt` and `<name>_canSNPs.txt`. Each SNP
+names a sequence of the assembly (a chromosome or plasmid, by its GenBank
+accession) and a position on it, so the order of the sequences in the assembly
+file does not matter. A sequence that the assembly lacks is reported as a
+problem. It prints the sequences of each reference with the number of SNPs on
+each.
 
 Each scheme folder has a `README.md` in a fixed layout, with a Status of `draft`
 or `verified`; `schemes/TEMPLATE.md` is a copy to start from. When a scheme
@@ -44,17 +57,24 @@ requests into `master`, continuous integration also runs
 `python validate.py --require-verified`, which fails on a draft scheme.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2
-2.2.0 or later, installed from the `master` branch. Building a taxonomy scheme
-also needs flextaxd; SNP schemes do not:
+2.3.0 or later. Building a taxonomy scheme also needs flextaxd; SNP schemes do not:
 
 ```sh
-pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
+pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git
 ```
+
+Since CanSNPer2 2.3.0 the scheme files and the databases give each SNP as a
+reference sequence (the GenBank accession of a chromosome or plasmid) and a
+1-based position on that sequence. Earlier versions counted positions along the
+reference sequences joined in the order of the assembly file. CanSNPer2 2.3.0
+refuses scheme files and databases in that format; `CanSNPer2-database
+--convert` converts them (see `schemes/README.md`). The databases built in the
+earlier format, which CanSNPer2 2.2 reads, are kept under `database/archive/`.
 
 No aligner is needed to build a database. Typing a sample needs one of the
 aligners CanSNPer2 supports: progressiveMauve, minimap2 or MUMmer4.
 
-The two scripts have their own tests, which CI also runs:
+The scripts have their own tests, which CI also runs:
 
 ```sh
 python -m pytest tests

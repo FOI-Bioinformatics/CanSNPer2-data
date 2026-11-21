@@ -9,7 +9,7 @@
 | Nodes | 31 |
 | canSNPs per node | up to 5 |
 | Origin | made with CanSNPCreator 0.5.1 |
-| Last changed | 2026-11-19 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -33,6 +33,13 @@ collapsed. The scheme keeps the 31 nodes that have a canSNP
 `brucella_suis_canSNPs.txt`. The `reference` column of the SNP file is `NA`, as
 the canSNPs are not taken from a publication.
 
+The positions in `brucella_suis_snp.txt` and `brucella_suis_canSNPs.txt` are
+given on each reference sequence of *B. suis* 1330: 29 of the 31 scheme SNPs
+lie on chromosome I (AE014291.4, 2,107,794 bp) and 2 on chromosome II
+(AE014292.2, 1,207,381 bp). Until 2026-11-21 the positions were counted along
+the concatenated genome, chromosome I followed by chromosome II, as CanSNPer2
+before 2.3.0 required.
+
 ## Validation
 
 With CanSNPer2 2.2.2 (`--aligner minimap2`, default settings), the 155 genomes
@@ -41,7 +48,10 @@ typing report gives them. Against a tree over all genomes, that node agreed
 with the genome's place in the tree for 65.8% of them, was deeper for 21.9% and
 higher for 11.6%. Of the 40 representatives, 36 were called at their node and
 three, at a node without canSNPs that was removed, at its parent. The scheme
-has not been checked against published *B. suis* typing.
+has not been checked against published *B. suis* typing. The results above
+were obtained with CanSNPer2 2.2.2, before the positions were converted to
+positions per reference sequence. Typing with CanSNPer2 2.3.0 after the
+conversion gave the same calls with all three aligners.
 
 ## Known issues
 
@@ -59,3 +69,6 @@ https://github.com/FOI-Bioinformatics/CanSNPCreator
 - 2026-11-18: added (#14).
 - 2026-11-19: files moved to `schemes/brucella_suis/`; README in the standard
   layout.
+- 2026-11-21: SNP positions given per reference sequence (AE014291.4 and
+  AE014292.2) with `CanSNPer2-database --convert`; database rebuilt with
+  CanSNPer2 2.3.0.

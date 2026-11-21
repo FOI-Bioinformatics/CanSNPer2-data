@@ -1,24 +1,26 @@
 {
-  "built": "2026-11-19",
+  "built": "2026-11-21",
   "counts": {
     "genomes": 0,
     "nodes": 24,
     "rank": 2,
+    "scheme_info": 8,
     "snp_annotation": 24,
     "snp_references": 1,
     "tree": 24
   },
+  "database_sha256": "9f5a591ac317caac5bf8d142a550c1c6247ed56d9e4af7666cff1cf5b81365ce",
+  "format": "2.3",
   "kind": "snp",
   "scheme": "brucella_classical",
-  "source_commit": "ef1dc5d9047a9ec7d2d710878927af0568267e74",
+  "source_commit": "5b24118eacb4a79ca9538ac015fc07537f8c85f8",
   "sources": {
     "schemes/brucella_classical/brucella_classical_references.txt": "104094cfdaae2fcbcf64dbd6c4fadf33f75f03239c09e77bb253fb88076359c4",
-    "schemes/brucella_classical/brucella_classical_snp.txt": "953b40ae619b0dc7af5af20296f8a768a28ae513f86edfebaac19d48f45ba302",
+    "schemes/brucella_classical/brucella_classical_snp.txt": "2dd736a21673c54b841ea14d3a2de751e1df765430373d968c084ca8f156a9eb",
     "schemes/brucella_classical/brucella_classical_tree.txt": "4de795f947287728b605167a82b846a6c0f995efe5e9b6480b2246ce34bdbfd3"
   },
-  "uncommitted_sources": [],
   "versions": {
-    "cansnper2": "2.2.2",
-    "python": "3.13.18"
+    "cansnper2": "2.3.0",
+    "python": "3.11.14"
   }
 }
