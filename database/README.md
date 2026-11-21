@@ -43,11 +43,21 @@ out of date, that is updated.
 Each database built for CanSNPer2 2.3.0 holds a `scheme_info` table, which
 `CanSNPer2-database --database <file> --info` prints: the scheme name, its
 status from the Status row of the scheme README, the source
-(`FOI-Bioinformatics/CanSNPer2-data`), the branch it was built on, the source
-commit as in the manifest, the known issues listed in `schemes.toml`, the
-database format, and the CanSNPer2 version and date of the build. When
-`build.py` compares a rebuild with the committed database, the build date, the
-CanSNPer2 version and the branch are left out; the other keys must match.
+(`FOI-Bioinformatics/CanSNPer2-data`), the commit, the known issues listed in
+`schemes.toml`, the database format, and the CanSNPer2 version and date of the
+build. No `ref` is written, since the branch a database is built on goes stale
+once it is merged.
+
+`commit` is the same as `source_commit` in the manifest: the last commit that
+changed the tree, SNP and references files of the scheme. It does not cover the
+README or `schemes.toml`, so that an edit to the text of a README does not
+require a rebuild; the status and known issues taken from them are compared by
+value instead. `CanSNPer2-download` records instead the commit the requested
+branch pointed to; both identify the same scheme files.
+
+When `build.py` compares a rebuild with the committed database, the build date
+and the CanSNPer2 version are left out; the other keys must match. `--write`
+refuses a scheme for which no commit is found, such as outside a git checkout.
 
 ## Archive
 

@@ -55,11 +55,10 @@ MINIMUM_CANSNPER2 = (2, 3, 0)
 # The repository recorded as the source of every database built here.
 DATA_REPOSITORY = "FOI-Bioinformatics/CanSNPer2-data"
 
-# scheme_info keys that describe the build rather than the scheme: the date,
-# the CanSNPer2 version, which the manifest records as well, and the branch,
-# which differs between a local checkout and continuous integration. They are
-# left out of the comparison with the committed database.
-BUILD_ONLY_KEYS = ("built", "built_with", "ref")
+# scheme_info keys that describe the build rather than the scheme: the date and
+# the CanSNPer2 version, which the manifest records as well. They are left out
+# of the comparison with the committed database.
+BUILD_ONLY_KEYS = ("built", "built_with")
 
 
 def database_path(scheme):
@@ -113,7 +112,11 @@ def scheme_source():
 
 
 def scheme_info(scheme):
-    """The scheme_info keys of a database built from this scheme."""
+    """The scheme_info keys of a database built from this scheme.
+
+    ref is not written: the branch a database is built on goes stale once it is
+    merged, and commit already identifies the sources.
+    """
     source = scheme_source()
     commit = source_commit(scheme) or "unknown"
     if commit != "unknown" and dirty_sources(scheme):
@@ -123,7 +126,6 @@ def scheme_info(scheme):
         "scheme": scheme.name,
         "status": source.status(scheme.readme) or "unknown",
         "source": DATA_REPOSITORY,
-        "ref": current_ref(),
         "commit": commit,
         "known_issues": source.known_issues(scheme.name),
     }
@@ -452,12 +454,6 @@ def source_commit(scheme, repo=REPO):
     return commit or None
 
 
-def current_ref(repo=REPO):
-    """The branch that is checked out, or unknown on a detached HEAD."""
-    branch = (git(repo, "rev-parse", "--abbrev-ref", "HEAD") or "").strip()
-    return branch if branch and branch != "HEAD" else "unknown"
-
-
 def recorded_inputs(scheme):
     """Every file whose content the database records: the source files, and
     the README and schemes.toml that give its status and known issues."""
@@ -632,6 +628,11 @@ def process(scheme, write):
             print(f"    FAIL {listed} {'has' if len(dirty) == 1 else 'have'} "
                   f"uncommitted changes; commit the sources first, then run "
                   f"build.py --write")
+            return False
+        if source_commit(scheme) is None:
+            print(f"    FAIL no commit of the source files of {scheme.name} was "
+                  f"found; run build.py --write in a git checkout in which they "
+                  f"are committed")
             return False
 
     with tempfile.TemporaryDirectory(prefix=f"cansnper2-{scheme.name}-") as workdir:

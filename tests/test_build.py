@@ -154,7 +154,6 @@ def clean_git(monkeypatch):
     """Give every scheme a committed source state without a git checkout."""
     monkeypatch.setattr(build, "source_commit", lambda scheme: "a" * 40)
     monkeypatch.setattr(build, "dirty_sources", lambda scheme: [])
-    monkeypatch.setattr(build, "current_ref", lambda: "test_branch")
 
 
 def test_the_database_records_the_scheme(built, clean_git):
@@ -163,7 +162,8 @@ def test_the_database_records_the_scheme(built, clean_git):
     assert info["scheme"] == "test"
     assert info["status"] == "verified"
     assert info["source"] == "FOI-Bioinformatics/CanSNPer2-data"
-    assert info["ref"] == "test_branch"
+    # the branch of a checkout goes stale once it is merged; commit names the sources
+    assert "ref" not in info
     assert info["commit"] == "a" * 40
     assert info["format"] == "2.3"
     assert "known_issues" not in info or info["known_issues"] == ""
@@ -193,7 +193,6 @@ def test_the_comparison_ignores_the_build_date_but_not_the_status(built, clean_g
     _scheme, target, _warnings = built()
     for key, value, differs in [("built", "2000-01-01", False),
                                 ("built_with", "2.3.1", False),
-                                ("ref", "master", False),
                                 ("status", "draft", True),
                                 ("commit", "b" * 40, True),
                                 ("known_issues", "A", True),
@@ -258,21 +257,19 @@ def test_the_source_commit_is_the_last_commit_of_the_scheme_files(checkout):
     assert build.source_commit(scheme, repo=str(repo)) == sources
 
 
-def test_a_changed_source_file_is_uncommitted(checkout):
+def test_a_changed_snp_file_is_uncommitted(checkout):
     scheme, repo = checkout
     assert build.dirty_sources(scheme, repo=str(repo)) == []
     with open(scheme.path(scheme.snp), "a") as handle:
-        handle.write("")
+        handle.write("D\ts\tTest2026\tG\tseq2\t250\tA\tC\n")
+    assert build.dirty_sources(scheme, repo=str(repo)) == ["test_snp.txt"]
+
+
+def test_a_changed_readme_is_uncommitted(checkout):
+    scheme, repo = checkout
     with open(scheme.path(scheme.readme), "a") as handle:
         handle.write("More text.\n")
     assert build.dirty_sources(scheme, repo=str(repo)) == ["README.md"]
-
-
-def test_the_ref_is_the_branch_or_unknown_on_a_detached_head(checkout):
-    _scheme, repo = checkout
-    assert build.current_ref(repo=str(repo)) == "main"
-    git(repo, "checkout", "-q", "--detach")
-    assert build.current_ref(repo=str(repo)) == "unknown"
 
 
 # -- manifests ---------------------------------------------------------------
@@ -367,6 +364,18 @@ def test_write_refuses_uncommitted_sources(make_scheme, clean_git, monkeypatch, 
     assert not os.path.exists(build.manifest_path(scheme))
 
 
+def test_write_refuses_sources_without_a_commit(make_scheme, clean_git, monkeypatch, capsys):
+    # outside a git checkout, or for files never committed, no commit names the sources
+    scheme = make_scheme()
+    monkeypatch.setattr(build, "source_commit", lambda scheme: None)
+    monkeypatch.setattr(build, "discover", lambda only: [scheme])
+    monkeypatch.setattr("sys.argv", ["build.py", "--write"])
+    assert build.main() == 1
+    out = capsys.readouterr().out
+    assert ("FAIL no commit of the source files of test was found; run build.py "
+            "--write in a git checkout in which they are committed") in out
+    assert not os.path.exists(build.database_path(scheme))
+    assert not os.path.exists(build.manifest_path(scheme))
 # -- versions ----------------------------------------------------------------
 
 def test_version_tuple():
