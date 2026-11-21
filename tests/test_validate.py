@@ -338,3 +338,40 @@ def test_a_taxonomy_scheme_defaults_to_its_folder():
     assert scheme.tree == os.path.join("schemes", "tax", "tax_tree.txt")
     assert scheme.genomes == os.path.join("schemes", "tax", "tax_genomes.txt")
     assert scheme.readme == os.path.join("schemes", "tax", "README.md")
+
+
+# -- accessions of the reference genomes --------------------------------------
+
+def test_a_genbank_id_repeated_on_two_rows_is_a_problem(make_scheme):
+    references = ("genome\tstrain\tgenbank_id\trefseq_id\tassembly_name\n"
+                  "G\tstrain G\tGCA_000000001.1\tGCF_000000001.1\tASM1v1\n"
+                  "H\tstrain H\tGCA_000000001.1\tGCF_000000002.1\tASM2v1\n")
+    scheme = make_scheme(references=references)
+    problems = problems_of(scheme)
+    relative = scheme.references
+    assert (f"{relative}:3: genbank_id 'GCA_000000001.1' of genome 'H' repeats "
+            f"the one of genome 'G' at {relative}:2") in problems
+
+
+@pytest.mark.parametrize("accession", ["GCA_000000001.1", "GCF_000000001.1",
+                                       "GCA_000000001.123"])
+def test_a_genbank_id_follows_the_pattern_of_cansnper2(make_scheme, accession):
+    references = ("genome\tstrain\tgenbank_id\trefseq_id\tassembly_name\n"
+                  f"G\tstrain G\t{accession}\tGCF_000000001.1\tASM1v1\n")
+    problems = problems_of(make_scheme(references=references))
+    assert not any(f"genbank_id '{accession}'" in p for p in problems), problems
+
+
+@pytest.mark.parametrize("accession", ["", "GCA_00000001.1", "GCA_000000001",
+                                       "GCX_000000001.1", "GCA_000000001.\u0661"])
+def test_a_malformed_genbank_id_is_a_problem(make_scheme, accession):
+    references = ("genome\tstrain\tgenbank_id\trefseq_id\tassembly_name\n"
+                  f"G\tstrain G\t{accession}\tGCF_000000001.1\tASM1v1\n")
+    problems = problems_of(make_scheme(references=references))
+    assert any(f"genbank_id '{accession}' is not of the form" in p
+               for p in problems), problems
+
+
+def test_the_genbank_id_pattern_is_the_one_cansnper2_uses():
+    source_check = pytest.importorskip("CanSNPer2.modules.SourceCheck")
+    assert validate.GENBANK_RE.pattern == source_check.ACCESSION_RE.pattern

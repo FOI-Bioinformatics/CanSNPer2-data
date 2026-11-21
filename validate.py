@@ -31,8 +31,11 @@ SNP_HEADER = ["snp_id", "strain", "reference", "genome", "sequence",
 REFERENCE_HEADER = ["genome", "strain", "genbank_id", "refseq_id", "assembly_name"]
 
 BASES = set("ACGT")
-GENBANK_RE = re.compile(r"^GCA_\d{9}\.\d{1,2}$")
-REFSEQ_RE = re.compile(r"^GCF_\d{9}\.\d{1,2}$")
+# The genbank_id pattern is the one CanSNPer2 checks a references file against
+# (ACCESSION_RE in CanSNPer2/modules/SourceCheck.py), so a scheme that passes
+# here is not refused when it is built. ASCII digits only, see POSITION_RE.
+GENBANK_RE = re.compile(r"^GC[AF]_[0-9]{9}\.[0-9]+$")
+REFSEQ_RE = re.compile(r"^GCF_[0-9]{9}\.[0-9]+$")
 # ASCII digits only: str.isdigit() also accepts characters such as superscripts,
 # which int() then rejects.
 POSITION_RE = re.compile(r"^[0-9]+$")
@@ -272,6 +275,7 @@ def check_references(problems, scheme):
         return set()
 
     genomes = set()
+    genbank_rows = {}
     for number, row in enumerate(rows[1:], start=2):
         if len(row) != len(REFERENCE_HEADER):
             problems.append(f"{relative}:{number}: expected "
@@ -287,7 +291,16 @@ def check_references(problems, scheme):
                             f"reference name")
         if not GENBANK_RE.match(genbank):
             problems.append(f"{relative}:{number}: genbank_id '{genbank}' is not of "
-                            f"the form GCA_000000000.0")
+                            f"the form GCA_000000000.0 or GCF_000000000.0")
+        elif genbank in genbank_rows:
+            # CanSNPer2 refuses a references file that gives two genomes the
+            # same assembly, since it downloads one reference per accession.
+            first_genome, first_number = genbank_rows[genbank]
+            problems.append(f"{relative}:{number}: genbank_id '{genbank}' of genome "
+                            f"'{genome}' repeats the one of genome '{first_genome}' "
+                            f"at {relative}:{first_number}")
+        else:
+            genbank_rows[genbank] = (genome, number)
         if not REFSEQ_RE.match(refseq):
             problems.append(f"{relative}:{number}: refseq_id '{refseq}' is not of "
                             f"the form GCF_000000000.0")
@@ -531,7 +544,7 @@ README_FACTS = ["Scheme", "Status", "Organisms", "Reference genome", "Nodes",
 README_SECTIONS = ["Description", "Origin", "Validation", "Known issues",
                    "References", "Changes"]
 STATUSES = ("draft", "verified")
-ACCESSION_RE = re.compile(r"GC[AF]_\d{9}\.\d{1,2}")
+ACCESSION_RE = re.compile(r"GC[AF]_[0-9]{9}\.[0-9]+")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 

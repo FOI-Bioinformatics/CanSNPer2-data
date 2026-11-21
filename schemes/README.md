@@ -105,9 +105,12 @@ genome	strain	genbank_id	refseq_id	assembly_name
 `genome` is the short name used in the SNP file and may not contain an
 underscore, because CanSNPer2 recovers the reference name from alignment file
 names by splitting on the first one. `genbank_id` and `refseq_id`
-must be well formed accessions, `GCA_000000000.0` and `GCF_000000000.0`:
-`CanSNPer2-download` builds NCBI paths from the digit triplets, so a malformed
-accession is only noticed when a download fails.
+must be well formed accessions: `genbank_id` of the form `GCA_000000000.0`
+(`GCF_000000000.0` is accepted as well, as CanSNPer2 does) and `refseq_id` of
+the form `GCF_000000000.0`. `CanSNPer2-download` builds NCBI paths from the
+digit triplets, so a malformed accession is only noticed when a download fails.
+Two rows may not give the same `genbank_id`: CanSNPer2 downloads one reference
+per row and refuses a references file that repeats one.
 
 ## `<name>_genomes.txt`
 

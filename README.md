@@ -33,9 +33,10 @@ python build.py             # rebuild and compare, changing nothing
 python build.py --write     # install the rebuilt databases and manifests
 ```
 
-Commit the changed scheme files together with the database and manifest that
-`--write` produced. Continuous integration runs the first three commands on every
-pull request, so a scheme file that breaks an invariant, a SNP whose reference
+Commit the changed scheme files before `build.py --write`, which refuses
+uncommitted sources because each database records the commit of its sources.
+Then commit the database and manifest that `--write` produced. Continuous
+integration runs the first three commands on every pull request, so a scheme file that breaks an invariant, a SNP whose reference
 genome has neither its derived nor its ancestral base, or a database that was not
 regenerated after its sources changed, fails the build.
 
