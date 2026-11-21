@@ -24,6 +24,16 @@ The canSNPs and their positions on the CO92 genome are taken from Morelli et
 al. (2010). Of the 100 published canSNPs, 97 are kept; the three without a
 derived base were removed on 2026-11-20 (see Known issues).
 
+The genomes file `yersinia_pestis_genomes.txt` lists the genomes of Morelli et
+al. (2010, Supplementary Table 1), each by its current assembly accession and
+at the node that table gives it. Fifteen *Y. pestis* genomes are listed as
+`representative` and *Y. pseudotuberculosis* IP32953 as the `outgroup`. Two of
+the table's genomes are not listed: IP674 has no assembly, and FV-1 was left
+out of the genome comparison the canSNPs came from, for suspected sequencing
+errors. The node of `91001` is `0.PE4.c` as the table
+gives it, although CanSNPer2 does not call it there because `91001` is
+ancestral at the root canSNP (see Known issues).
+
 ## Validation
 
 `validate.py` checks the files, and `build.py` rebuilds the database and
@@ -98,7 +108,7 @@ receive no call. The canSNP of the root node is therefore not derived in every
 
 - Morelli G, Song Y, Mazzoni CJ, et al. *Yersinia pestis* genome sequencing
   identifies patterns of global phylogenetic diversity. Nat Genet.
-  2010;42(12):1140-1143. doi:10.1038/ng.705
+  2010;42(12):1140-1143. https://doi.org/10.1038/ng.705
 
 ## Changes
 
@@ -113,3 +123,5 @@ receive no call. The canSNP of the root node is therefore not derived in every
 - 2026-11-21: SNP positions given per reference sequence (AL590842.1)
   with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
   2.3.0.
+- 2026-11-21: added `yersinia_pestis_genomes.txt`, the genomes of Morelli et
+  al. (2010, Supplementary Table 1), with IP32953 as the outgroup.

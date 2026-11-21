@@ -1,0 +1,8 @@
+genome	node	role
+GCF_000008445.1	A.Br.001	representative
+GCF_000167335.1	A.Br.003	representative
+GCF_000167275.1	A.Br.007	representative
+GCF_000167315.1	A.Br.009	representative
+GCF_000167295.1	B.Br.001	representative
+GCF_000167235.1	B.Br.004	representative
+GCF_000167255.1		outgroup

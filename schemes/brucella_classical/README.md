@@ -43,6 +43,16 @@ genomes in windows of 4 bp around each published position. Each Foster et al.
 used. The two branch-J assays of that paper point at the same site,
 `10621J`. The Foster et al. (2008) positions match CanSNPer 1 exactly.
 
+The genomes file `brucella_classical_genomes.txt` lists, as `representative`,
+the six genomes the canSNPs were discovered from, each at its deepest node.
+Foster et al. (2008) compared gene fragments in silico against six whole
+genomes: *B. melitensis* 16M (`8872G`), *B. abortus* 2308 (`2366A`),
+*B. abortus* 9-941 (`3740D`), *B. suis* 1330 (`8306I`), *B. ovis* 63/290
+(`cysW_234`) and *B. canis* RM6/66 (`omp25_256`). Foster et al. (2012)
+discovered its 1,000 microarray SNPs from four of these (2308, 9-941, 16M and
+1330). All six have a current assembly and are listed. The scheme lists no
+outgroup; the root canSNP is from CanSNPer 1 without a published polarity.
+
 ## Validation
 
 `validate.py` checks the files, and every derived and ancestral pair was
@@ -167,13 +177,13 @@ these genomes below species level.
 
 - Foster2008: Foster JT, Okinaka RT, Svensson R, et al. Real-time PCR assays
   of single-nucleotide polymorphisms defining the major *Brucella* clades. J
-  Clin Microbiol. 2008;46(1):296-301. doi:10.1128/JCM.01496-07
+  Clin Microbiol. 2008;46(1):296-301. https://doi.org/10.1128/JCM.01496-07
 - Foster2012: Foster JT, Price LB, Beckstrom-Sternberg SM, et al. Genotyping
   of *Brucella* species using clade specific SNPs. BMC Microbiol.
-  2012;12:110. doi:10.1186/1471-2180-12-110
+  2012;12:110. https://doi.org/10.1186/1471-2180-12-110
 - CanSNPer 1: Lärkeryd A, Myrtennäs K, Karlsson E, et al. CanSNPer: a
   hierarchical genotype classifier of clonal pathogens. Bioinformatics.
-  2014;30(12):1762-1764. doi:10.1093/bioinformatics/btu113
+  2014;30(12):1762-1764. https://doi.org/10.1093/bioinformatics/btu113
 
 ## Changes
 
@@ -187,3 +197,5 @@ these genomes below species level.
 - 2026-11-21: SNP positions given per reference sequence (AE008917.1 and
   AE008918.1) with `CanSNPer2-database --convert`; database rebuilt with
   CanSNPer2 2.3.0.
+- 2026-11-21: added `brucella_classical_genomes.txt`, the six genomes the
+  canSNPs were discovered from (Foster et al. 2008, 2012).

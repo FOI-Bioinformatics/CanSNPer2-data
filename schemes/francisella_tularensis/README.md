@@ -121,9 +121,9 @@ typing of these genomes.
 
 ## Known issues
 
-- The full references for six sources (Busch2016, Dwibedi2017,
-  Karadenizli2015, Kevin2020, Myrtennas2016 and the FOI canSNPs) are not yet
-  recorded below.
+- The full references for three sources (Dwibedi2017, Myrtennas2016 and the
+  FOI canSNPs) are not yet recorded below. Busch2016, Karadenizli2015 and
+  Kevin2020 were added on 2026-11-21 and should be confirmed.
 
 ## References
 
@@ -132,40 +132,51 @@ subject and should be confirmed.
 
 - Birdsell2014: Birdsell DN, Yaglom H, Rodriguez E, et al. *Francisella
   tularensis* subsp. *tularensis* group A.I, United States. Emerg Infect Dis.
-  2014;20(5):861-865. doi:10.3201/eid2005.131559
+  2014;20(5):861-865. https://doi.org/10.3201/eid2005.131559
 - Birdsell2019*: Phylogenetic analysis of *Francisella tularensis* group A.II
   isolates from 5 patients with tularemia, Arizona, USA, 2015-2017. Emerg
-  Infect Dis. 2019;25(5). doi:10.3201/eid2505.180363
+  Infect Dis. 2019;25(5). https://doi.org/10.3201/eid2505.180363
+- Busch2016*: Busch A, Thomas P, Myrtennäs K, et al. High-quality draft genome
+  sequence of *Francisella tularensis* subsp. *holarctica* strain 08T0073
+  isolated from a wild European hare. Genome Announc. 2017;5(12):e01577-16.
+  https://doi.org/10.1128/genomea.01577-16
 - Chanturia2011: Chanturia G, Birdsell DN, Kekelidze M, et al.
   Phylogeography of *Francisella tularensis* subspecies *holarctica* from the
-  country of Georgia. BMC Microbiol. 2011;11:139. doi:10.1186/1471-2180-11-139
+  country of Georgia. BMC Microbiol. 2011;11:139. https://doi.org/10.1186/1471-2180-11-139
 - Dwibedi2016: Dwibedi C, Birdsell D, Lärkeryd A, et al. Long-range dispersal
   moved *Francisella tularensis* into Western Europe from the East. Microb
-  Genom. 2016;2(12):e000100. doi:10.1099/mgen.0.000100
+  Genom. 2016;2(12):e000100. https://doi.org/10.1099/mgen.0.000100
 - Gyuranecz2012: Gyuranecz M, Birdsell DN, Splettstoesser W, et al.
   Phylogeography of *Francisella tularensis* subsp. *holarctica*, Europe.
-  Emerg Infect Dis. 2012;18(2):290-293. doi:10.3201/eid1802.111305
+  Emerg Infect Dis. 2012;18(2):290-293. https://doi.org/10.3201/eid1802.111305
+- Karadenizli2015*: Karadenizli A, Forsman M, Şimşek H, et al. Genomic analyses
+  of *Francisella tularensis* strains confirm disease transmission from
+  drinking water sources, Turkey, 2008, 2009 and 2012. Euro Surveill.
+  2015;20(21):21136. https://doi.org/10.2807/1560-7917.es2015.20.21.21136
 - Karlsson2013: Karlsson E, Svensson K, Lindgren P, et al. The phylogeographic
   pattern of *Francisella tularensis* in Sweden indicates a Scandinavian origin
   of Eurosiberian tularaemia. Environ Microbiol. 2013;15(2):634-645.
-  doi:10.1111/1462-2920.12052
+  https://doi.org/10.1111/1462-2920.12052
+- Kevin2020*: Kevin M, Girault G, Caspar Y, et al. Phylogeography and genetic
+  diversity of *Francisella tularensis* subsp. *holarctica* in France
+  (1947-2018). Front Microbiol. 2020;11:287. https://doi.org/10.3389/fmicb.2020.00287
 - Schulze2016: Schulze C, Heuner K, Myrtennäs K, et al. High and novel genetic
   diversity of *Francisella tularensis* in Germany and indication of
   environmental persistence. Epidemiol Infect. 2016;144(14):3025-3036.
-  doi:10.1017/S0950268816001175
+  https://doi.org/10.1017/S0950268816001175
 - Sissonen2015*: Phylogeography of *Francisella tularensis* subspecies
   *holarctica* in Finland, 1993-2011. Infect Dis (Lond). 2015;47(10):701-706.
-  doi:10.3109/23744235.2015.1049657
+  https://doi.org/10.3109/23744235.2015.1049657
 - Svensson2009: Svensson K, Granberg M, Karlsson L, et al. A real-time PCR
   array for hierarchical identification of *Francisella* isolates. PLoS ONE.
-  2009;4(12):e8360. doi:10.1371/journal.pone.0008360
+  2009;4(12):e8360. https://doi.org/10.1371/journal.pone.0008360
 - Vogler2009: Vogler AJ, Birdsell D, Price LB, et al. Phylogeography of
   *Francisella tularensis*: global expansion of a highly fit clone. J
-  Bacteriol. 2009;191(8):2474-2484. doi:10.1128/JB.01786-08
+  Bacteriol. 2009;191(8):2474-2484. https://doi.org/10.1128/JB.01786-08
 - Wittwer2018: Wittwer M, Altpeter E, Pilo P, et al. Population genomics of
   *Francisella tularensis* subsp. *holarctica* and its implication on the
   eco-epidemiology of tularemia in Switzerland. Front Cell Infect Microbiol.
-  2018;8:89. doi:10.3389/fcimb.2018.00089
+  2018;8:89. https://doi.org/10.3389/fcimb.2018.00089
 
 ## Changes
 
@@ -184,3 +195,4 @@ subject and should be confirmed.
 - 2026-11-21: SNP positions given per reference sequence (the chromosomes of the five reference genomes)
   with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
   2.3.0.
+- 2026-11-21: added the references of Busch2016, Karadenizli2015 and Kevin2020.
