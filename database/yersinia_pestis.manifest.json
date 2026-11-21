@@ -4,21 +4,21 @@
     "genomes": 0,
     "nodes": 97,
     "rank": 2,
+    "scheme_info": 9,
     "snp_annotation": 97,
     "snp_references": 1,
     "tree": 97
   },
+  "database_sha256": "32df6980fa60289c379b1a13fa434c5bb19b120bb25c4baa35ee9c0d0dc89b7c",
+  "format": "2.3",
   "kind": "snp",
   "scheme": "yersinia_pestis",
-  "source_commit": "0bc38ea5df8ec484617c210ca619de9095297e91",
+  "source_commit": "5b24118eacb4a79ca9538ac015fc07537f8c85f8",
   "sources": {
     "schemes/yersinia_pestis/yersinia_pestis_references.txt": "62b94ff7b497c33bf33a576240092d644487580c61330747daebc2ae146eed28",
     "schemes/yersinia_pestis/yersinia_pestis_snp.txt": "1a7c378c977e3ee168ad9ca7fac4c33107637e85d1bea702f4f158ed52a1dab3",
     "schemes/yersinia_pestis/yersinia_pestis_tree.txt": "dfae993493f8727b52461b3f76aee8a3af46a4cee212169db8164633e9880e3e"
   },
-  "uncommitted_sources": [
-    "schemes/yersinia_pestis/yersinia_pestis_snp.txt"
-  ],
   "versions": {
     "cansnper2": "2.3.0",
     "python": "3.11.14"

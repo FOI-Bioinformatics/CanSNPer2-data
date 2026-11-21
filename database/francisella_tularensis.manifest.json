@@ -4,21 +4,21 @@
     "genomes": 0,
     "nodes": 328,
     "rank": 2,
+    "scheme_info": 9,
     "snp_annotation": 328,
     "snp_references": 5,
     "tree": 328
   },
+  "database_sha256": "d24aecda4f2b31ff4521224e8ecd8c4c88d8e2ec90b059d2e051d8b1dceed6b1",
+  "format": "2.3",
   "kind": "snp",
   "scheme": "francisella_tularensis",
-  "source_commit": "0bc38ea5df8ec484617c210ca619de9095297e91",
+  "source_commit": "5b24118eacb4a79ca9538ac015fc07537f8c85f8",
   "sources": {
     "schemes/francisella_tularensis/francisella_tularensis_references.txt": "19e13f84fb7df0db65ed7b518881d27708bcb4665f242fba11472e75d850c7c2",
     "schemes/francisella_tularensis/francisella_tularensis_snp.txt": "3d8356fbf7191a1f66191a40646583838ba92a33ee9aa84877c8ba5ca65d85d8",
     "schemes/francisella_tularensis/francisella_tularensis_tree.txt": "5b59747e468d5fcef452b5f5a3dcdc9d10a4a6ab5ae67bec8ec4f19d4fe72887"
   },
-  "uncommitted_sources": [
-    "schemes/francisella_tularensis/francisella_tularensis_snp.txt"
-  ],
   "versions": {
     "cansnper2": "2.3.0",
     "python": "3.11.14"

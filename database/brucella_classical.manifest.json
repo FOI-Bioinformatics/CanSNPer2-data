@@ -4,21 +4,21 @@
     "genomes": 0,
     "nodes": 24,
     "rank": 2,
+    "scheme_info": 9,
     "snp_annotation": 24,
     "snp_references": 1,
     "tree": 24
   },
+  "database_sha256": "775f7af6a4687161e289a2c262affbf284882372bfcaef8beec52741b3e7cb5b",
+  "format": "2.3",
   "kind": "snp",
   "scheme": "brucella_classical",
-  "source_commit": "0bc38ea5df8ec484617c210ca619de9095297e91",
+  "source_commit": "5b24118eacb4a79ca9538ac015fc07537f8c85f8",
   "sources": {
     "schemes/brucella_classical/brucella_classical_references.txt": "104094cfdaae2fcbcf64dbd6c4fadf33f75f03239c09e77bb253fb88076359c4",
     "schemes/brucella_classical/brucella_classical_snp.txt": "2dd736a21673c54b841ea14d3a2de751e1df765430373d968c084ca8f156a9eb",
     "schemes/brucella_classical/brucella_classical_tree.txt": "4de795f947287728b605167a82b846a6c0f995efe5e9b6480b2246ce34bdbfd3"
   },
-  "uncommitted_sources": [
-    "schemes/brucella_classical/brucella_classical_snp.txt"
-  ],
   "versions": {
     "cansnper2": "2.3.0",
     "python": "3.11.14"
