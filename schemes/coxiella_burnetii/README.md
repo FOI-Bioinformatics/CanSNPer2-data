@@ -27,6 +27,16 @@ GCF_000007765.2, by a unique match of 40 bp on each side; the shifts are
 between 0 and +206 bp and no base changed. Karlsson et al. (2014, Table 3)
 give the same positions and alleles on AE016828.2 as CanSNPer 1.
 
+The genomes file `coxiella_burnetii_genomes.txt` lists, as `representative`,
+the genomes the canSNPs were selected from that have an assembly in GenBank.
+Karlsson et al. (2014) selected the canSNPs from an alignment of 18 *C.
+burnetii* genomes: the 21 of Table 1 less Cb109, Cb175 and Z3055, which became
+available after assay design. Eight of those 18 have a current assembly and are
+listed here at the node Table 4 assigns them (`C.3`, `C.4` twice, `C.5`, `C.6`,
+`C.8`, `C.10` and `C.11`); the other ten were deposited only as reads. The
+scheme has no outgroup genome, because its root canSNP was found in an alignment
+with *Rickettsiella grylli* rather than a *C. burnetii* genome.
+
 ## Validation
 
 `validate.py` checks the files, and every derived and ancestral pair was
@@ -96,10 +106,10 @@ typing run agreed with those assignments.
 - Karlsson2014: Karlsson E, Macellaro A, Byström M, et al. Eight new genomes
   and synthetic controls increase the accessibility of rapid melt-MAMA SNP
   typing of *Coxiella burnetii*. PLoS ONE. 2014;9(1):e85417.
-  doi:10.1371/journal.pone.0085417
+  https://doi.org/10.1371/journal.pone.0085417
 - CanSNPer 1: Lärkeryd A, Myrtennäs K, Karlsson E, et al. CanSNPer: a
   hierarchical genotype classifier of clonal pathogens. Bioinformatics.
-  2014;30(12):1762-1764. doi:10.1093/bioinformatics/btu113
+  2014;30(12):1762-1764. https://doi.org/10.1093/bioinformatics/btu113
 
 ## Changes
 
@@ -111,3 +121,6 @@ typing run agreed with those assignments.
 - 2026-11-21: SNP positions given per reference sequence (AE016828.3)
   with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
   2.3.0.
+- 2026-11-21: added `coxiella_burnetii_genomes.txt`, the eight genomes the
+  canSNPs were selected from that have an assembly (Karlsson et al. 2014,
+  Tables 1 and 4).
