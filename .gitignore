@@ -3,3 +3,9 @@ logs/
 
 __pycache__/
 *.pyc
+
+# Reference genomes downloaded by check_bases.py
+.references/
+
+# Reference genomes (<genome>.fna) used by CanSNPer2-database --convert
+.references-fna/

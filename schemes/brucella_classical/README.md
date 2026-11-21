@@ -9,7 +9,7 @@
 | Nodes | 24 |
 | canSNPs per node | 1 |
 | Origin | published (Foster et al. 2008, 2012), ported from CanSNPer 1.0.10 |
-| Last changed | 2026-11-19 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -29,9 +29,12 @@ except for the two corrections listed under Known issues.
 
 Converted from `brucella_tree.txt` and `brucella_snp.txt` of CanSNPer 1.0.10
 (https://github.com/adrlar/CanSNPer). CanSNPer 1 gave positions on the two
-16M chromosomes; they are given here on the concatenated genome, chromosome I
-(NC_003317.1, 2,117,144 bp) followed by chromosome II (NC_003318.1). The
-CanSNPer 1 sequence of 16M is identical to GCF_000007125.1.
+16M chromosomes, and they are given here in the same way: 22 canSNPs on
+chromosome I (AE008917.1, NC_003317.1, 2,117,144 bp) and 2 on chromosome II
+(AE008918.1, NC_003318.1). From 2026-11-19 to 2026-11-21 the positions were
+counted along the concatenated genome, chromosome I followed by chromosome II,
+as CanSNPer2 before 2.3.0 required. The CanSNPer 1 sequence of 16M is identical
+to GCF_000007125.1.
 
 The positions were checked against the publications by typing nine *Brucella*
 genomes in windows of 4 bp around each published position. Each Foster et al.
@@ -181,3 +184,6 @@ these genomes below species level.
 - 2026-11-19: typed against all 1,785 genomes of the genus in GTDB r232;
   Status set to verified (#28).
 - 2026-11-19: moved to `master` as a verified scheme.
+- 2026-11-21: SNP positions given per reference sequence (AE008917.1 and
+  AE008918.1) with `CanSNPer2-database --convert`; database rebuilt with
+  CanSNPer2 2.3.0.
