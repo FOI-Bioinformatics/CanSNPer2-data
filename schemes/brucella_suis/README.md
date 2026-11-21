@@ -48,7 +48,10 @@ typing report gives them. Against a tree over all genomes, that node agreed
 with the genome's place in the tree for 65.8% of them, was deeper for 21.9% and
 higher for 11.6%. Of the 40 representatives, 36 were called at their node and
 three, at a node without canSNPs that was removed, at its parent. The scheme
-has not been checked against published *B. suis* typing.
+has not been checked against published *B. suis* typing. The results above
+were obtained with CanSNPer2 2.2.2, before the positions were converted to
+positions per reference sequence. Typing with CanSNPer2 2.3.0 after the
+conversion gave the same calls with all three aligners.
 
 ## Known issues
 

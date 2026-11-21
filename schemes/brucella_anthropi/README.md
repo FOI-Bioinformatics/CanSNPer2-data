@@ -54,7 +54,10 @@ With CanSNPer2 2.2.2 (`--aligner minimap2`, default settings), 75 of the 76
 genomes were called at the node the CanSNPCreator typing report gives them, or
 at its nearest ancestor in the scheme where that node has no canSNP; this
 includes all 19 genomes not used as representatives. The scheme has not been
-checked against published typing of these species.
+checked against published typing of these species. The results above
+were obtained with CanSNPer2 2.2.2, before the positions were converted to
+positions per reference sequence. Typing with CanSNPer2 2.3.0 after the
+conversion gave the same calls with all three aligners.
 
 ## Known issues
 
