@@ -9,7 +9,7 @@
 | Nodes | 42 |
 | canSNPs per node | up to 5 |
 | Origin | made with CanSNPCreator 0.5.1 |
-| Last changed | 2026-11-19 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -41,6 +41,13 @@ were collapsed. The scheme keeps the 42 nodes that have a canSNP
 `brucella_anthropi_canSNPs.txt`. The `reference` column of the SNP file is
 `NA`, as the canSNPs are not taken from a publication.
 
+The positions in `brucella_anthropi_snp.txt` and
+`brucella_anthropi_canSNPs.txt` are given on each reference sequence of
+ATCC 49188: 35 of the 42 scheme SNPs lie on chromosome 1 (CP000758.1,
+2,887,297 bp) and 7 on chromosome 2 (CP000759.1, 1,895,911 bp); none lie on the
+four plasmids. Until 2026-11-21 the positions were counted along the
+concatenated genome, as CanSNPer2 before 2.3.0 required.
+
 ## Validation
 
 With CanSNPer2 2.2.2 (`--aligner minimap2`, default settings), 75 of the 76
@@ -66,3 +73,6 @@ https://github.com/FOI-Bioinformatics/CanSNPCreator
 - 2026-11-18: added (#15).
 - 2026-11-19: files moved to `schemes/brucella_anthropi/`; README in the
   standard layout.
+- 2026-11-21: SNP positions given per reference sequence (CP000758.1 and
+  CP000759.1) with `CanSNPer2-database --convert`; database rebuilt with
+  CanSNPer2 2.3.0.

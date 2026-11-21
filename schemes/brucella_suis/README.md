@@ -9,7 +9,7 @@
 | Nodes | 31 |
 | canSNPs per node | up to 5 |
 | Origin | made with CanSNPCreator 0.5.1 |
-| Last changed | 2026-11-19 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -32,6 +32,13 @@ collapsed. The scheme keeps the 31 nodes that have a canSNP
 (`--snps-per-node 5 --prune`), with up to five ranked canSNPs per node in
 `brucella_suis_canSNPs.txt`. The `reference` column of the SNP file is `NA`, as
 the canSNPs are not taken from a publication.
+
+The positions in `brucella_suis_snp.txt` and `brucella_suis_canSNPs.txt` are
+given on each reference sequence of *B. suis* 1330: 29 of the 31 scheme SNPs
+lie on chromosome I (AE014291.4, 2,107,794 bp) and 2 on chromosome II
+(AE014292.2, 1,207,381 bp). Until 2026-11-21 the positions were counted along
+the concatenated genome, chromosome I followed by chromosome II, as CanSNPer2
+before 2.3.0 required.
 
 ## Validation
 
@@ -59,3 +66,6 @@ https://github.com/FOI-Bioinformatics/CanSNPCreator
 - 2026-11-18: added (#14).
 - 2026-11-19: files moved to `schemes/brucella_suis/`; README in the standard
   layout.
+- 2026-11-21: SNP positions given per reference sequence (AE014291.4 and
+  AE014292.2) with `CanSNPer2-database --convert`; database rebuilt with
+  CanSNPer2 2.3.0.
