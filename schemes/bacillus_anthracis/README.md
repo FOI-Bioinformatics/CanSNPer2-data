@@ -28,6 +28,17 @@ nodes.
 All 13 canSNPs and their positions on the Ames genome are taken from Van Ert et
 al. (2007).
 
+The genomes file `bacillus_anthracis_genomes.txt` lists the seven genomes that
+Van Ert et al. (2007) sequenced to find the canSNPs, by the assemblies that
+the Institute for Genomic Research (TIGR) deposited and the Ames Ancestor
+sequence (NC_007530). Six are listed as `representative`, each at the node of
+the lineage it defines in that paper: Ames Ancestor at `A.Br.001`, Australia 94
+at `A.Br.003`, Vollum at `A.Br.007`, Western North America USA6153 at
+`A.Br.009`, Kruger B at `B.Br.001` and CNEVA-9066 at `B.Br.004`. A1055, the
+genome of the C lineage, is listed as the `outgroup`, since the scheme covers
+the A and B branches only. The paper names its seventh genome A0155 in the
+supplementary text and A1055 in Figure 1 and Table 2; A1055 is taken here.
+
 ## Validation
 
 `validate.py` checks the files, and `build.py` rebuilds the database and
@@ -73,7 +84,7 @@ typing of these genomes.
 
 - Van Ert MN, Easterday WR, Huynh LY, et al. Global genetic population
   structure of *Bacillus anthracis*. PLoS ONE. 2007;2(5):e461.
-  doi:10.1371/journal.pone.0000461
+  https://doi.org/10.1371/journal.pone.0000461
 
 ## Changes
 
@@ -87,3 +98,5 @@ typing of these genomes.
 - 2026-11-21: SNP positions given per reference sequence (AE016879.1)
   with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
   2.3.0.
+- 2026-11-21: added `bacillus_anthracis_genomes.txt`, the seven genomes of Van Ert
+  et al. (2007).
