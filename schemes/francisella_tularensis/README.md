@@ -121,9 +121,13 @@ typing of these genomes.
 
 ## Known issues
 
-- The full references for three sources (Dwibedi2017, Myrtennas2016 and the
-  FOI canSNPs) are not yet recorded below. Busch2016, Karadenizli2015 and
-  Kevin2020 were added on 2026-11-21 and should be confirmed.
+- The full reference for one published source, Dwibedi2017 (`B.65`, `B.66` and
+  `B.81`), is not yet recorded below. These canSNPs are not in Dwibedi2016
+  (`B.44` to `B.64`), and no further paper of that author on *Francisella*
+  was found. Busch2016, Karadenizli2015 and Kevin2020 were added on
+  2026-11-21 and should be confirmed. Myrtennas2016 was added on the same
+  date; its Table 3 gives `B.76` to `B.79` at the SCHUS4.2 positions of this
+  scheme.
 
 ## References
 
@@ -160,6 +164,9 @@ subject and should be confirmed.
 - Kevin2020*: Kevin M, Girault G, Caspar Y, et al. Phylogeography and genetic
   diversity of *Francisella tularensis* subsp. *holarctica* in France
   (1947-2018). Front Microbiol. 2020;11:287. https://doi.org/10.3389/fmicb.2020.00287
+- Myrtennas2016: Myrtennäs K, Marinov K, Johansson A, et al. Introduction and
+  persistence of tularemia in Bulgaria. Infect Ecol Epidemiol. 2016;6:32838.
+  https://doi.org/10.3402/iee.v6.32838
 - Schulze2016: Schulze C, Heuner K, Myrtennäs K, et al. High and novel genetic
   diversity of *Francisella tularensis* in Germany and indication of
   environmental persistence. Epidemiol Infect. 2016;144(14):3025-3036.
@@ -195,4 +202,5 @@ subject and should be confirmed.
 - 2026-11-21: SNP positions given per reference sequence (the chromosomes of the five reference genomes)
   with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
   2.3.0.
-- 2026-11-21: added the references of Busch2016, Karadenizli2015 and Kevin2020.
+- 2026-11-21: added the references of Busch2016, Karadenizli2015, Kevin2020 and
+  Myrtennas2016.
