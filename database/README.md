@@ -38,6 +38,11 @@ uncommitted changes when the database was built. A non-empty list means
 `<scheme>_<YYMMDD>.db`. The Francisella files dated 2020 predate this
 convention being automated but follow the same pattern.
 
+The databases built before 2026-11-21 count SNP positions along the reference
+sequences joined in file order. They are read by CanSNPer2 2.2 and earlier;
+CanSNPer2 2.3.0 refuses them unless they are converted with
+`CanSNPer2-database --convert --database <file> --refdir <folder> -o <outdir>`.
+
 ## Using a database
 
 ```sh

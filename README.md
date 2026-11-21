@@ -55,12 +55,20 @@ requests into `master`, continuous integration also runs
 `python validate.py --require-verified`, which fails on a draft scheme.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2
-2.2.0 or later, installed from the `master` branch. Building a taxonomy scheme
-also needs flextaxd; SNP schemes do not:
+2.3.0 or later; until 2.3.0 is released it is installed from the `dev_2.3.0`
+branch. Building a taxonomy scheme also needs flextaxd; SNP schemes do not:
 
 ```sh
-pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
+pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@dev_2.3.0
 ```
+
+Since CanSNPer2 2.3.0 the scheme files and the databases give each SNP as a
+reference sequence (the GenBank accession of a chromosome or plasmid) and a
+1-based position on that sequence. Earlier versions counted positions along the
+reference sequences joined in the order of the assembly file. CanSNPer2 2.3.0
+refuses scheme files and databases in that format; `CanSNPer2-database
+--convert` converts them (see `schemes/README.md`). The databases built in the
+earlier format, which CanSNPer2 2.2 reads, are kept under `database/archive/`.
 
 No aligner is needed to build a database. Typing a sample needs one of the
 aligners CanSNPer2 supports: progressiveMauve, minimap2 or MUMmer4.

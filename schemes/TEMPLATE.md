@@ -20,6 +20,9 @@ What the scheme resolves, and how its nodes are named.
 For a published scheme: the publications the canSNPs come from.
 For a scheme made with CanSNPCreator: the genomes and how they were chosen, the
 outgroup, the representatives, how the tree was built, and the settings.
+The reference sequences (GenBank accessions) the positions are given on, and,
+for positions taken from another assembly or another version of a sequence, how
+they were moved.
 
 ## Validation
 

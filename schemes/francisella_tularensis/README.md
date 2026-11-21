@@ -9,7 +9,7 @@
 | Nodes | 328 |
 | canSNPs per node | 1 |
 | Origin | published canSNPs and canSNPs from FOI, compiled at FOI |
-| Last changed | 2026-11-04 |
+| Last changed | 2026-11-21 |
 
 ## Description
 
@@ -181,3 +181,6 @@ subject and should be confirmed.
   moved here from the repository README.
 - 2026-11-19: typed against the GTDB r232 species representatives of the genus
   and the whole species cluster; the result is under Validation.
+- 2026-11-21: SNP positions given per reference sequence (the chromosomes of the five reference genomes)
+  with `CanSNPer2-database --convert`; database rebuilt with CanSNPer2
+  2.3.0.

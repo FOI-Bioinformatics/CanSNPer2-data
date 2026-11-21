@@ -1,4 +1,4 @@
-"""Tests for build.py. They build real databases, so they need CanSNPer2 2.2.0 or later."""
+"""Tests for build.py. They build real databases, so they need CanSNPer2 2.3.0 or later."""
 
 import importlib.metadata
 import json
@@ -123,6 +123,25 @@ def test_comparison_sees_a_repeated_node_name(built, tmp_path):
     assert differences == {"duplicated node names": ["B"]}
 
 
+def test_comparison_reads_a_database_with_joined_positions(built, tmp_path):
+    # a committed database built before CanSNPer2 2.3.0 has a single position
+    # column; it must be compared, and differ, rather than stop the build
+    _scheme, target, _warnings = built()
+    joined = str(tmp_path / "joined.db")
+    shutil.copy(target, joined)
+    connection = sqlite3.connect(joined)
+    connection.executescript("""
+        ALTER TABLE snp_annotation RENAME COLUMN sequence_position TO position;
+        ALTER TABLE snp_annotation DROP COLUMN sequence;""")
+    connection.commit()
+    connection.close()
+    differences = build.compare(build.content(joined), build.content(target))
+    assert [table for table, _, _ in differences] == ["snp_annotation"]
+    _table, only_joined, only_built = differences[0]
+    assert len(only_joined) == len(only_built) == 4
+    assert all("None" in row for row in only_joined)
+
+
 # -- manifests ---------------------------------------------------------------
 
 def read_manifest(scheme):
@@ -181,6 +200,7 @@ def test_version_tuple():
 
 
 def test_older_cansnper2_is_refused(monkeypatch):
-    monkeypatch.setattr(importlib.metadata, "version", lambda name: "2.1.0")
-    with pytest.raises(RuntimeError, match="2.2.0 or later is required, found 2.1.0"):
+    # 2.2 counts positions along the joined reference sequences
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "2.2.2")
+    with pytest.raises(RuntimeError, match="2.3.0 or later is required, found 2.2.2"):
         build.require_cansnper2()

@@ -17,8 +17,8 @@ A scheme marked wip in schemes.toml, one whose build needs tools that continuous
 integration does not install, is skipped unless it is named with --scheme or
 --include-wip is given.
 
-Requires CanSNPer2 2.2.0 or later (the master branch), whose own loader builds
-a SNP scheme. The flextaxd command is only needed to build a taxonomy scheme.
+Requires CanSNPer2 2.3.0 or later, whose own loader builds a SNP scheme and
+stores each SNP as a reference sequence and a position on that sequence. The flextaxd command is only needed to build a taxonomy scheme.
 """
 
 import argparse
@@ -37,9 +37,11 @@ import tempfile
 
 from validate import REPO, discover, read_rows, tree_nodes_and_parents, validate
 
-# Earlier versions add an orphan node named 'root' beside the scheme root, so
-# their databases neither match the committed ones nor pass check_structure.
-MINIMUM_CANSNPER2 = (2, 2, 0)
+# Versions before 2.2.0 add an orphan node named 'root' beside the scheme root,
+# so their databases neither match the committed ones nor pass check_structure.
+# Versions before 2.3.0 count SNP positions along the reference sequences
+# joined in file order and do not read the per-sequence SNP files.
+MINIMUM_CANSNPER2 = (2, 3, 0)
 
 
 def database_path(scheme):
@@ -298,8 +300,17 @@ def content(path):
                                     LEFT JOIN nodes n ON n.id = g.id""")),
         }
         if "snp_annotation" in tables:
+            # A database built before CanSNPer2 2.3.0 has a single position
+            # column, counted along the joined reference sequences. It is read
+            # with no sequence, so that it differs from a rebuild instead of
+            # stopping the comparison.
+            columns = {row[1] for row in query("PRAGMA table_info(snp_annotation)")}
+            if "sequence_position" in columns:
+                location = "a.sequence, a.sequence_position"
+            else:
+                location = "NULL, a.position"
             result["snp_annotation"] = set(query(
-                """SELECT n.name, a.snp_id, a.position, a.derived_base,
+                f"""SELECT n.name, a.snp_id, {location}, a.derived_base,
                           a.ancestral_base, a.reference, g.genome
                    FROM snp_annotation a
                    LEFT JOIN nodes n ON n.id = a.node_id
