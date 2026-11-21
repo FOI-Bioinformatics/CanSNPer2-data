@@ -1,24 +1,26 @@
 {
-  "built": "2026-11-19",
+  "built": "2026-11-21",
   "counts": {
     "genomes": 0,
     "nodes": 31,
     "rank": 2,
+    "scheme_info": 8,
     "snp_annotation": 31,
     "snp_references": 1,
     "tree": 31
   },
+  "database_sha256": "bab741ca227f81034eb45fa5638a5bd236bacfc8af345d34404dbd2fd2bc3c73",
+  "format": "2.3",
   "kind": "snp",
   "scheme": "brucella_suis",
-  "source_commit": "8d3cea2a4c2fafdc8a91d315edf750faed256138",
+  "source_commit": "7cb3777a2a4308151515cbccf61db94542af9620",
   "sources": {
     "schemes/brucella_suis/brucella_suis_references.txt": "1ebc2488c1af86e957364879f29d3fd050a4a232d94bc7f40986f68299b2ee43",
-    "schemes/brucella_suis/brucella_suis_snp.txt": "be6a7f5347f1cedf4bf07af2685f99992f30b2a794b7ee18ea74cd43f132d972",
+    "schemes/brucella_suis/brucella_suis_snp.txt": "5906e2a06e8b75b94afbcea052244c8e6bf504c378a8cd853c81c6b01cff0f18",
     "schemes/brucella_suis/brucella_suis_tree.txt": "8edf2653e677514328f06dbff2ce070735ebb85b848af7de8d35dbc54fd791bb"
   },
-  "uncommitted_sources": [],
   "versions": {
-    "cansnper2": "2.2.2",
-    "python": "3.13.18"
+    "cansnper2": "2.3.0",
+    "python": "3.11.14"
   }
 }
