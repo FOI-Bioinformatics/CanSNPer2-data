@@ -100,3 +100,5 @@ typing of these genomes.
   2.3.0.
 - 2026-11-21: added `bacillus_anthracis_genomes.txt`, the seven genomes of Van Ert
   et al. (2007).
+- 2026-11-22: `bacillus_anthracis_genomes.txt` gained the columns `basis` and `source` (all
+  rows `published`).

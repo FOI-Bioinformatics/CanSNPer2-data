@@ -34,6 +34,11 @@ errors. The node of `91001` is `0.PE4.c` as the table
 gives it, although CanSNPer2 does not call it there because `91001` is
 ancestral at the root canSNP (see Known issues).
 
+A further 8 leaves are listed as `representative` with `basis` `typed`: the
+genome of the GTDB r232 species cluster that CanSNPer2 calls at the leaf, chosen
+as described in `schemes/README.md`. They show that the scheme calls the leaf and
+are not independent evidence for it. 28 of the 47 leaves have no genome: 0.PE4.b, 0.PE4.d, 0.PE7.a, 1.ANT1.c, 1.ORI1.c, 1.ORI1.e, 1.ORI2.d, 1.ORI2.e, 1.ORI2.g, 1.ORI2.i, 1.ORI2.j, 1.ORI2.l, 1.ORI2.m, 1.ORI2.n, 1.ORI2.q, 1.ORI3.a, 1.ORI3.c, 1.ORI3.e, 1.ORI3.f, 1.ORI3.h, 1.ORI3.j, 1.ORI3.m, 1.ORI3.o, 1.ORI3.p, 2.ANT1.b, 2.ANT3.b, 2.MED1.d, 2.MED1.e.
+
 ## Validation
 
 `validate.py` checks the files, and `build.py` rebuilds the database and
@@ -125,3 +130,5 @@ receive no call. The canSNP of the root node is therefore not derived in every
   2.3.0.
 - 2026-11-21: added `yersinia_pestis_genomes.txt`, the genomes of Morelli et
   al. (2010, Supplementary Table 1), with IP32953 as the outgroup.
+- 2026-11-22: `yersinia_pestis_genomes.txt` gained the columns `basis` and
+  `source`; 8 typed genomes added.

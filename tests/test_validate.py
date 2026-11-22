@@ -166,6 +166,26 @@ def test_a_genomes_file_without_its_header_is_a_problem(make_scheme):
     assert any("unexpected header" in problem for problem in problems)
 
 
+SOURCE_HEADER = "genome\tnode\trole\tbasis\tsource\n"
+
+
+def test_genomes_with_basis_and_source_are_valid(make_scheme):
+    genomes = (SOURCE_HEADER + "GCA_000000002.1\tB\tmember\tpublished\tFoster2008\n"
+               "GCF_000000003.2\tA\trepresentative\ttyped\tGTDB r232, CanSNPer2 2.3.0\n"
+               "GCA_000000004.1\t\toutgroup\tpublished\tFoster2008\n")
+    assert problems_of(make_scheme(genomes=genomes)) == []
+
+
+@pytest.mark.parametrize("row,message", [
+    ("GCA_000000002.1\tB\tmember\tverified\tFoster2008", "basis 'verified' is not one of"),
+    ("GCA_000000002.1\tB\tmember\tpublished\t", "source is empty"),
+    ("GCA_000000002.1\tB\tmember\tpublished", "expected 5 columns"),
+])
+def test_a_malformed_basis_or_source_is_a_problem(make_scheme, row, message):
+    problems = problems_of(make_scheme(genomes=SOURCE_HEADER + row + "\n"))
+    assert any(message in problem for problem in problems), problems
+
+
 # -- the optional ranked canSNP set ------------------------------------------
 
 SNP_SET_HEADER = "node\trank\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\tscore\n"

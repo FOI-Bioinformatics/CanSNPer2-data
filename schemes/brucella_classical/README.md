@@ -199,3 +199,6 @@ these genomes below species level.
   CanSNPer2 2.3.0.
 - 2026-11-21: added `brucella_classical_genomes.txt`, the six genomes the
   canSNPs were discovered from (Foster et al. 2008, 2012).
+- 2026-11-22: `brucella_classical_genomes.txt` gained the columns `basis` and
+  `source` (all rows `published`). The leaves `rpoB_2673` and `trpE_290` have no
+  genome; no GTDB genome is called there.

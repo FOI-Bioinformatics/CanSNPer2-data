@@ -404,6 +404,8 @@ def check_genomes(problems, scheme, tree_nodes):
 
 
 SNP_GENOME_HEADER = ["genome", "node", "role"]
+SNP_GENOME_HEADER_WITH_SOURCE = SNP_GENOME_HEADER + ["basis", "source"]
+SNP_GENOME_BASES = ("published", "typed")
 SNP_GENOME_ROLES = {
     "representative": "its sequence was in the alignment the canSNPs were found in",
     "member": "placed at the node through a representative, as dereplication folds it in",
@@ -423,16 +425,25 @@ def check_snp_genomes(problems, scheme, tree_nodes):
         return
     raw, lines, rows = read_rows(scheme.path(relative), problems, relative)
     check_format(problems, relative, raw, lines)
-    if not check_header(problems, relative, rows, SNP_GENOME_HEADER):
+    # The basis and source columns are optional, and both or neither.
+    header = SNP_GENOME_HEADER_WITH_SOURCE if rows and len(rows[0]) == 5 else SNP_GENOME_HEADER
+    if not check_header(problems, relative, rows, header):
         return
 
     assemblies = {}
     for number, row in enumerate(rows[1:], start=2):
-        if len(row) != 3:
-            problems.append(f"{relative}:{number}: expected 3 columns "
-                            f"(genome, node, role), found {len(row)}")
+        if len(row) != len(header):
+            problems.append(f"{relative}:{number}: expected {len(header)} columns "
+                            f"({', '.join(header)}), found {len(row)}")
             continue
-        genome, node, role = row
+        genome, node, role = row[:3]
+        if len(header) == 5:
+            basis, source = row[3], row[4]
+            if basis not in SNP_GENOME_BASES:
+                problems.append(f"{relative}:{number}: basis '{basis}' is not one of "
+                                f"{', '.join(SNP_GENOME_BASES)}")
+            if not source:
+                problems.append(f"{relative}:{number}: source is empty")
         if not (GENBANK_RE.match(genome) or REFSEQ_RE.match(genome)):
             problems.append(f"{relative}:{number}: '{genome}' is not a versioned assembly "
                             f"accession such as GCA_000007125.1")
