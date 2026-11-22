@@ -9,7 +9,7 @@
 | Nodes | 13 |
 | canSNPs per node | 1 |
 | Origin | published (Van Ert et al. 2007) |
-| Last changed | 2026-11-21 |
+| Last changed | 2026-11-22 |
 
 ## Description
 
@@ -28,16 +28,21 @@ nodes.
 All 13 canSNPs and their positions on the Ames genome are taken from Van Ert et
 al. (2007).
 
-The genomes file `bacillus_anthracis_genomes.txt` lists the seven genomes that
-Van Ert et al. (2007) sequenced to find the canSNPs, by the assemblies that
-the Institute for Genomic Research (TIGR) deposited and the Ames Ancestor
-sequence (NC_007530). Six are listed as `representative`, each at the node of
-the lineage it defines in that paper: Ames Ancestor at `A.Br.001`, Australia 94
-at `A.Br.003`, Vollum at `A.Br.007`, Western North America USA6153 at
-`A.Br.009`, Kruger B at `B.Br.001` and CNEVA-9066 at `B.Br.004`. A1055, the
-genome of the C lineage, is listed as the `outgroup`, since the scheme covers
-the A and B branches only. The paper names its seventh genome A0155 in the
-supplementary text and A1055 in Figure 1 and Table 2; A1055 is taken here.
+Van Ert et al. (2007) sequenced seven genomes to find the canSNPs: the
+assemblies that the Institute for Genomic Research (TIGR) deposited and the Ames
+Ancestor sequence (NC_007530). Each defines a lineage of that paper: Ames
+Ancestor at `A.Br.001`, Australia 94 at `A.Br.003`, Vollum at `A.Br.007`,
+Western North America USA6153 at `A.Br.009`, Kruger B at `B.Br.001` and
+CNEVA-9066 at `B.Br.004`, with A1055, the genome of the C lineage, as the
+outgroup, since the scheme covers the A and B branches only. The paper names its
+seventh genome A0155 in the supplementary text and A1055 in Figure 1 and Table
+2; A1055 is taken here.
+
+The genomes file `bacillus_anthracis_genomes.txt` lists the five of those that
+sit at a terminal node, as `representative`, and A1055 as the `outgroup`.
+Australia 94 (`GCF_000167335.1`) is not listed: `A.Br.003` carries further
+nodes below it, and the genomes file holds the genomes of the terminal nodes.
+Every one of the five terminal nodes has a genome.
 
 ## Validation
 
@@ -102,3 +107,6 @@ typing of these genomes.
   et al. (2007).
 - 2026-11-22: `bacillus_anthracis_genomes.txt` gained the columns `basis` and `source` (all
   rows `published`).
+- 2026-11-22: `bacillus_anthracis_canSNPs.txt` replaces the SNP file, and
+  `bacillus_anthracis_genomes.txt` keeps only the genomes of the terminal nodes
+  (Australia 94, at `A.Br.003`, was dropped).

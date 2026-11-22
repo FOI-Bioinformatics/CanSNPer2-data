@@ -1,17 +1,13 @@
 genome	node	role	basis	source
 GCF_000016445.1	0.PE2a.a	representative	published	Morelli2010
-GCF_000018805.1	0.PE3.a	representative	published	Morelli2010
 GCF_000007885.1	0.PE4.c	representative	published	Morelli2010
 GCF_000169675.1	0.ANT2.a	representative	published	Morelli2010
 GCF_000169615.1	1.ANT1.a	representative	published	Morelli2010
-GCF_000013825.1	1.ANT1.b	representative	published	Morelli2010
 GCF_000169695.1	1.IN3.b	representative	published	Morelli2010
-GCF_000181455.2	1.ORI1.f	representative	published	Morelli2010
 GCF_000009065.1	1.ORI1.h	representative	published	Morelli2010
 GCF_000170275.1	1.ORI2.u	representative	published	Morelli2010
 GCF_000168235.2	1.ORI3.l	representative	published	Morelli2010
 GCF_000169635.1	1.ORI3.q	representative	published	Morelli2010
-GCF_000013805.1	2.ANT1.a	representative	published	Morelli2010
 GCF_000006645.1	2.MED1.c	representative	published	Morelli2010
 GCF_000169655.1	2.MED2.c	representative	published	Morelli2010
 GCF_000047365.1		outgroup	published	Morelli2010

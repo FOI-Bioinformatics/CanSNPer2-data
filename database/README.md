@@ -40,7 +40,7 @@ out of date, that is updated.
 
 ## Scheme information
 
-Each database built for CanSNPer2 2.3.0 holds a `scheme_info` table, which
+Each database built for CanSNPer2 2.3.0 and later holds a `scheme_info` table, which
 `CanSNPer2-database --database <file> --info` prints: the scheme name, its
 status from the Status row of the scheme README, the source
 (`FOI-Bioinformatics/CanSNPer2-data`), the commit, the known issues listed in
@@ -67,8 +67,14 @@ convention being automated but follow the same pattern.
 
 The databases built before 2026-11-21 count SNP positions along the reference
 sequences joined in file order. They are read by CanSNPer2 2.2 and earlier;
-CanSNPer2 2.3.0 refuses them unless they are converted with
+CanSNPer2 2.3.0 and later refuse them unless they are converted with
 `CanSNPer2-database --convert --database <file> --refdir <folder> -o <outdir>`.
+
+The databases built on 2026-11-21 hold one canSNP per node, without the rank,
+score and typed columns. They are read by CanSNPer2 2.3.0; CanSNPer2 2.4.0
+refuses them unless they are upgraded with
+`CanSNPer2-database --convert --database <file> -o <outdir>`, which needs no
+reference files, because no position moves.
 
 ## Using a database
 

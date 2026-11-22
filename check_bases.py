@@ -85,22 +85,16 @@ def read_fasta(path):
 
 
 def scheme_snps(scheme):
-    """The SNPs of a scheme as (file, line, label, snp_id, genome, sequence, position,
-    derived, ancestral), from the SNP file and the ranked canSNPs when the scheme has them."""
+    """The canSNPs of a scheme as (file, line, label, node, genome, sequence, position,
+    derived, ancestral). Every canSNP is checked, the alternatives of a node included."""
     snps = []
-    _raw, _lines, rows = validate.read_rows(scheme.path(scheme.snp))
+    _raw, _lines, rows = validate.read_rows(scheme.path(scheme.cansnps))
     for number, row in enumerate(rows[1:], start=2):
-        if len(row) == len(validate.SNP_HEADER):
-            snp_id, _strain, _reference, genome, sequence, position, derived, ancestral = row
-            snps.append((scheme.snp, number, f"SNP {snp_id}", snp_id, genome, sequence,
+        if len(row) == len(validate.CANSNP_HEADER):
+            node, rank, _reference, genome, sequence, position, derived, ancestral, _score, _typed = row
+            label = f"canSNP {node}" if rank == "1" else f"canSNP {node} (rank {rank})"
+            snps.append((scheme.cansnps, number, label, node, genome, sequence,
                          position, derived, ancestral))
-    if scheme.snp_set and os.path.exists(scheme.path(scheme.snp_set)):
-        _raw, _lines, rows = validate.read_rows(scheme.path(scheme.snp_set))
-        for number, row in enumerate(rows[1:], start=2):
-            if len(row) == len(validate.SNP_SET_HEADER):
-                node, rank, genome, sequence, position, derived, ancestral, _score = row
-                snps.append((scheme.snp_set, number, f"SNP {node} (rank {rank})", node, genome,
-                             sequence, position, derived, ancestral))
     return snps
 
 

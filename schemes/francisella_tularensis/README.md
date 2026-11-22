@@ -9,7 +9,7 @@
 | Nodes | 328 |
 | canSNPs per node | 1 |
 | Origin | published canSNPs and canSNPs from FOI, compiled at FOI |
-| Last changed | 2026-11-21 |
+| Last changed | 2026-11-22 |
 
 ## Description
 
@@ -28,7 +28,7 @@ reserved.
 ## Origin
 
 The scheme was compiled at FOI from published canSNPs and canSNPs that FOI has
-not published. The `reference` column of the SNP file gives the source of each
+not published. The `reference` column of the canSNP file gives the source of each
 canSNP:
 
 | Source | canSNPs |
@@ -213,3 +213,6 @@ subject and should be confirmed.
 - 2026-11-21: added the references of Busch2016, Karadenizli2015, Kevin2020 and
   Myrtennas2016.
 - 2026-11-22: added `francisella_tularensis_genomes.txt`: 219 genomes, 180 published and 39 typed, with the columns `basis` and `source`.
+- 2026-11-22: `francisella_tularensis_canSNPs.txt` replaces the SNP file: the same 328
+  canSNPs, each rank 1 of its node and typed, with the `reference` column kept and
+  the `strain` column dropped.
