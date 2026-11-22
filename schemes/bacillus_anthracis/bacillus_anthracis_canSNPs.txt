@@ -1,0 +1,14 @@
+node	rank	reference	genome	sequence	sequence_position	derived_base	ancestral_base	score	typed
+A.Br.001	1	VanErt2007	Ames	AE016879.1	182106	C	T		yes
+A.Br.002	1	VanErt2007	Ames	AE016879.1	947759	T	G		yes
+A.Br.003	1	VanErt2007	Ames	AE016879.1	1493157	C	T		yes
+A.Br.004	1	VanErt2007	Ames	AE016879.1	3600659	C	T		yes
+A.Br.006	1	VanErt2007	Ames	AE016879.1	162509	A	C		yes
+A.Br.007	1	VanErt2007	Ames	AE016879.1	266439	G	A		yes
+A.Br.008	1	VanErt2007	Ames	AE016879.1	3947248	C	A		yes
+A.Br.009	1	VanErt2007	Ames	AE016879.1	2589823	G	A		yes
+B.Br.001	1	VanErt2007	Ames	AE016879.1	1455279	G	A		yes
+B.Br.002	1	VanErt2007	Ames	AE016879.1	1056740	A	C		yes
+B.Br.003	1	VanErt2007	Ames	AE016879.1	1494269	A	G		yes
+B.Br.004	1	VanErt2007	Ames	AE016879.1	69952	C	T		yes
+A/B.Br.001	1	VanErt2007	Ames	AE016879.1	3697886	A	G		yes

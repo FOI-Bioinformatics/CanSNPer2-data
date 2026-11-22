@@ -9,7 +9,7 @@
 | Nodes | 328 |
 | canSNPs per node | 1 |
 | Origin | published canSNPs and canSNPs from FOI, compiled at FOI |
-| Last changed | 2026-11-21 |
+| Last changed | 2026-11-22 |
 
 ## Description
 
@@ -28,7 +28,7 @@ reserved.
 ## Origin
 
 The scheme was compiled at FOI from published canSNPs and canSNPs that FOI has
-not published. The `reference` column of the SNP file gives the source of each
+not published. The `reference` column of the canSNP file gives the source of each
 canSNP:
 
 | Source | canSNPs |
@@ -79,6 +79,14 @@ as a canSNP that is included; for the others, the reason was not recorded.
 | `A.6` | Svensson2009 | not recorded |
 | `A.II.5` | Vogler2009 | not recorded |
 | `A.II.7` | Vogler2009 | not recorded |
+
+### Genomes
+
+The genomes file `francisella_tularensis_genomes.txt` lists 219 assemblies at 109 of the 161 leaves. 180 are `published`, placed at the node by a publication (Kevin2020 144, Wittwer2018 13, Dwibedi2016 11, Karadenizli2015 6, scheme reference 3, Schulze2016 3), and 39 are `typed`, the genome of the GTDB r232 species cluster that CanSNPer2 calls at a leaf no publication covers (chosen as described in `schemes/README.md`).
+
+- Each published genome was typed with CanSNPer2 2.3.0 (minimap2) and is listed only where the call is its node or a node below it. Kevin2020 genomes left out: five called at a shallower node (B.232 twice, B.284, B.292, B.300), one called on another lineage (B.237 called B.264), one called at an inner node (B.88 called B.89), and five at nodes B.310, B.312 and B.313, which are not in the scheme tree.
+- The labels B.88 to B.91 of Wittwer2018 (Table 1) are one step lower than the scheme's: its genomes of B.88, B.89, B.90 and B.91 carry the scheme's SNPs B.89, B.90, B.91 and B.92. The text of that paper and the scheme list the same five subclades (B.87/B.88, B.89, B.90, B.91, B.92). The genomes are listed at the scheme's nodes.
+- 52 leaves have no genome: A.I.6, A.I.16, B.32, B.38, B.96, B.101, B.105, B.123, B.132, B.134, B.141, B.142, B.143, B.144, B.145, B.148, B.149, B.152, B.154, B.157, B.158, B.161, B.167, B.169, B.172, B.173, B.174, B.175, B.176, B.178, B.181, B.182, B.183, B.184, B.185, B.186, B.187, B.189, B.194, B.198, B.200, B.204, B.206, B.208, B.209, B.211, B.214, B.216, B.221, B.225, B.227, B.232.
 
 ## Validation
 
@@ -204,3 +212,7 @@ subject and should be confirmed.
   2.3.0.
 - 2026-11-21: added the references of Busch2016, Karadenizli2015, Kevin2020 and
   Myrtennas2016.
+- 2026-11-22: added `francisella_tularensis_genomes.txt`: 219 genomes, 180 published and 39 typed, with the columns `basis` and `source`.
+- 2026-11-22: `francisella_tularensis_canSNPs.txt` replaces the SNP file: the same 328
+  canSNPs, each rank 1 of its node and typed, with the `reference` column kept and
+  the `strain` column dropped.

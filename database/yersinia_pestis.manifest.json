@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-21",
+  "built": "2026-11-22",
   "counts": {
     "genomes": 0,
     "nodes": 97,
@@ -9,14 +9,15 @@
     "snp_references": 1,
     "tree": 97
   },
-  "database_sha256": "19d93606459e084374e853c7b374e89d8cfb55d010054ab8ae1988b8e16631d3",
-  "format": "2.3",
+  "database_sha256": "ba058239cdc1d877e95f34c8f864f3878ad48bf190261a069007f0fe9d9284e9",
+  "format": "2.4",
   "kind": "snp",
   "scheme": "yersinia_pestis",
-  "source_commit": "5b24118eacb4a79ca9538ac015fc07537f8c85f8",
+  "source_commit": "4e834ee958efaa1d5a71c821a56621a04c252e43",
   "sources": {
+    "schemes/yersinia_pestis/yersinia_pestis_canSNPs.txt": "f16c18fbef2759765b769c0c75838d1ffc38964483de81b0de4a7b4de258f312",
+    "schemes/yersinia_pestis/yersinia_pestis_genomes.txt": "73be80cfa0eb466e996f734c74824ce099efe795209a5e262c9e7ff3f3812bf9",
     "schemes/yersinia_pestis/yersinia_pestis_references.txt": "62b94ff7b497c33bf33a576240092d644487580c61330747daebc2ae146eed28",
-    "schemes/yersinia_pestis/yersinia_pestis_snp.txt": "1a7c378c977e3ee168ad9ca7fac4c33107637e85d1bea702f4f158ed52a1dab3",
     "schemes/yersinia_pestis/yersinia_pestis_tree.txt": "dfae993493f8727b52461b3f76aee8a3af46a4cee212169db8164633e9880e3e"
   },
   "versions": {

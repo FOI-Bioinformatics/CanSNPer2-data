@@ -1,9 +1,9 @@
-genome	node	role
-GCF_000169495.2	C.3	representative
-GCF_000019885.1	C.4	representative
-GCF_000168875.3	C.4	representative
-GCF_000767035.1	C.5	representative
-GCF_000017105.1	C.6	representative
-GCF_000019865.1	C.8	representative
-GCF_000007765.2	C.10	representative
-GCF_000018745.1	C.11	representative
+genome	node	role	basis	source
+GCF_000169495.2	C.3	representative	published	Karlsson2014
+GCF_000019885.1	C.4	representative	published	Karlsson2014
+GCF_000168875.3	C.4	representative	published	Karlsson2014
+GCF_000767035.1	C.5	representative	published	Karlsson2014
+GCF_000017105.1	C.6	representative	published	Karlsson2014
+GCF_000019865.1	C.8	representative	published	Karlsson2014
+GCF_000007765.2	C.10	representative	published	Karlsson2014
+GCF_000018745.1	C.11	representative	published	Karlsson2014

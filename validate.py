@@ -26,8 +26,16 @@ REPO = os.path.dirname(os.path.abspath(__file__))
 SCHEMES_DIR = os.path.join(REPO, "schemes")
 CONFIG = os.path.join(REPO, "schemes.toml")
 
-SNP_HEADER = ["snp_id", "strain", "reference", "genome", "sequence",
-              "sequence_position", "derived_base", "ancestral_base"]
+# Every canSNP of every node, ranked within the node. rank 1 is the node's best canSNP,
+# score may be empty for a canSNP taken from a publication, and typed marks the canSNPs
+# CanSNPer2 calls: one per node, until CanSNPer2 calls several.
+CANSNP_HEADER = ["node", "rank", "reference", "genome", "sequence",
+                 "sequence_position", "derived_base", "ancestral_base", "score", "typed"]
+TYPED_VALUES = ("yes", "no")
+TYPED_PER_NODE = 1
+# A rank counts from 1 within its node, without leading zeros.
+RANK_RE = re.compile(r"^[1-9][0-9]*$")
+SCORE_RE = re.compile(r"^-?[0-9]+(\.[0-9]+)?$")
 REFERENCE_HEADER = ["genome", "strain", "genbank_id", "refseq_id", "assembly_name"]
 
 BASES = set("ACGT")
@@ -44,8 +52,8 @@ POSITION_RE = re.compile(r"^[0-9]+$")
 class Scheme:
     """One canSNP or taxonomy scheme and the source files that define it."""
 
-    def __init__(self, name, kind="snp", tree=None, snp=None, genomes=None,
-                 references=None, snp_set=None, verify=True, source_type="CanSNPer",
+    def __init__(self, name, kind="snp", tree=None, cansnps=None, genomes=None,
+                 references=None, verify=True, source_type="CanSNPer",
                  known_issues=None, wip=False, database_dir="database", readme=None):
         self.name = name
         self.kind = kind
@@ -56,19 +64,15 @@ class Scheme:
         self.database_dir = database_dir
         folder = os.path.join("schemes", name)
         self.tree = tree or os.path.join(folder, f"{name}_tree.txt")
-        self.snp = snp or os.path.join(folder, f"{name}_snp.txt")
+        # Every canSNP of every node of an SNP scheme, ranked within the node.
+        self.cansnps = cansnps or os.path.join(folder, f"{name}_canSNPs.txt")
         self.references = references or os.path.join(folder, f"{name}_references.txt")
-        # A taxonomy scheme needs its genome-to-node file. An SNP scheme may
-        # list the genomes it was made from, which is optional and checked when
+        # A taxonomy scheme needs its genome-to-node file. An SNP scheme lists
+        # the genomes of its terminal nodes, which is optional and checked when
         # present.
         if genomes is None:
             genomes = os.path.join(folder, f"{name}_genomes.txt")
         self.genomes = genomes
-        # An SNP scheme may also list more than one canSNP per node, ranked,
-        # which is optional and checked when present.
-        if snp_set is None and kind == "snp":
-            snp_set = os.path.join(folder, f"{name}_canSNPs.txt")
-        self.snp_set = snp_set
         # Every scheme is described by a README.md in its folder, in the
         # layout given in schemes/README.md.
         if readme is None:
@@ -77,9 +81,14 @@ class Scheme:
 
     @property
     def files(self):
+        """The files that define the scheme: what the manifest records a hash of, what
+        "last changed" is read from, and what must exist for the scheme to be built."""
         if self.kind == "taxonomy":
             return [self.tree, self.genomes]
-        return [self.tree, self.snp, self.references]
+        files = [self.tree, self.cansnps, self.references]
+        if os.path.exists(self.path(self.genomes)):
+            files.append(self.genomes)
+        return files
 
     def path(self, relative):
         return os.path.join(REPO, relative)
@@ -130,9 +139,9 @@ def discover(only=None):
     names, misplaced = set(), []
     for root, _dirs, files in os.walk(SCHEMES_DIR):
         for entry in sorted(files):
-            if not entry.endswith("_snp.txt"):
+            if not entry.endswith("_canSNPs.txt"):
                 continue
-            name = entry[: -len("_snp.txt")]
+            name = entry[: -len("_canSNPs.txt")]
             if os.path.normpath(root) == os.path.join(os.path.normpath(SCHEMES_DIR), name):
                 names.add(name)
             else:
@@ -240,6 +249,22 @@ def tree_nodes_and_parents(rows):
     return nodes, parents
 
 
+def leaves_of(tree_nodes, scheme):
+    """The terminal nodes of a tree: those that no path gives a child.
+
+    The genomes file lists the genomes of the terminal nodes, so that one row means
+    one thing: a genome that represents that terminal group.
+    """
+    # The tree has been read and reported on by check_tree already, so a file that
+    # cannot be decoded is not reported twice and must not raise here.
+    _raw, _lines, rows = read_rows(scheme.path(scheme.tree), [])
+    parents = set()
+    for row in rows:
+        fields = [f for f in row if f.strip()]
+        parents.update(fields[:-1])
+    return tree_nodes - parents
+
+
 def check_tree(problems, scheme):
     relative = scheme.tree
     raw, lines, rows = read_rows(scheme.path(relative), problems, relative)
@@ -311,24 +336,45 @@ def check_references(problems, scheme):
     return genomes
 
 
-def check_snp(problems, warnings, scheme, tree_nodes, reference_genomes):
-    relative = scheme.snp
+def check_cansnps(problems, warnings, scheme, tree_nodes, reference_genomes):
+    """The canSNPs of a scheme: every canSNP of every node, ranked within the node.
+
+    The canSNPs marked typed are the ones CanSNPer2 calls, one per node, and the
+    others are the alternatives of their node, which an assay may use.
+    """
+    relative = scheme.cansnps
     raw, lines, rows = read_rows(scheme.path(relative), problems, relative)
     check_format(problems, relative, raw, lines)
-    if not check_header(problems, relative, rows, SNP_HEADER):
+    if not check_header(problems, relative, rows, CANSNP_HEADER):
         return
 
-    snp_ids = []
+    nodes = []
+    ranks = {}
+    typed_rows = Counter()
     positions = Counter()
     base_issues = set()
     for number, row in enumerate(rows[1:], start=2):
-        if len(row) != len(SNP_HEADER):
-            problems.append(f"{relative}:{number}: expected {len(SNP_HEADER)} "
+        if len(row) != len(CANSNP_HEADER):
+            problems.append(f"{relative}:{number}: expected {len(CANSNP_HEADER)} "
                             f"columns, found {len(row)}")
             continue
-        snp_id, _strain, _reference, genome, sequence, position, derived, ancestral = row
-        snp_ids.append(snp_id)
+        node, rank, reference, genome, sequence, position, derived, ancestral, score, typed = row
+        nodes.append(node)
 
+        if not RANK_RE.match(rank):
+            problems.append(f"{relative}:{number}: rank '{rank}' is not a positive integer")
+        else:
+            ranks.setdefault(node, []).append(int(rank))
+        if not reference.strip():
+            problems.append(f"{relative}:{number}: reference is empty; name where the "
+                            f"canSNP is published, or NA")
+        if score.strip() and not SCORE_RE.match(score):
+            problems.append(f"{relative}:{number}: score '{score}' is not a number")
+        if typed not in TYPED_VALUES:
+            problems.append(f"{relative}:{number}: typed '{typed}' is not "
+                            f"{' or '.join(TYPED_VALUES)}")
+        elif typed == "yes":
+            typed_rows[node] += 1
         if not sequence.strip():
             problems.append(f"{relative}:{number}: sequence is empty")
         if not POSITION_RE.match(position) or int(position) < 1:
@@ -337,9 +383,9 @@ def check_snp(problems, warnings, scheme, tree_nodes, reference_genomes):
         else:
             # Keyed on the number, so that 0100 and 100 count as the same position.
             positions[(genome, sequence, int(position))] += 1
-        # A SNP listed in known_issues is already published with a malformed
+        # A canSNP listed in known_issues is already published with a malformed
         # base column. Report it every run, but do not fail the build on it.
-        base_report = warnings if snp_id in scheme.known_issues else problems
+        base_report = warnings if node in scheme.known_issues else problems
         base_problems = []
         if derived not in BASES:
             base_problems.append(f"{relative}:{number}: derived_base '{derived}' is "
@@ -351,35 +397,43 @@ def check_snp(problems, warnings, scheme, tree_nodes, reference_genomes):
             base_problems.append(f"{relative}:{number}: derived and ancestral base "
                                  f"are both '{derived}'")
         if base_problems:
-            base_issues.add(snp_id)
+            base_issues.add(node)
             base_report.extend(base_problems)
         if genome not in reference_genomes:
             problems.append(f"{relative}:{number}: genome '{genome}' is not listed "
                             f"in {scheme.references}")
 
-    # A known_issues entry that names no SNP, or a SNP whose bases are now
-    # valid, is stale: it would exempt a later error in that SNP from failing.
-    for snp_id in sorted(scheme.known_issues - set(snp_ids)):
+    # A known_issues entry that names no canSNP, or one whose bases are now
+    # valid, is stale: it would exempt a later error in that canSNP from failing.
+    for node in sorted(scheme.known_issues - set(nodes)):
         problems.append(f"schemes.toml: known_issues for '{scheme.name}' lists "
-                        f"'{snp_id}', which is not in {relative}")
-    for snp_id in sorted((scheme.known_issues & set(snp_ids)) - base_issues):
+                        f"'{node}', which is not in {relative}")
+    for node in sorted((scheme.known_issues & set(nodes)) - base_issues):
         problems.append(f"schemes.toml: known_issues for '{scheme.name}' lists "
-                        f"'{snp_id}', whose bases are valid; remove the entry")
+                        f"'{node}', whose bases are valid; remove the entry")
 
-    for snp_id, count in sorted(Counter(snp_ids).items()):
-        if count > 1:
-            problems.append(f"{relative}: snp_id '{snp_id}' appears {count} times")
+    for node, listed in sorted(ranks.items()):
+        if listed != list(range(1, len(listed) + 1)):
+            problems.append(f"{relative}: the ranks of node '{node}' are "
+                            f"{', '.join(map(str, listed))}, not 1, 2, 3 ... in order")
+    for node in sorted(set(nodes)):
+        count = typed_rows[node]
+        if count == 0:
+            problems.append(f"{relative}: node '{node}' has no canSNP marked typed yes, "
+                            f"CanSNPer2 would not call it")
+        elif count > TYPED_PER_NODE:
+            problems.append(f"{relative}: node '{node}' has {count} canSNPs marked typed "
+                            f"yes, CanSNPer2 calls one canSNP per node")
     for (genome, sequence, position), count in sorted(positions.items()):
         if count > 1:
             problems.append(f"{relative}: position {position} on '{genome}' sequence "
                             f"'{sequence}' is annotated {count} times")
 
-    annotated = set(snp_ids)
-    for snp_id in sorted(annotated - tree_nodes):
-        problems.append(f"{relative}: snp_id '{snp_id}' does not appear in "
-                        f"{scheme.tree}")
+    annotated = set(nodes)
+    for node in sorted(annotated - tree_nodes):
+        problems.append(f"{relative}: node '{node}' does not appear in {scheme.tree}")
     for node in sorted(tree_nodes - annotated):
-        problems.append(f"{scheme.tree}: node '{node}' has no SNP in {scheme.snp}")
+        problems.append(f"{scheme.tree}: node '{node}' has no canSNP in {scheme.cansnps}")
 
 
 def check_genomes(problems, scheme, tree_nodes):
@@ -404,6 +458,8 @@ def check_genomes(problems, scheme, tree_nodes):
 
 
 SNP_GENOME_HEADER = ["genome", "node", "role"]
+SNP_GENOME_HEADER_WITH_SOURCE = SNP_GENOME_HEADER + ["basis", "source"]
+SNP_GENOME_BASES = ("published", "typed")
 SNP_GENOME_ROLES = {
     "representative": "its sequence was in the alignment the canSNPs were found in",
     "member": "placed at the node through a representative, as dereplication folds it in",
@@ -411,7 +467,7 @@ SNP_GENOME_ROLES = {
 }
 
 
-def check_snp_genomes(problems, scheme, tree_nodes):
+def check_snp_genomes(problems, scheme, tree_nodes, leaves=None):
     """The genomes an SNP scheme was made from, when the scheme lists them.
 
     Each row names an assembly by its versioned accession, so that the genomes
@@ -423,16 +479,25 @@ def check_snp_genomes(problems, scheme, tree_nodes):
         return
     raw, lines, rows = read_rows(scheme.path(relative), problems, relative)
     check_format(problems, relative, raw, lines)
-    if not check_header(problems, relative, rows, SNP_GENOME_HEADER):
+    # The basis and source columns are optional, and both or neither.
+    header = SNP_GENOME_HEADER_WITH_SOURCE if rows and len(rows[0]) == 5 else SNP_GENOME_HEADER
+    if not check_header(problems, relative, rows, header):
         return
 
     assemblies = {}
     for number, row in enumerate(rows[1:], start=2):
-        if len(row) != 3:
-            problems.append(f"{relative}:{number}: expected 3 columns "
-                            f"(genome, node, role), found {len(row)}")
+        if len(row) != len(header):
+            problems.append(f"{relative}:{number}: expected {len(header)} columns "
+                            f"({', '.join(header)}), found {len(row)}")
             continue
-        genome, node, role = row
+        genome, node, role = row[:3]
+        if len(header) == 5:
+            basis, source = row[3], row[4]
+            if basis not in SNP_GENOME_BASES:
+                problems.append(f"{relative}:{number}: basis '{basis}' is not one of "
+                                f"{', '.join(SNP_GENOME_BASES)}")
+            if not source:
+                problems.append(f"{relative}:{number}: source is empty")
         if not (GENBANK_RE.match(genome) or REFSEQ_RE.match(genome)):
             problems.append(f"{relative}:{number}: '{genome}' is not a versioned assembly "
                             f"accession such as GCA_000007125.1")
@@ -446,6 +511,12 @@ def check_snp_genomes(problems, scheme, tree_nodes):
         elif role != "outgroup" and node not in tree_nodes:
             problems.append(f"{relative}:{number}: node '{node}' does not appear in "
                             f"{scheme.tree}")
+        elif role != "outgroup" and leaves is not None and node not in leaves:
+            # An outgroup sits at no node, so the rule cannot apply to it. A terminal
+            # node without a genome is allowed; the scheme README lists those.
+            problems.append(f"{relative}:{number}: node '{node}' is not a terminal node "
+                            f"of {scheme.tree}; the genomes file lists the genomes of the "
+                            f"terminal nodes")
         # GCA_ and GCF_ accessions with the same digits are one assembly.
         assembly = genome[4:].split(".")[0]
         assemblies.setdefault(assembly, []).append((number, genome))
@@ -453,88 +524,6 @@ def check_snp_genomes(problems, scheme, tree_nodes):
         if len(listed) > 1:
             places = ", ".join(f"{genome} on line {number}" for number, genome in listed)
             problems.append(f"{relative}: one assembly is listed {len(listed)} times: {places}")
-
-
-SNP_SET_HEADER = ["node", "rank", "genome", "sequence", "sequence_position",
-                  "derived_base", "ancestral_base", "score"]
-SCORE_RE = re.compile(r"^-?[0-9]+(\.[0-9]+)?$")
-
-
-def check_snp_set(problems, scheme, tree_nodes, reference_genomes):
-    """The canSNPs of each node, ranked, when the scheme lists more than one.
-
-    CanSNPer2 calls one SNP per node, from the SNP file, so rank 1 of each node
-    must be the SNP the SNP file gives it. The other ranks are further canSNPs
-    of the same node, for assays that type several, and every position may
-    mark only one node.
-    """
-    relative = scheme.snp_set
-    if not relative or not os.path.exists(scheme.path(relative)):
-        return
-    raw, lines, rows = read_rows(scheme.path(relative), problems, relative)
-    check_format(problems, relative, raw, lines)
-    if not check_header(problems, relative, rows, SNP_SET_HEADER):
-        return
-
-    ranks = {}
-    first = {}
-    positions = Counter()
-    for number, row in enumerate(rows[1:], start=2):
-        if len(row) != len(SNP_SET_HEADER):
-            problems.append(f"{relative}:{number}: expected {len(SNP_SET_HEADER)} "
-                            f"columns, found {len(row)}")
-            continue
-        node, rank, genome, sequence, position, derived, ancestral, score = row
-        if node not in tree_nodes:
-            problems.append(f"{relative}:{number}: node '{node}' does not appear in "
-                            f"{scheme.tree}")
-        if not POSITION_RE.match(rank) or int(rank) < 1:
-            problems.append(f"{relative}:{number}: rank '{rank}' is not a positive integer")
-        else:
-            ranks.setdefault(node, []).append(int(rank))
-        if genome not in reference_genomes:
-            problems.append(f"{relative}:{number}: genome '{genome}' is not listed in "
-                            f"{scheme.references}")
-        if not sequence.strip():
-            problems.append(f"{relative}:{number}: sequence is empty")
-        if not POSITION_RE.match(position) or int(position) < 1:
-            problems.append(f"{relative}:{number}: sequence_position '{position}' is "
-                            f"not a positive integer")
-            continue
-        positions[(genome, sequence, int(position))] += 1
-        if derived not in BASES or ancestral not in BASES:
-            problems.append(f"{relative}:{number}: the bases '{derived}' and '{ancestral}' "
-                            f"are not both one of A, C, G, T")
-        elif derived == ancestral:
-            problems.append(f"{relative}:{number}: derived and ancestral base are both "
-                            f"'{derived}'")
-        if not SCORE_RE.match(score):
-            problems.append(f"{relative}:{number}: score '{score}' is not a number")
-        if rank == "1":
-            first[node] = (genome, sequence, int(position), derived, ancestral)
-
-    for node, listed in sorted(ranks.items()):
-        if listed != list(range(1, len(listed) + 1)):
-            problems.append(f"{relative}: the ranks of node '{node}' are "
-                            f"{', '.join(map(str, listed))}, not 1, 2, 3 ... in order")
-    for (genome, sequence, position), count in sorted(positions.items()):
-        if count > 1:
-            problems.append(f"{relative}: position {position} on '{genome}' sequence "
-                            f"'{sequence}' is listed {count} times")
-
-    # Rank 1 must agree with the SNP file, which is what CanSNPer2 calls.
-    # Undecodable bytes in the SNP file are reported by check_snp already.
-    _raw, _lines, snp_rows = read_rows(scheme.path(scheme.snp), [], scheme.snp)
-    called = {}
-    for row in snp_rows[1:]:
-        if len(row) == len(SNP_HEADER) and POSITION_RE.match(row[5]):
-            called[row[0]] = (row[3], row[4], int(row[5]), row[6], row[7])
-    for node in sorted(set(called) - set(first)):
-        problems.append(f"{relative}: node '{node}' has no canSNP of rank 1")
-    for node in sorted(set(called) & set(first)):
-        if first[node] != called[node]:
-            problems.append(f"{relative}: rank 1 of node '{node}' is not the SNP "
-                            f"{scheme.snp} gives it")
 
 
 # The README of an SNP scheme: a title, a table of these facts in this order,
@@ -643,8 +632,10 @@ def check_readme(problems, scheme, tree_nodes, require_verified=False):
     per_node = values.get("canSNPs per node")
     if per_node is not None and scheme.kind != "taxonomy":
         expected = "1"
-        if scheme.snp_set and os.path.exists(scheme.path(scheme.snp_set)):
-            ranks = [int(row[1]) for row in read_rows(scheme.path(scheme.snp_set))[2][1:]
+        if os.path.exists(scheme.path(scheme.cansnps)):
+            # check_cansnps has read and reported on the file already, so a file that
+            # cannot be decoded must not raise here.
+            ranks = [int(row[1]) for row in read_rows(scheme.path(scheme.cansnps), [])[2][1:]
                      if len(row) > 1 and row[1].isdigit()]
             if ranks and max(ranks) > 1:
                 expected = f"up to {max(ranks)}"
@@ -678,9 +669,8 @@ def validate(scheme, require_verified=False):
         check_genomes(problems, scheme, tree_nodes)
     else:
         reference_genomes = check_references(problems, scheme)
-        check_snp(problems, warnings, scheme, tree_nodes, reference_genomes)
-        check_snp_genomes(problems, scheme, tree_nodes)
-        check_snp_set(problems, scheme, tree_nodes, reference_genomes)
+        check_cansnps(problems, warnings, scheme, tree_nodes, reference_genomes)
+        check_snp_genomes(problems, scheme, tree_nodes, leaves_of(tree_nodes, scheme))
     check_readme(problems, scheme, tree_nodes, require_verified)
     return problems, warnings
 

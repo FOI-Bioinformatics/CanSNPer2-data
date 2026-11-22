@@ -1,17 +1,21 @@
-genome	node	role
-GCF_000016445.1	0.PE2a.a	representative
-GCF_000018805.1	0.PE3.a	representative
-GCF_000007885.1	0.PE4.c	representative
-GCF_000169675.1	0.ANT2.a	representative
-GCF_000169615.1	1.ANT1.a	representative
-GCF_000013825.1	1.ANT1.b	representative
-GCF_000169695.1	1.IN3.b	representative
-GCF_000181455.2	1.ORI1.f	representative
-GCF_000009065.1	1.ORI1.h	representative
-GCF_000170275.1	1.ORI2.u	representative
-GCF_000168235.2	1.ORI3.l	representative
-GCF_000169635.1	1.ORI3.q	representative
-GCF_000013805.1	2.ANT1.a	representative
-GCF_000006645.1	2.MED1.c	representative
-GCF_000169655.1	2.MED2.c	representative
-GCF_000047365.1		outgroup
+genome	node	role	basis	source
+GCF_000016445.1	0.PE2a.a	representative	published	Morelli2010
+GCF_000007885.1	0.PE4.c	representative	published	Morelli2010
+GCF_000169675.1	0.ANT2.a	representative	published	Morelli2010
+GCF_000169615.1	1.ANT1.a	representative	published	Morelli2010
+GCF_000169695.1	1.IN3.b	representative	published	Morelli2010
+GCF_000009065.1	1.ORI1.h	representative	published	Morelli2010
+GCF_000170275.1	1.ORI2.u	representative	published	Morelli2010
+GCF_000168235.2	1.ORI3.l	representative	published	Morelli2010
+GCF_000169635.1	1.ORI3.q	representative	published	Morelli2010
+GCF_000006645.1	2.MED1.c	representative	published	Morelli2010
+GCF_000169655.1	2.MED2.c	representative	published	Morelli2010
+GCF_000047365.1		outgroup	published	Morelli2010
+GCF_000324225.1	0.ANT1.a	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_009670485.1	0.ANT1.b	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000324345.1	0.ANT1.c	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000835005.1	1.ANT3.a	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000182525.1	1.ORI2.f	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_041409745.1	1.ORI3.i	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_015190655.1	2.ANT2.b	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_046895655.1	2.MED3.b	representative	typed	GTDB r232, CanSNPer2 2.3.0

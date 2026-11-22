@@ -1,0 +1,12 @@
+node	rank	reference	genome	sequence	sequence_position	derived_base	ancestral_base	score	typed
+Root	1	NA	RSA493	AE016828.3	516	T	G		yes
+C.1	1	Karlsson2014	RSA493	AE016828.3	1811877	G	C		yes
+C.3	1	Karlsson2014	RSA493	AE016828.3	559846	C	T		yes
+C.4	1	Karlsson2014	RSA493	AE016828.3	604404	A	G		yes
+C.5	1	Karlsson2014	RSA493	AE016828.3	847846	C	T		yes
+C.6	1	Karlsson2014	RSA493	AE016828.3	648945	A	G		yes
+C.7	1	Karlsson2014	RSA493	AE016828.3	1178122	A	G		yes
+C.8	1	Karlsson2014	RSA493	AE016828.3	1356211	T	C		yes
+C.9	1	Karlsson2014	RSA493	AE016828.3	33004	A	G		yes
+C.10	1	Karlsson2014	RSA493	AE016828.3	1436449	T	C		yes
+C.11	1	Karlsson2014	RSA493	AE016828.3	1792617	A	G		yes
