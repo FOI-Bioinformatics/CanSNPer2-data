@@ -43,7 +43,8 @@ sources changed, fails the build.
 
 `check_bases.py` downloads the GenBank assembly of every reference genome from
 NCBI into `.references/` (once; `--cache` names another folder) and checks the
-base at every position of `<name>_snp.txt` and `<name>_canSNPs.txt`. Each SNP
+base at every position of `<name>_canSNPs.txt`, the alternative canSNPs of a
+node included. Each canSNP
 names a sequence of the assembly (a chromosome or plasmid, by its GenBank
 accession) and a position on it, so the order of the sequences in the assembly
 file does not matter. A sequence that the assembly lacks is reported as a

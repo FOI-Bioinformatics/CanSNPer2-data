@@ -143,7 +143,7 @@ def build_snp_scheme(scheme, target):
         database=target,
         create=True,
         tree=scheme.path(scheme.tree),
-        annotation=scheme.path(scheme.snp),
+        annotation=scheme.path(scheme.cansnps),
         references=scheme.path(scheme.references),
         source_type=scheme.source_type,
         verbose=False,
@@ -304,6 +304,9 @@ def check_structure(target, single_root=True):
 def check_counts(scheme, target):
     """Check that every row of a SNP scheme's sources reached the database.
 
+    A node may hold several canSNPs, so snp_annotation holds one row per canSNP
+    rather than one per node.
+
     The loader skips rows it cannot use, so a database that is missing rows
     can still be built without an error; for a new scheme there is no
     committed database for the comparison to catch it against.
@@ -314,7 +317,7 @@ def check_counts(scheme, target):
     tree_nodes, _ = tree_nodes_and_parents(tree_rows)
     expected = {
         "nodes": len(tree_nodes),
-        "snp_annotation": len(read_rows(scheme.path(scheme.snp))[2]) - 1,
+        "snp_annotation": len(read_rows(scheme.path(scheme.cansnps))[2]) - 1,
         "snp_references": len(read_rows(scheme.path(scheme.references))[2]) - 1,
     }
     found = row_counts(target)

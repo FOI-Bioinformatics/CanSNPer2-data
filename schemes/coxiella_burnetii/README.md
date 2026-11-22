@@ -9,7 +9,7 @@
 | Nodes | 11 |
 | canSNPs per node | 1 |
 | Origin | published (Karlsson et al. 2014), ported from CanSNPer 1.0.10 |
-| Last changed | 2026-11-21 |
+| Last changed | 2026-11-22 |
 
 ## Description
 
@@ -126,3 +126,5 @@ typing run agreed with those assignments.
   Tables 1 and 4).
 - 2026-11-22: `coxiella_burnetii_genomes.txt` gained the columns `basis` and `source` (all
   rows `published`).
+- 2026-11-22: `coxiella_burnetii_canSNPs.txt` replaces the SNP file; every genome of the
+  genomes file already sat at a terminal node.

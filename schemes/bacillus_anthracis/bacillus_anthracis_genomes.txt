@@ -1,6 +1,5 @@
 genome	node	role	basis	source
 GCF_000008445.1	A.Br.001	representative	published	Van Ert2007
-GCF_000167335.1	A.Br.003	representative	published	Van Ert2007
 GCF_000167275.1	A.Br.007	representative	published	Van Ert2007
 GCF_000167315.1	A.Br.009	representative	published	Van Ert2007
 GCF_000167295.1	B.Br.001	representative	published	Van Ert2007

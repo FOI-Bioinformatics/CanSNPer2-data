@@ -9,7 +9,7 @@
 | Nodes | 97 |
 | canSNPs per node | 1 |
 | Origin | published (Morelli et al. 2010) |
-| Last changed | 2026-11-21 |
+| Last changed | 2026-11-22 |
 
 ## Description
 
@@ -25,12 +25,16 @@ al. (2010). Of the 100 published canSNPs, 97 are kept; the three without a
 derived base were removed on 2026-11-20 (see Known issues).
 
 The genomes file `yersinia_pestis_genomes.txt` lists the genomes of Morelli et
-al. (2010, Supplementary Table 1), each by its current assembly accession and
-at the node that table gives it. Fifteen *Y. pestis* genomes are listed as
-`representative` and *Y. pseudotuberculosis* IP32953 as the `outgroup`. Two of
-the table's genomes are not listed: IP674 has no assembly, and FV-1 was left
-out of the genome comparison the canSNPs came from, for suspected sequencing
-errors. The node of `91001` is `0.PE4.c` as the table
+al. (2010, Supplementary Table 1) that sit at a terminal node, each by its
+current assembly accession and at the node that table gives it: eleven *Y.
+pestis* genomes as `representative` and *Y. pseudotuberculosis* IP32953 as the
+`outgroup`. Two of the table's genomes have no row at all: IP674 has no
+assembly, and FV-1 was left out of the genome comparison the canSNPs came from,
+for suspected sequencing errors. Four more are not listed because their node
+carries further nodes below it, and the genomes file holds the genomes of the
+terminal nodes: `GCF_000018805.1` at `0.PE3.a`, `GCF_000013825.1` at
+`1.ANT1.b`, `GCF_000181455.2` at `1.ORI1.f` and `GCF_000013805.1` at
+`2.ANT1.a`. The node of `91001` is `0.PE4.c` as the table
 gives it, although CanSNPer2 does not call it there because `91001` is
 ancestral at the root canSNP (see Known issues).
 
@@ -132,3 +136,6 @@ receive no call. The canSNP of the root node is therefore not derived in every
   al. (2010, Supplementary Table 1), with IP32953 as the outgroup.
 - 2026-11-22: `yersinia_pestis_genomes.txt` gained the columns `basis` and
   `source`; 8 typed genomes added.
+- 2026-11-22: `yersinia_pestis_canSNPs.txt` replaces the SNP file, and
+  `yersinia_pestis_genomes.txt` keeps only the genomes of the terminal nodes
+  (four rows at inner nodes were dropped).
