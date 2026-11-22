@@ -154,7 +154,13 @@ these genomes below species level.
 - No canSNP of the scheme marks the lineages of *B. suis* biovars 2 and 5, so
   genomes of those biovars stop above `abc_246`, nor the atypical species
   *B. microti*, *B. inopinata*, *B. vulpis* and *B. amazoniensis*, which stop
-  at `Root`.
+  at `Root`. This is a limit of the published marker set, not of the port:
+  Foster et al. (2008) give one assay for *B. suis* and *B. canis* together,
+  write that "SNPs defining *B. suis* exclusively have yet to be found", and
+  name biovar 5 as the likely challenge to that assay; their panel of 338
+  isolates holds no biovar 2. The scheme keeps what was published. A *B. suis*
+  isolate is resolved by `brucella_suis` or `brucella_2017`, which mark these
+  lineages with canSNPs of their own; see below.
 - Fifteen genomes of the species cluster are deposited under a species name
   that neither their call nor their ANI supports; the scheme places them with
   their ANI. See Validation.
@@ -172,6 +178,32 @@ these genomes below species level.
   derived at `2922C` and `991C` but not at `1562B` and `4748B`, which the tree
   places above them. The nesting of the C clade under the B clade has not been
   checked further.
+
+### Typing *B. suis* and *B. canis*
+
+Thirty-six *B. suis* and *B. canis* representatives of the `brucella_suis`
+scheme were typed against this scheme on 2026-11-22 (CanSNPer2 2.4.0,
+`--aligner minimap2`). The call follows the biovar:
+
+| Biovar or species | Genomes | Call |
+|---|---|---|
+| *B. suis* bv1 | 6 | `8306I` (5), `5362I` (1) |
+| *B. suis* bv4 | 2 | `10621J` |
+| *B. canis* | 11 | `omp25_256` |
+| *B. suis* bv3 | 2 | `abc_246`, only with `--min_required_hits 2` |
+| *B. suis* bv2 | 11 | no call: derived at `Root` alone |
+| *B. suis* bv5 | 3 | no call: derived at `Root` alone |
+
+Biovar 3 carries `abc_246` and is held back only by the default threshold,
+like the other nodes of depth two. Biovars 2 and 5 carry no canSNP of the
+scheme below the root, so no threshold types them. The scheme does not
+distinguish *B. suis* from *B. canis* above `10621J`, as the published assay
+does not.
+
+The remaining genome, `GCF_000292125.1` (strain S2-30), is deposited as
+*B. suis* and called `8872G`, on the *B. melitensis* branch, with full
+support; it is one of the fifteen genomes above whose ANI agrees with the call
+rather than with the deposited name.
 
 ## References
 
@@ -204,3 +236,6 @@ these genomes below species level.
   genome; no GTDB genome is called there.
 - 2026-11-22: `brucella_classical_canSNPs.txt` replaces the SNP file; every genome of the
   genomes file already sat at a terminal node.
+- 2026-11-22: recorded why *B. suis* biovars 2 and 5 cannot be typed and which
+  schemes resolve them; added the typing of 36 *B. suis* and *B. canis*
+  representatives.
