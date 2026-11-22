@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 24
   },
-  "database_sha256": "30f389a9bdc9359f4909b7f90bc9d518a37d7e89ccdb1bdf744367bb3993bd6f",
+  "database_sha256": "3b70e9fd50cc31c701ef7dc4cfc332475ec6fd8234c4238de190baee0d7e42e5",
   "format": "2.4",
   "kind": "snp",
   "scheme": "brucella_classical",
@@ -21,7 +21,7 @@
     "schemes/brucella_classical/brucella_classical_tree.txt": "4de795f947287728b605167a82b846a6c0f995efe5e9b6480b2246ce34bdbfd3"
   },
   "versions": {
-    "cansnper2": "2.3.0",
+    "cansnper2": "2.4.0",
     "python": "3.11.14"
   }
 }

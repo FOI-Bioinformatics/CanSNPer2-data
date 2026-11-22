@@ -9,7 +9,7 @@
     "snp_references": 5,
     "tree": 328
   },
-  "database_sha256": "9412a76576ddd9f7186a754f868e880671a911defb378bd7435f191fab78665d",
+  "database_sha256": "5382fa0468e9c32c603be6b0f0c53de3dfcb1baa7c2cd89d789be5f2f57c08da",
   "format": "2.4",
   "kind": "snp",
   "scheme": "francisella_tularensis",
@@ -21,7 +21,7 @@
     "schemes/francisella_tularensis/francisella_tularensis_tree.txt": "5b59747e468d5fcef452b5f5a3dcdc9d10a4a6ab5ae67bec8ec4f19d4fe72887"
   },
   "versions": {
-    "cansnper2": "2.3.0",
+    "cansnper2": "2.4.0",
     "python": "3.11.14"
   }
 }
