@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-21",
+  "built": "2026-11-22",
   "counts": {
     "genomes": 0,
     "nodes": 328,
@@ -9,14 +9,15 @@
     "snp_references": 5,
     "tree": 328
   },
-  "database_sha256": "c88a21a73791c92445144cc03a0122a40dd28dbb3e94f941031cb859a054b614",
-  "format": "2.3",
+  "database_sha256": "9412a76576ddd9f7186a754f868e880671a911defb378bd7435f191fab78665d",
+  "format": "2.4",
   "kind": "snp",
   "scheme": "francisella_tularensis",
-  "source_commit": "5b24118eacb4a79ca9538ac015fc07537f8c85f8",
+  "source_commit": "4e834ee958efaa1d5a71c821a56621a04c252e43",
   "sources": {
+    "schemes/francisella_tularensis/francisella_tularensis_canSNPs.txt": "d558d6da1a1f6da1ea8d478c8c4253404cb2a71718a7a41e665f96d47802c747",
+    "schemes/francisella_tularensis/francisella_tularensis_genomes.txt": "59a47c1d264a3cef92dfddd773ff49ad6077c29b65a6c319f807b4fcea1468f3",
     "schemes/francisella_tularensis/francisella_tularensis_references.txt": "19e13f84fb7df0db65ed7b518881d27708bcb4665f242fba11472e75d850c7c2",
-    "schemes/francisella_tularensis/francisella_tularensis_snp.txt": "3d8356fbf7191a1f66191a40646583838ba92a33ee9aa84877c8ba5ca65d85d8",
     "schemes/francisella_tularensis/francisella_tularensis_tree.txt": "5b59747e468d5fcef452b5f5a3dcdc9d10a4a6ab5ae67bec8ec4f19d4fe72887"
   },
   "versions": {

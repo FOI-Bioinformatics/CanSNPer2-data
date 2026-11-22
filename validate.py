@@ -255,7 +255,9 @@ def leaves_of(tree_nodes, scheme):
     The genomes file lists the genomes of the terminal nodes, so that one row means
     one thing: a genome that represents that terminal group.
     """
-    _raw, _lines, rows = read_rows(scheme.path(scheme.tree))
+    # The tree has been read and reported on by check_tree already, so a file that
+    # cannot be decoded is not reported twice and must not raise here.
+    _raw, _lines, rows = read_rows(scheme.path(scheme.tree), [])
     parents = set()
     for row in rows:
         fields = [f for f in row if f.strip()]
@@ -631,7 +633,9 @@ def check_readme(problems, scheme, tree_nodes, require_verified=False):
     if per_node is not None and scheme.kind != "taxonomy":
         expected = "1"
         if os.path.exists(scheme.path(scheme.cansnps)):
-            ranks = [int(row[1]) for row in read_rows(scheme.path(scheme.cansnps))[2][1:]
+            # check_cansnps has read and reported on the file already, so a file that
+            # cannot be decoded must not raise here.
+            ranks = [int(row[1]) for row in read_rows(scheme.path(scheme.cansnps), [])[2][1:]
                      if len(row) > 1 and row[1].isdigit()]
             if ranks and max(ranks) > 1:
                 expected = f"up to {max(ranks)}"
