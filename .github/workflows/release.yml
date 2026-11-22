@@ -30,9 +30,7 @@ jobs:
       - name: Install CanSNPer2
         run: |
           python -m pip install --upgrade pip
-          # the canSNP file of a scheme is read by CanSNPer2 on this branch;
-          # set back to @master once it is merged there
-          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@cansnps_source
+          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
 
       - name: Validate scheme sources
         run: python validate.py --require-verified
