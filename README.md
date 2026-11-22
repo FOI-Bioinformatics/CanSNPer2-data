@@ -58,7 +58,7 @@ requests into `master`, continuous integration also runs
 `python validate.py --require-verified`, which fails on a draft scheme.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2
-2.3.0 or later. Building a taxonomy scheme also needs flextaxd; SNP schemes do not:
+2.4.0 or later, which is the version that reads the canSNP file of a scheme. Building a taxonomy scheme also needs flextaxd; SNP schemes do not:
 
 ```sh
 pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git

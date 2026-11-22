@@ -50,9 +50,8 @@ from validate import CONFIG, REPO, discover, read_rows, tree_nodes_and_parents, 
 # joined in file order and do not read the per-sequence SNP files. Development
 # commits of 2.3.0 from before the scheme_info table carry the same version, so
 # require_cansnper2 also checks that the module writing that table is present.
-MINIMUM_CANSNPER2 = (2, 3, 0)
-#: Where to get a CanSNPer2 that reads the canSNP file of a scheme.
-CANSNPER2_REPOSITORY = "FOI-Bioinformatics/CanSNPer2"
+#: The schemes keep their canSNPs in <name>_canSNPs.txt, which CanSNPer2 reads from 2.4.0.
+MINIMUM_CANSNPER2 = (2, 4, 0)
 
 # The repository recorded as the source of every database built here.
 DATA_REPOSITORY = "FOI-Bioinformatics/CanSNPer2-data"
@@ -85,10 +84,24 @@ def version_tuple(version):
     return tuple(int(part) for part in match.group(1).split(".")) if match else ()
 
 
+def cansnper2_version():
+    """The version of the CanSNPer2 that will be imported.
+
+    The version of the package itself, not of the installed distribution: the two
+    disagree for a checkout on PYTHONPATH or an editable install, and it is the
+    code that will run that has to be able to read the schemes.
+    """
+    try:
+        return importlib.import_module("CanSNPer2").__version__
+    except (ImportError, AttributeError):
+        pass
+    return importlib.metadata.version("CanSNPer2")
+
+
 def require_cansnper2():
     try:
-        installed = importlib.metadata.version("CanSNPer2")
-    except importlib.metadata.PackageNotFoundError:
+        installed = cansnper2_version()
+    except (importlib.metadata.PackageNotFoundError, ImportError):
         raise RuntimeError("CanSNPer2 is not installed")
     if version_tuple(installed) < MINIMUM_CANSNPER2:
         wanted = ".".join(str(part) for part in MINIMUM_CANSNPER2)
@@ -98,20 +111,7 @@ def require_cansnper2():
         importlib.import_module("CanSNPer2.modules.SchemeInfo")
     except ImportError:
         raise RuntimeError(f"CanSNPer2 {installed} does not write scheme_info; "
-                           f"install CanSNPer2 2.3.0 or later")
-    # The canSNP source file arrived inside 2.3.0, before it was released, so the
-    # version string does not tell a CanSNPer2 that reads it from one that does not.
-    # What distinguishes them is the columns the loaders require.
-    try:
-        connection = importlib.import_module("CanSNPer2.modules.DatabaseConnection")
-        columns = getattr(connection, "CANSNP_SOURCE_COLUMNS")
-    except (ImportError, AttributeError):
-        raise RuntimeError(f"CanSNPer2 {installed} reads the SNP file, one canSNP per node, "
-                           f"and not the canSNP file of a scheme; install CanSNPer2 from "
-                           f"https://github.com/{CANSNPER2_REPOSITORY}")
-    if "typed" not in columns:
-        raise RuntimeError(f"CanSNPer2 {installed} reads a canSNP file without a typed "
-                           f"column; install a newer CanSNPer2")
+                           f"install CanSNPer2 2.4.0 or later")
 
 
 def scheme_source():

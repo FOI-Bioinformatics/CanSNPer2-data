@@ -1,4 +1,4 @@
-"""Tests for build.py. They build real databases, so they need CanSNPer2 2.3.0 or later."""
+"""Tests for build.py. They build real databases, so they need CanSNPer2 2.4.0 or later."""
 
 import importlib.metadata
 import json
@@ -456,14 +456,24 @@ def test_version_tuple():
 
 
 def test_older_cansnper2_is_refused(monkeypatch):
-    # 2.2 counts positions along the joined reference sequences
-    monkeypatch.setattr(importlib.metadata, "version", lambda name: "2.2.2")
-    with pytest.raises(RuntimeError, match="2.3.0 or later is required, found 2.2.2"):
+    # 2.3.0 reads the SNP file, one canSNP per node, and not the canSNP file
+    monkeypatch.setattr(build, "cansnper2_version", lambda: "2.3.0")
+    with pytest.raises(RuntimeError, match="2.4.0 or later is required, found 2.3.0"):
         build.require_cansnper2()
 
 
+def test_the_version_of_the_package_that_will_be_imported_is_read(monkeypatch):
+    """A checkout on PYTHONPATH, or an editable install, can be a version the
+    installed distribution metadata does not know."""
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "2.3.0")
+    assert build.cansnper2_version() == importlib.import_module("CanSNPer2").__version__
+    monkeypatch.setattr(build.importlib, "import_module",
+                        lambda name, *a, **k: (_ for _ in ()).throw(ImportError(name)))
+    assert build.cansnper2_version() == "2.3.0"
+
+
 def test_cansnper2_without_scheme_info_is_refused(monkeypatch):
-    # a 2.3.0 development commit from before scheme_info has the same version
+    # a development commit from before scheme_info has the same version
     real = build.importlib.import_module
 
     def without_scheme_info(name, *args, **kwargs):
