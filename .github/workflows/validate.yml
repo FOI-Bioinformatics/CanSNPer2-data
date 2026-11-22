@@ -28,7 +28,9 @@ jobs:
       - name: Install CanSNPer2 and pytest
         run: |
           python -m pip install --upgrade pip
-          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@master
+          # the canSNP file of a scheme is read by CanSNPer2 on this branch;
+          # set back to @master once it is merged there
+          python -m pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git@cansnps_source
           python -m pip install pytest
 
       - name: Test the validation and build tools
