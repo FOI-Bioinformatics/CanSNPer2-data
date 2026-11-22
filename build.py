@@ -501,21 +501,26 @@ def dirty_sources(scheme, repo=REPO):
 
 
 def tool_versions(scheme):
-    """Record the installed versions that produced a build.
+    """Record the versions that produced a build.
 
-    The distribution metadata is the reliable source: flextaxd's package does
-    not expose a __version__ attribute. flextaxd is only recorded for a scheme
-    that was built with it.
+    CanSNPer2's version is the one the gate reads, the version of the package
+    that is imported: a checkout on PYTHONPATH or an editable install builds
+    with a version the installed distribution metadata does not know, and a
+    manifest naming the other one would credit a version that did not build the
+    database. flextaxd is read from the distribution metadata, as its package
+    does not expose a __version__ attribute, and it is only recorded for a
+    scheme that was built with it.
     """
     versions = {"python": sys.version.split()[0]}
-    tools = [("cansnper2", "CanSNPer2")]
+    try:
+        versions["cansnper2"] = cansnper2_version()
+    except importlib.metadata.PackageNotFoundError:
+        versions["cansnper2"] = "unknown"
     if scheme.kind == "taxonomy":
-        tools.append(("flextaxd", "flextaxd"))
-    for name, distribution in tools:
         try:
-            versions[name] = importlib.metadata.version(distribution)
+            versions["flextaxd"] = importlib.metadata.version("flextaxd")
         except importlib.metadata.PackageNotFoundError:
-            versions[name] = "unknown"
+            versions["flextaxd"] = "unknown"
     return versions
 
 
