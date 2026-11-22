@@ -51,6 +51,8 @@ from validate import CONFIG, REPO, discover, read_rows, tree_nodes_and_parents, 
 # commits of 2.3.0 from before the scheme_info table carry the same version, so
 # require_cansnper2 also checks that the module writing that table is present.
 MINIMUM_CANSNPER2 = (2, 3, 0)
+#: Where to get a CanSNPer2 that reads the canSNP file of a scheme.
+CANSNPER2_REPOSITORY = "FOI-Bioinformatics/CanSNPer2"
 
 # The repository recorded as the source of every database built here.
 DATA_REPOSITORY = "FOI-Bioinformatics/CanSNPer2-data"
@@ -97,6 +99,19 @@ def require_cansnper2():
     except ImportError:
         raise RuntimeError(f"CanSNPer2 {installed} does not write scheme_info; "
                            f"install CanSNPer2 2.3.0 or later")
+    # The canSNP source file arrived inside 2.3.0, before it was released, so the
+    # version string does not tell a CanSNPer2 that reads it from one that does not.
+    # What distinguishes them is the columns the loaders require.
+    try:
+        connection = importlib.import_module("CanSNPer2.modules.DatabaseConnection")
+        columns = getattr(connection, "CANSNP_SOURCE_COLUMNS")
+    except (ImportError, AttributeError):
+        raise RuntimeError(f"CanSNPer2 {installed} reads the SNP file, one canSNP per node, "
+                           f"and not the canSNP file of a scheme; install CanSNPer2 from "
+                           f"https://github.com/{CANSNPER2_REPOSITORY}")
+    if "typed" not in columns:
+        raise RuntimeError(f"CanSNPer2 {installed} reads a canSNP file without a typed "
+                           f"column; install a newer CanSNPer2")
 
 
 def scheme_source():
@@ -367,9 +382,16 @@ def content(path):
                 location = "a.sequence, a.sequence_position"
             else:
                 location = "NULL, a.position"
+            # A database built before the canSNP file holds one canSNP per node and
+            # none of these three columns; it is read without them, so that it differs
+            # from a rebuild instead of stopping the comparison.
+            if "typed" in columns:
+                ranking = "a.rank, a.score, a.typed"
+            else:
+                ranking = "NULL, NULL, NULL"
             result["snp_annotation"] = set(query(
                 f"""SELECT n.name, a.snp_id, {location}, a.derived_base,
-                          a.ancestral_base, a.reference, g.genome
+                          a.ancestral_base, a.reference, g.genome, {ranking}
                    FROM snp_annotation a
                    LEFT JOIN nodes n ON n.id = a.node_id
                    LEFT JOIN snp_references g ON g.id = a.genome_i"""))

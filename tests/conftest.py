@@ -11,12 +11,13 @@ from validate import Scheme  # noqa: E402
 TREE = "R\nR\tA\nR\tA\tB\nR\tC\n"
 REFERENCES = ("genome\tstrain\tgenbank_id\trefseq_id\tassembly_name\n"
               "G\tstrain G\tGCA_000000001.1\tGCF_000000001.1\tASM1v1\n")
-SNP_HEADER = "snp_id\tstrain\treference\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\n"
-SNP_ROWS = [
-    "R\ts\tTest2026\tG\tseq1\t100\tA\tG",
-    "A\ts\tTest2026\tG\tseq1\t200\tT\tC",
-    "B\ts\tTest2026\tG\tseq2\t50\tC\tT",
-    "C\ts\tTest2026\tG\tseq2\t150\tG\tA",
+CANSNP_HEADER = ("node\trank\treference\tgenome\tsequence\tsequence_position\t"
+                 "derived_base\tancestral_base\tscore\ttyped\n")
+CANSNP_ROWS = [
+    "R\t1\tTest2026\tG\tseq1\t100\tA\tG\t520\tyes",
+    "A\t1\tTest2026\tG\tseq1\t200\tT\tC\t500\tyes",
+    "B\t1\tTest2026\tG\tseq2\t50\tC\tT\t495\tyes",
+    "C\t1\tTest2026\tG\tseq2\t150\tG\tA\t470\tyes",
 ]
 
 
@@ -42,28 +43,26 @@ def make_scheme(tmp_path):
     """Write a small SNP scheme (R -> A -> B, R -> C) and return a Scheme for it.
 
     Paths are absolute, so the scheme lives outside the repository; the
-    database and manifest go to tmp_path/database.
+    database and manifest go to tmp_path/database. Several canSNPs of a node
+    are given as rows with ranks 2 and up in cansnp_rows.
     """
-    def make(tree=TREE, snp_rows=None, references=REFERENCES, name="test",
-             raw_snp=None, genomes=None, snp_set=None, readme=None, **options):
+    def make(tree=TREE, cansnp_rows=None, references=REFERENCES, name="test",
+             raw_cansnps=None, genomes=None, readme=None, **options):
         files = {
             "tree": tmp_path / f"{name}_tree.txt",
-            "snp": tmp_path / f"{name}_snp.txt",
+            "cansnps": tmp_path / f"{name}_canSNPs.txt",
             "references": tmp_path / f"{name}_references.txt",
         }
         files["tree"].write_text(tree)
         files["references"].write_text(references)
-        if raw_snp is not None:
-            files["snp"].write_bytes(raw_snp)
+        if raw_cansnps is not None:
+            files["cansnps"].write_bytes(raw_cansnps)
         else:
-            rows = SNP_ROWS if snp_rows is None else snp_rows
-            files["snp"].write_text(SNP_HEADER + "".join(row + "\n" for row in rows))
+            rows = CANSNP_ROWS if cansnp_rows is None else cansnp_rows
+            files["cansnps"].write_text(CANSNP_HEADER + "".join(row + "\n" for row in rows))
         genomes_path = tmp_path / f"{name}_genomes.txt"
         if genomes is not None:
             genomes_path.write_text(genomes)
-        snp_set_path = tmp_path / f"{name}_canSNPs.txt"
-        if snp_set is not None:
-            snp_set_path.write_text(snp_set)
         # A conforming README unless the test gives its own text, or False for none.
         readme_path = tmp_path / "README.md"
         if readme is None:
@@ -72,8 +71,7 @@ def make_scheme(tmp_path):
             readme_path.write_text(readme)
         database_dir = tmp_path / "database"
         database_dir.mkdir(exist_ok=True)
-        return Scheme(name, tree=str(files["tree"]), snp=str(files["snp"]),
+        return Scheme(name, tree=str(files["tree"]), cansnps=str(files["cansnps"]),
                       references=str(files["references"]), genomes=str(genomes_path),
-                      snp_set=str(snp_set_path), readme=str(readme_path),
-                      database_dir=str(database_dir), **options)
+                      readme=str(readme_path), database_dir=str(database_dir), **options)
     return make

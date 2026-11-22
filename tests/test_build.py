@@ -9,7 +9,7 @@ import sqlite3
 import pytest
 
 import build
-from conftest import SNP_HEADER, SNP_ROWS
+from conftest import CANSNP_HEADER, CANSNP_ROWS, readme_text
 
 try:
     build.require_cansnper2()
@@ -43,10 +43,10 @@ def test_a_snp_on_an_unknown_genome_is_not_built_silently(built):
     # CanSNPer2 with source file checks (CanSNPer2#66) refuses the files; an
     # earlier CanSNPer2 skips the row with a logged warning, which build()
     # returns and check_counts sees as a gap
-    rows = list(SNP_ROWS)
-    rows[3] = "C\ts\tTest2026\tOTHER\tseq2\t150\tG\tA"
+    rows = list(CANSNP_ROWS)
+    rows[3] = "C\t1\tTest2026\tOTHER\tseq2\t150\tG\tA\t470\tyes"
     try:
-        scheme, target, warnings = built(snp_rows=rows)
+        scheme, target, warnings = built(cansnp_rows=rows)
     except SourceFileError as error:
         assert "genome 'OTHER' is not listed" in str(error)
         return
@@ -64,6 +64,28 @@ def test_check_counts_sees_a_missing_row(built):
     connection.close()
     assert build.check_counts(scheme, target) == [
         "snp_annotation has 3 rows, the sources define 4"]
+
+
+def test_check_counts_counts_every_canSNP_of_a_node(built):
+    rows = list(CANSNP_ROWS)
+    rows.insert(2, "A\t2\tTest2026\tG\tseq1\t220\tC\tG\t490\tno")
+    scheme, target, warnings = built(cansnp_rows=rows, readme=readme_text(per_node="up to 2"))
+    assert warnings == []
+    assert build.check_counts(scheme, target) == []
+    connection = sqlite3.connect(target)
+    assert connection.execute("SELECT COUNT(*) FROM snp_annotation").fetchone()[0] == 5
+    connection.close()
+
+
+def test_check_counts_counts_every_canSNP_of_a_node(built):
+    rows = list(CANSNP_ROWS)
+    rows.insert(2, "A\t2\tTest2026\tG\tseq1\t220\tC\tG\t490\tno")
+    scheme, target, warnings = built(cansnp_rows=rows, readme=readme_text(per_node="up to 2"))
+    assert warnings == []
+    assert build.check_counts(scheme, target) == []
+    connection = sqlite3.connect(target)
+    assert connection.execute("SELECT COUNT(*) FROM snp_annotation").fetchone()[0] == 5
+    connection.close()
 
 
 def test_node_with_two_parents_is_not_built_silently(built):
@@ -130,9 +152,16 @@ def test_comparison_reads_a_database_with_joined_positions(built, tmp_path):
     joined = str(tmp_path / "joined.db")
     shutil.copy(target, joined)
     connection = sqlite3.connect(joined)
+    # the table is recreated, since a UNIQUE constraint names the sequence column
     connection.executescript("""
-        ALTER TABLE snp_annotation RENAME COLUMN sequence_position TO position;
-        ALTER TABLE snp_annotation DROP COLUMN sequence;""")
+        CREATE TABLE snp_annotation_joined (
+            node_id INTEGER, snp_id TEXT, position INTEGER, ancestral_base TEXT,
+            derived_base TEXT, reference TEXT, date TEXT, genome_i INTEGER);
+        INSERT INTO snp_annotation_joined
+            SELECT node_id, snp_id, sequence_position, ancestral_base, derived_base,
+                   reference, date, genome_i FROM snp_annotation;
+        DROP TABLE snp_annotation;
+        ALTER TABLE snp_annotation_joined RENAME TO snp_annotation;""")
     connection.commit()
     connection.close()
     differences = build.compare(build.content(joined), build.content(target))
@@ -165,12 +194,11 @@ def test_the_database_records_the_scheme(built, clean_git):
     # the branch of a checkout goes stale once it is merged; commit names the sources
     assert "ref" not in info
     assert info["commit"] == "a" * 40
-    assert info["format"] == "2.3"
+    assert info["format"] == "2.4"
     assert "known_issues" not in info or info["known_issues"] == ""
 
 
 def test_the_status_is_read_from_the_readme(built, clean_git):
-    from conftest import readme_text
     _scheme, target, _warnings = built(readme=readme_text(status="draft"))
     assert scheme_info_of(target)["status"] == "draft"
 
@@ -185,7 +213,7 @@ def test_known_issues_are_read_from_schemes_toml(make_scheme, clean_git, tmp_pat
 
 
 def test_uncommitted_sources_are_marked_in_the_commit(make_scheme, clean_git, monkeypatch):
-    monkeypatch.setattr(build, "dirty_sources", lambda scheme: ["schemes/test/test_snp.txt"])
+    monkeypatch.setattr(build, "dirty_sources", lambda scheme: ["schemes/test/test_canSNPs.txt"])
     assert build.scheme_info(make_scheme())["commit"] == "a" * 40 + "+uncommitted"
 
 
@@ -196,7 +224,7 @@ def test_the_comparison_ignores_the_build_date_but_not_the_status(built, clean_g
                                 ("status", "draft", True),
                                 ("commit", "b" * 40, True),
                                 ("known_issues", "A", True),
-                                ("format", "2.4", True)]:
+                                ("format", "2.5", True)]:
         changed = str(tmp_path / f"changed_{key}.db")
         shutil.copy(target, changed)
         connection = sqlite3.connect(changed)
@@ -208,6 +236,25 @@ def test_the_comparison_ignores_the_build_date_but_not_the_status(built, clean_g
         assert bool(differences) == differs, (key, differences)
         if differs:
             assert [table for table, _, _ in differences] == ["scheme_info"]
+
+
+@pytest.mark.parametrize("column,value", [("rank", 2), ("score", "480"), ("typed", 0)])
+def test_a_database_that_differs_only_in_a_canSNP_column_is_not_equal(built, clean_git,
+                                                                     tmp_path, column, value):
+    """The comparison covers the rank, the score and the typed flag.
+
+    Without them a database whose canSNPs are ranked or marked differently, which is
+    what the scheme calls, would compare as equal to its rebuild.
+    """
+    _scheme, target, _warnings = built()
+    changed = str(tmp_path / f"changed_{column}.db")
+    shutil.copy(target, changed)
+    connection = sqlite3.connect(changed)
+    connection.execute(f"UPDATE snp_annotation SET {column} = ? WHERE snp_id = 'A'", (value,))
+    connection.commit()
+    connection.close()
+    differences = build.compare(build.content(target), build.content(changed))
+    assert [table for table, _, _ in differences] == ["snp_annotation"], differences
 
 
 def test_a_database_without_scheme_info_differs_from_a_rebuild(built, clean_git, tmp_path):
@@ -257,12 +304,12 @@ def test_the_source_commit_is_the_last_commit_of_the_scheme_files(checkout):
     assert build.source_commit(scheme, repo=str(repo)) == sources
 
 
-def test_a_changed_snp_file_is_uncommitted(checkout):
+def test_a_changed_cansnp_file_is_uncommitted(checkout):
     scheme, repo = checkout
     assert build.dirty_sources(scheme, repo=str(repo)) == []
-    with open(scheme.path(scheme.snp), "a") as handle:
-        handle.write("D\ts\tTest2026\tG\tseq2\t250\tA\tC\n")
-    assert build.dirty_sources(scheme, repo=str(repo)) == ["test_snp.txt"]
+    with open(scheme.path(scheme.cansnps), "a") as handle:
+        handle.write("D\t1\tTest2026\tG\tseq2\t250\tA\tC\t1\tyes\n")
+    assert build.dirty_sources(scheme, repo=str(repo)) == ["test_canSNPs.txt"]
 
 
 def test_a_changed_readme_is_uncommitted(checkout):
@@ -289,9 +336,33 @@ def test_the_manifest_records_the_database_and_its_format(make_scheme, clean_git
     assert build.process(scheme, write=True)
     manifest = read_manifest(scheme)
     assert manifest["database_sha256"] == build.file_digest(build.database_path(scheme))
-    assert manifest["format"] == "2.3"
+    assert manifest["format"] == "2.4"
     assert manifest["source_commit"] == "a" * 40
     assert "uncommitted_sources" not in manifest
+
+
+def test_the_manifest_hashes_the_genomes_file_when_there_is_one(make_scheme, clean_git):
+    scheme = make_scheme()
+    assert build.process(scheme, write=True)
+    assert sorted(read_manifest(scheme)["sources"]) == sorted(
+        [scheme.tree, scheme.cansnps, scheme.references])
+    genomes = ("genome\tnode\trole\nGCA_000000002.1\tB\trepresentative\n")
+    scheme = make_scheme(genomes=genomes)
+    assert build.process(scheme, write=True)
+    sources = read_manifest(scheme)["sources"]
+    assert len(sources) == 4 and scheme.genomes in sources
+
+
+def test_the_manifest_hashes_the_genomes_file_when_there_is_one(make_scheme, clean_git):
+    scheme = make_scheme()
+    assert build.process(scheme, write=True)
+    assert sorted(read_manifest(scheme)["sources"]) == sorted(
+        [scheme.tree, scheme.cansnps, scheme.references])
+    genomes = "genome\tnode\trole\nGCA_000000002.1\tB\trepresentative\n"
+    scheme = make_scheme(genomes=genomes)
+    assert build.process(scheme, write=True)
+    sources = read_manifest(scheme)["sources"]
+    assert len(sources) == 4 and scheme.genomes in sources
 
 
 def test_manifest_lifecycle(make_scheme, clean_git, monkeypatch):
@@ -316,12 +387,12 @@ def test_manifest_lifecycle(make_scheme, clean_git, monkeypatch):
     assert build.process(scheme, write=True)
     assert read_manifest(scheme) == first
 
-    # a committed source edit, here to the strain column, which the database
+    # a committed source edit, here to the reference column, which the database
     # does not store, changes the source commit and so the database
-    rows = list(SNP_ROWS)
-    rows[0] = "R\tanother strain\tTest2026\tG\tseq1\t100\tA\tG"
-    with open(scheme.path(scheme.snp), "w") as handle:
-        handle.write(SNP_HEADER + "".join(row + "\n" for row in rows))
+    rows = list(CANSNP_ROWS)
+    rows[0] = "R\t1\tAnother2026\tG\tseq1\t100\tA\tG\t520\tyes"
+    with open(scheme.path(scheme.cansnps), "w") as handle:
+        handle.write(CANSNP_HEADER + "".join(row + "\n" for row in rows))
     monkeypatch.setattr(build, "source_commit", lambda scheme: "b" * 40)
     assert not build.process(scheme, write=False)
     assert build.process(scheme, write=True)
@@ -353,12 +424,12 @@ def test_a_database_that_does_not_match_its_manifest_fails(make_scheme, clean_gi
 
 def test_write_refuses_uncommitted_sources(make_scheme, clean_git, monkeypatch, capsys):
     scheme = make_scheme()
-    monkeypatch.setattr(build, "dirty_sources", lambda scheme: ["schemes/test/test_snp.txt"])
+    monkeypatch.setattr(build, "dirty_sources", lambda scheme: ["schemes/test/test_canSNPs.txt"])
     monkeypatch.setattr(build, "discover", lambda only: [scheme])
     monkeypatch.setattr("sys.argv", ["build.py", "--write"])
     assert build.main() == 1
     out = capsys.readouterr().out
-    assert ("FAIL schemes/test/test_snp.txt has uncommitted changes; commit the "
+    assert ("FAIL schemes/test/test_canSNPs.txt has uncommitted changes; commit the "
             "sources first, then run build.py --write") in out
     assert not os.path.exists(build.database_path(scheme))
     assert not os.path.exists(build.manifest_path(scheme))
