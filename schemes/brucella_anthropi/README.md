@@ -9,7 +9,7 @@
 | Nodes | 42 |
 | canSNPs per node | up to 5 |
 | Origin | made with CanSNPCreator 0.5.1 |
-| Last changed | 2026-11-21 |
+| Last changed | 2026-11-22 |
 
 ## Description
 
@@ -38,15 +38,22 @@ dereplication, and the tree over them was built with IQ-TREE (GTR+F+I+R4, 1,000
 ultrafast bootstrap replicates). Nodes with less than 90% bootstrap support
 were collapsed. The scheme keeps the 42 nodes that have a canSNP
 (`--snps-per-node 5 --prune`), with up to five ranked canSNPs per node in
-`brucella_anthropi_canSNPs.txt`. The `reference` column of the SNP file is
+`brucella_anthropi_canSNPs.txt`. The `reference` column of the canSNP file is
 `NA`, as the canSNPs are not taken from a publication.
 
-The positions in `brucella_anthropi_snp.txt` and
-`brucella_anthropi_canSNPs.txt` are given on each reference sequence of
+The positions in `brucella_anthropi_canSNPs.txt` are given on each reference
+sequence of
 ATCC 49188: 35 of the 42 scheme SNPs lie on chromosome 1 (CP000758.1,
 2,887,297 bp) and 7 on chromosome 2 (CP000759.1, 1,895,911 bp); none lie on the
 four plasmids. Until 2026-11-21 the positions were counted along the
 concatenated genome, as CanSNPer2 before 2.3.0 required.
+
+### Genomes
+
+`brucella_anthropi_genomes.txt` lists the genomes of the 16 terminal nodes, 32
+in all, and *B. tritici* as the `outgroup`. Twenty-five of the 57
+representatives sit at an inner node and are not listed; they were used to find
+the canSNPs. Until 2026-11-22 they were listed as well.
 
 ## Validation
 
@@ -79,3 +86,7 @@ https://github.com/FOI-Bioinformatics/CanSNPCreator
 - 2026-11-21: SNP positions given per reference sequence (CP000758.1 and
   CP000759.1) with `CanSNPer2-database --convert`; database rebuilt with
   CanSNPer2 2.3.0.
+- 2026-11-22: `brucella_anthropi_snp.txt` replaced by the ten-column
+  `brucella_anthropi_canSNPs.txt`, which marks the typed canSNP of each node;
+  the 25 genomes at an inner node removed from the genomes file; database
+  rebuilt with CanSNPer2 2.4.0.
