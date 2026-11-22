@@ -1,0 +1,2 @@
+genome	strain	genbank_id	refseq_id	assembly_name
+2308	2308	GCA_000054005.1	GCF_000054005.1	ASM5400v1

@@ -1,0 +1,43 @@
+B.1
+B.1	B.3
+B.1	B.3	B.4
+B.1	B.3	I.1
+B.1	B.2
+B.1	B.2	B.2a
+B.1	B.2	B.2a	V.1
+B.1	B.2	B.2a	B.2b
+B.1	B.2	B.2a	B.2b	Mi.1
+B.1	B.2	B.2a	B.2b	N.1
+B.1	B.2	B.2a	B.2b	SCa.1
+B.1	B.2	B.2a	B.2b	SCa.1	S.5
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2	S.2
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2	SCa.3
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2	SCa.3	S.1
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2	SCa.3	SCa.4
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2	SCa.3	SCa.4	S.4
+B.1	B.2	B.2a	B.2b	SCa.1	SCa.2	SCa.3	SCa.4	Ca.1
+B.1	B.2	B.2a	B.2b	Bsp.2
+B.1	B.2	B.2a	B.2b	CePi.1
+B.1	B.2	B.2a	B.2b	CePi.1	Ce.1
+B.1	B.2	B.2a	B.2b	CePi.1	CePi.2
+B.1	B.2	B.2a	B.2b	CePi.1	CePi.2	Pi.1
+B.1	B.2	B.2a	B.2b	CePi.1	CePi.2	Ce.4
+B.1	B.2	B.2a	B.2b	CePi.1	CePi.2	Ce.4	Ce.2
+B.1	B.2	B.2a	B.2b	CePi.1	CePi.2	Ce.4	Ce.3
+B.1	B.2	B.2a	B.2b	OPa.1
+B.1	B.2	B.2a	B.2b	OPa.1	Pa.1
+B.1	B.2	B.2a	B.2b	OPa.1	O.1
+B.1	B.2	B.2a	B.2b	AMe.1
+B.1	B.2	B.2a	B.2b	AMe.1	A.1
+B.1	B.2	B.2a	B.2b	AMe.1	A.1	A.7
+B.1	B.2	B.2a	B.2b	AMe.1	A.1	A.2
+B.1	B.2	B.2a	B.2b	AMe.1	A.1	A.2	A.3
+B.1	B.2	B.2a	B.2b	AMe.1	A.1	A.2	A.4
+B.1	B.2	B.2a	B.2b	AMe.1	A.1	A.2	A.4	A.6
+B.1	B.2	B.2a	B.2b	AMe.1	A.1	A.2	A.4	A.5
+B.1	B.2	B.2a	B.2b	AMe.1	Me.4
+B.1	B.2	B.2a	B.2b	AMe.1	Me.4	Me.3
+B.1	B.2	B.2a	B.2b	AMe.1	Me.4	Me.5
+B.1	B.2	B.2a	B.2b	AMe.1	Me.4	Me.5	Me.1
+B.1	B.2	B.2a	B.2b	AMe.1	Me.4	Me.5	Me.2
