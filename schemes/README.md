@@ -23,18 +23,17 @@ covers (`yersinia_pestis`, `brucella_classical`). Its folder,
 `schemes/<name>/`, holds four files that are required:
 
 - `<name>_tree.txt`, the tree;
-- `<name>_snp.txt`, one canSNP per node;
+- `<name>_canSNPs.txt`, the canSNPs of every node;
 - `<name>_references.txt`, the reference genomes the positions are given on;
 - `README.md`, describing the scheme;
 
-and two that are optional:
+and one that is optional:
 
-- `<name>_genomes.txt`, the genomes the scheme was made from;
-- `<name>_canSNPs.txt`, more than one canSNP per node.
+- `<name>_genomes.txt`, a genome of each terminal node.
 
 Adding the folder with the required files is all that is needed to declare an
-SNP scheme; `validate.py` and `build.py` discover it by name. A `_snp.txt` file
-outside the folder of its name is reported as an error.
+SNP scheme; `validate.py` and `build.py` discover it by name. A `_canSNPs.txt`
+file outside the folder of its name is reported as an error.
 
 Node names may contain letters, digits, `.`, `/`, `-`, `_` and spaces, but no
 semicolon and no tab. A node name is unique within a scheme.
@@ -56,43 +55,68 @@ node placed under two parents: it creates a second node with the same name, and
 the SNP is attached to only one of them. `validate.py` rejects such a file, and
 `build.py` rejects a database with a repeated node name.
 
-## `<name>_snp.txt`
+## `<name>_canSNPs.txt`
 
-One line per canSNP, with this header:
+Every canSNP of every node, ranked within the node. One line per canSNP, with
+this header:
 
 ```
-snp_id	strain	reference	genome	sequence	sequence_position	derived_base	ancestral_base
+node	rank	reference	genome	sequence	sequence_position	derived_base	ancestral_base	score	typed
 ```
 
-`snp_id` must name a node in the tree file, and every node in the tree file must
-have exactly one SNP here. `genome` must name a row in the references file.
-`sequence` is the GenBank accession of the reference sequence (chromosome,
-plasmid or contig) that holds the SNP, as it is named in the assembly file of
-that genome, for example `AE008917.1` for chromosome I of Brucella melitensis
-16M. `sequence_position` is a positive integer, one-based, on that sequence.
-Each sequence of a reference genome thus has its own coordinates, and the order
-of the sequences in the assembly file does not matter.
-`derived_base` and `ancestral_base` are single characters from A, C, G and T and
-must differ from each other. No two SNPs may annotate the same position on the
-same sequence of a reference genome.
+`node` must name a node in the tree file, and every node in the tree file must
+have at least one canSNP here. `rank` counts from 1 within a node, in the order
+of the file, with no gaps; rank 1 is the node's best canSNP.
 
-Before CanSNPer2 2.3.0 the file had a single `position` column, counted along
+`reference` names where the canSNP is published, by the key of the References
+section of the scheme README, or `NA` where that is not known. It is never
+empty.
+
+`genome` must name a row in the references file. `sequence` is the GenBank
+accession of the reference sequence (chromosome, plasmid or contig) that holds
+the canSNP, as it is named in the assembly file of that genome, for example
+`AE008917.1` for chromosome I of Brucella melitensis 16M. `sequence_position`
+is a positive integer, one-based, on that sequence. Each sequence of a reference
+genome thus has its own coordinates, and the order of the sequences in the
+assembly file does not matter. `derived_base` and `ancestral_base` are single
+characters from A, C, G and T and must differ from each other. No two canSNPs
+may annotate the same position on the same sequence of a reference genome.
+
+`score` is what the canSNP scored when the scheme was made, which is what ranks
+it. It is not comparable between schemes scored with different settings, and it
+is empty for a canSNP taken from a publication, which was not scored.
+
+`typed` is `yes` or `no` and marks the canSNPs that form the typing scheme:
+CanSNPer2 calls those. Exactly one canSNP of each node is `yes`, because
+CanSNPer2 calls one canSNP per node; the file allows several so that a later
+release can call more than one without another change of format. The other
+canSNPs of a node are its alternatives, which an assay may use and which
+`CanSNPer2-database --export` writes back.
+
+`typed` is the last column and is never empty, because an empty last field
+means a line ending in a tab, which is trailing whitespace.
+
+Before this format the canSNPs of a scheme were in `<name>_snp.txt`, one per
+node, with a `snp_id` and a `strain` column and no rank, score or typed. Before
+CanSNPer2 2.3.0 that file had a single `position` column as well, counted along
 the sequences of the reference genome joined in the order of its assembly file.
-CanSNPer2 2.3.0 and `validate.py` refuse that format. A file in it can be
-converted with
+`validate.py` refuses both. A file in either can be converted with
 
 ```
 CanSNPer2-database --convert --annotation <name>_snp.txt \
     --references <name>_references.txt --refdir <folder> -o <outdir>
 ```
 
-which checks each SNP against its reference genome (`<folder>/<genome>.fna`,
-downloaded from NCBI when missing) and writes the converted file to `<outdir>`.
-The same command converts a `<name>_canSNPs.txt` file.
+which writes `<outdir>/<name>_canSNPs.txt`. `--refdir` is needed only for a file
+with joined positions, where each canSNP is checked against its reference genome
+(`<folder>/<genome>.fna`, downloaded from NCBI when missing).
 
-A SNP whose bases are published in another form can be listed under
+A canSNP whose bases are published in another form can be listed under
 `known_issues` in `schemes.toml`, which reports it as a warning instead of an
 error. The README of the scheme describes the issue.
+
+`CanSNPCreator export` writes this file, and `CanSNPCreator audit` checks every
+canSNP in it.
 
 ## `<name>_references.txt`
 
@@ -114,10 +138,10 @@ per row and refuses a references file that repeats one.
 
 ## `<name>_genomes.txt`
 
-Optional for an SNP scheme. The genomes a scheme was made from, so that it can
-be checked again against them, and so that a typing result can be related to
-known genomes. A taxonomy scheme uses a file of the same name in another
-format; see Taxonomy schemes.
+Optional for an SNP scheme. A genome of each terminal node of the tree, so that
+the scheme can be checked again against them, and so that a typing result can be
+related to known genomes. A taxonomy scheme uses a file of the same name in
+another format; see Taxonomy schemes.
 One line per genome, with this header:
 
 ```
@@ -126,8 +150,9 @@ genome	node	role
 
 `genome` is a versioned assembly accession, `GCA_000000000.0` or
 `GCF_000000000.0`, so that the genome can be fetched again; one assembly is
-listed once, under either accession. `node` names a node in the tree file.
-`role` is one of:
+listed once, under either accession. `node` names a terminal node of the tree
+file, one that no path gives a child, so that a row means one thing: a genome
+that represents that terminal group. `role` is one of:
 
 - `representative`: its sequence was in the alignment the canSNPs were found
   in, as a representative genome of a RepGenR2 run is;
@@ -136,31 +161,30 @@ listed once, under either accession. `node` names a node in the tree file.
 - `outgroup`: aligned, but placed at no node, so that it gives the root its
   polarity. Its `node` is empty.
 
-A node may list no genome. CanSNPer2 does not read this file, and the database
-does not depend on it. `CanSNPCreator export --genome-map ... --alignment ...`
+Two columns may follow, both or neither, to record where each genome comes
+from:
+
+```
+genome	node	role	basis	source
+```
+
+`basis` is `published`, when a publication places the genome at the node, or
+`typed`, when CanSNPer2 placed it there itself. `source` names the publication
+by the key of the scheme README, or, for `typed`, the genome collection and
+CanSNPer2 version, such as `GTDB r232, CanSNPer2 2.3.0`. A `typed` genome
+confirms that the scheme calls the node; it is not independent evidence for the
+node. Where a node has several typed genomes, one is listed: the type material
+if there is one, otherwise the GTDB representative, otherwise the genome with
+the fewest contigs and the best CheckM2 completeness and contamination. Its role
+is `representative`, in the sense that it stands for the node.
+
+A terminal node may list no genome, and the scheme README lists the ones that
+have none. The genomes a published scheme was discovered from often sit at inner
+nodes, so they are not listed here; the Origin section of the scheme README
+names them. CanSNPer2 does not read this file, and the database does not depend
+on it. `CanSNPCreator export --genome-map ... --alignment ...`
 writes it, and `CanSNPCreator audit` reads it to check every canSNP in those
 genomes.
-
-## `<name>_canSNPs.txt`
-
-Optional. More than one canSNP per node, ranked within the node, for assays
-that type several canSNPs of a branch. One line per canSNP, with this header:
-
-```
-node	rank	genome	sequence	sequence_position	derived_base	ancestral_base	score
-```
-
-`node` names a node in the tree file, and `rank` counts from 1 within the node,
-in order of the file. `genome`, `sequence`, `sequence_position`, `derived_base`
-and `ancestral_base` follow the SNP file: a position is 1-based on the named
-reference sequence, and a position marks one node only. `score` is the total the SNP
-scored when the scheme was made, which ranks it and is not comparable between
-schemes scored with different settings.
-
-CanSNPer2 calls one SNP per node and reads only the SNP file, so rank 1 of each
-node must be the SNP that file gives the node, and every node of the SNP file
-must have a rank 1. `CanSNPCreator export --snps-per-node N` (or `all`) writes
-this file, and `CanSNPCreator audit` checks every canSNP in it.
 
 ## Taxonomy schemes
 

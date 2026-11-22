@@ -50,7 +50,8 @@ from validate import CONFIG, REPO, discover, read_rows, tree_nodes_and_parents, 
 # joined in file order and do not read the per-sequence SNP files. Development
 # commits of 2.3.0 from before the scheme_info table carry the same version, so
 # require_cansnper2 also checks that the module writing that table is present.
-MINIMUM_CANSNPER2 = (2, 3, 0)
+#: The schemes keep their canSNPs in <name>_canSNPs.txt, which CanSNPer2 reads from 2.4.0.
+MINIMUM_CANSNPER2 = (2, 4, 0)
 
 # The repository recorded as the source of every database built here.
 DATA_REPOSITORY = "FOI-Bioinformatics/CanSNPer2-data"
@@ -83,10 +84,24 @@ def version_tuple(version):
     return tuple(int(part) for part in match.group(1).split(".")) if match else ()
 
 
+def cansnper2_version():
+    """The version of the CanSNPer2 that will be imported.
+
+    The version of the package itself, not of the installed distribution: the two
+    disagree for a checkout on PYTHONPATH or an editable install, and it is the
+    code that will run that has to be able to read the schemes.
+    """
+    try:
+        return importlib.import_module("CanSNPer2").__version__
+    except (ImportError, AttributeError):
+        pass
+    return importlib.metadata.version("CanSNPer2")
+
+
 def require_cansnper2():
     try:
-        installed = importlib.metadata.version("CanSNPer2")
-    except importlib.metadata.PackageNotFoundError:
+        installed = cansnper2_version()
+    except (importlib.metadata.PackageNotFoundError, ImportError):
         raise RuntimeError("CanSNPer2 is not installed")
     if version_tuple(installed) < MINIMUM_CANSNPER2:
         wanted = ".".join(str(part) for part in MINIMUM_CANSNPER2)
@@ -96,7 +111,7 @@ def require_cansnper2():
         importlib.import_module("CanSNPer2.modules.SchemeInfo")
     except ImportError:
         raise RuntimeError(f"CanSNPer2 {installed} does not write scheme_info; "
-                           f"install CanSNPer2 2.3.0 or later")
+                           f"install CanSNPer2 2.4.0 or later")
 
 
 def scheme_source():
@@ -143,7 +158,7 @@ def build_snp_scheme(scheme, target):
         database=target,
         create=True,
         tree=scheme.path(scheme.tree),
-        annotation=scheme.path(scheme.snp),
+        annotation=scheme.path(scheme.cansnps),
         references=scheme.path(scheme.references),
         source_type=scheme.source_type,
         verbose=False,
@@ -304,6 +319,9 @@ def check_structure(target, single_root=True):
 def check_counts(scheme, target):
     """Check that every row of a SNP scheme's sources reached the database.
 
+    A node may hold several canSNPs, so snp_annotation holds one row per canSNP
+    rather than one per node.
+
     The loader skips rows it cannot use, so a database that is missing rows
     can still be built without an error; for a new scheme there is no
     committed database for the comparison to catch it against.
@@ -314,7 +332,7 @@ def check_counts(scheme, target):
     tree_nodes, _ = tree_nodes_and_parents(tree_rows)
     expected = {
         "nodes": len(tree_nodes),
-        "snp_annotation": len(read_rows(scheme.path(scheme.snp))[2]) - 1,
+        "snp_annotation": len(read_rows(scheme.path(scheme.cansnps))[2]) - 1,
         "snp_references": len(read_rows(scheme.path(scheme.references))[2]) - 1,
     }
     found = row_counts(target)
@@ -364,9 +382,16 @@ def content(path):
                 location = "a.sequence, a.sequence_position"
             else:
                 location = "NULL, a.position"
+            # A database built before the canSNP file holds one canSNP per node and
+            # none of these three columns; it is read without them, so that it differs
+            # from a rebuild instead of stopping the comparison.
+            if "typed" in columns:
+                ranking = "a.rank, a.score, a.typed"
+            else:
+                ranking = "NULL, NULL, NULL"
             result["snp_annotation"] = set(query(
                 f"""SELECT n.name, a.snp_id, {location}, a.derived_base,
-                          a.ancestral_base, a.reference, g.genome
+                          a.ancestral_base, a.reference, g.genome, {ranking}
                    FROM snp_annotation a
                    LEFT JOIN nodes n ON n.id = a.node_id
                    LEFT JOIN snp_references g ON g.id = a.genome_i"""))

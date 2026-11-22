@@ -43,7 +43,8 @@ sources changed, fails the build.
 
 `check_bases.py` downloads the GenBank assembly of every reference genome from
 NCBI into `.references/` (once; `--cache` names another folder) and checks the
-base at every position of `<name>_snp.txt` and `<name>_canSNPs.txt`. Each SNP
+base at every position of `<name>_canSNPs.txt`, the alternative canSNPs of a
+node included. Each canSNP
 names a sequence of the assembly (a chromosome or plasmid, by its GenBank
 accession) and a position on it, so the order of the sequences in the assembly
 file does not matter. A sequence that the assembly lacks is reported as a
@@ -57,7 +58,7 @@ requests into `master`, continuous integration also runs
 `python validate.py --require-verified`, which fails on a draft scheme.
 
 `validate.py` needs only Python 3.11 or later. `build.py` also needs CanSNPer2
-2.3.0 or later. Building a taxonomy scheme also needs flextaxd; SNP schemes do not:
+2.4.0 or later, which is the version that reads the canSNP file of a scheme. Building a taxonomy scheme also needs flextaxd; SNP schemes do not:
 
 ```sh
 pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git

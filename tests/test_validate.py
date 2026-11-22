@@ -5,7 +5,15 @@ import os
 import pytest
 
 import validate
-from conftest import SNP_HEADER, SNP_ROWS, readme_text
+from conftest import CANSNP_HEADER, CANSNP_ROWS, readme_text
+
+
+def row(node, position, derived, ancestral, sequence="seq1", genome="G", rank=1,
+        reference="Test2026", score="500", typed="yes"):
+    """One canSNP row, with the columns of validate.CANSNP_HEADER."""
+    return "\t".join([node, str(rank), reference, genome, sequence, str(position),
+                      derived, ancestral, score, typed])
+
 
 
 def problems_of(scheme):
@@ -25,58 +33,54 @@ def test_repository_schemes_are_valid():
 
 def test_non_ascii_digit_position_is_reported_not_raised(make_scheme):
     # "1²" passes str.isdigit() but int() rejects it; this used to end the run
-    rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\tseq1\t1²\tT\tC"
-    problems = problems_of(make_scheme(snp_rows=rows))
+    rows = list(CANSNP_ROWS)
+    rows[1] = row("A", "1²", "T", "C")
+    problems = problems_of(make_scheme(cansnp_rows=rows))
     assert any("sequence_position '1²' is not a positive integer" in p for p in problems)
 
 
 def test_positions_with_leading_zeros_count_as_the_same_position(make_scheme):
-    rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\tseq1\t0100\tT\tC"
-    problems = problems_of(make_scheme(snp_rows=rows))
+    rows = list(CANSNP_ROWS)
+    rows[1] = row("A", "0100", "T", "C")
+    problems = problems_of(make_scheme(cansnp_rows=rows))
     assert any("position 100 on 'G' sequence 'seq1' is annotated 2 times" in p for p in problems)
 
 
 def test_old_header_names_the_conversion_command(make_scheme):
     old = ("snp_id\tstrain\treference\tgenome\tposition\tderived_base\tancestral_base\n")
     raw = (old + "R\ts\tTest2026\tG\t100\tA\tG\n").encode()
-    problems = problems_of(make_scheme(raw_snp=raw))
+    problems = problems_of(make_scheme(raw_cansnps=raw))
     old_header = [p for p in problems if "CanSNPer2-database --convert" in p]
-    assert len(old_header) == 1 and "_snp.txt" in old_header[0]
-    snp_set = ("node\trank\tgenome\tposition\tderived_base\tancestral_base\tscore\n"
-               "R\t1\tG\t100\tA\tG\t1\n")
-    problems = problems_of(make_scheme(snp_set=snp_set, readme=readme_text(per_node="up to 2")))
-    assert any("_canSNPs.txt" in p and "CanSNPer2-database --convert" in p for p in problems)
+    assert len(old_header) == 1 and "_canSNPs.txt" in old_header[0]
 
 
 def test_uniqueness_on_genome_sequence_position(make_scheme):
     # the same position on another sequence is another SNP
-    rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\tseq2\t100\tT\tC"
-    assert problems_of(make_scheme(snp_rows=rows)) == []
-    rows[1] = "A\ts\tTest2026\tG\tseq1\t100\tT\tC"
-    problems = problems_of(make_scheme(snp_rows=rows))
+    rows = list(CANSNP_ROWS)
+    rows[1] = row("A", 100, "T", "C", sequence="seq2")
+    assert problems_of(make_scheme(cansnp_rows=rows)) == []
+    rows[1] = row("A", 100, "T", "C")
+    problems = problems_of(make_scheme(cansnp_rows=rows))
     assert any("position 100 on 'G' sequence 'seq1' is annotated 2 times" in p for p in problems)
 
 
 def test_an_empty_sequence_name_is_a_problem(make_scheme):
-    rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\t\t200\tT\tC"
-    problems = problems_of(make_scheme(snp_rows=rows))
+    rows = list(CANSNP_ROWS)
+    rows[1] = row("A", 200, "T", "C", sequence="")
+    problems = problems_of(make_scheme(cansnp_rows=rows))
     assert any("sequence is empty" in p for p in problems)
 
 
 def test_file_that_is_not_utf8_is_reported_not_raised(make_scheme):
-    raw = (SNP_HEADER + "\n".join(SNP_ROWS) + "\n").encode("utf-8")
-    raw = raw.replace(b"\ts\t", b"\ts\xe9\t", 1)
-    problems = problems_of(make_scheme(raw_snp=raw))
+    raw = (CANSNP_HEADER + "\n".join(CANSNP_ROWS) + "\n").encode("utf-8")
+    raw = raw.replace(b"\tTest2026\t", b"\tTest\xe92026\t", 1)
+    problems = problems_of(make_scheme(raw_cansnps=raw))
     assert any("not valid UTF-8" in p for p in problems)
 
 
 def test_byte_order_mark_is_reported(make_scheme):
-    raw = b"\xef\xbb\xbf" + (SNP_HEADER + "\n".join(SNP_ROWS) + "\n").encode()
-    problems = problems_of(make_scheme(raw_snp=raw))
+    raw = b"\xef\xbb\xbf" + (CANSNP_HEADER + "\n".join(CANSNP_ROWS) + "\n").encode()
+    problems = problems_of(make_scheme(raw_cansnps=raw))
     assert any("byte order mark" in p for p in problems)
 
 
@@ -87,9 +91,9 @@ def test_node_with_two_parents_is_rejected(make_scheme):
 
 
 def test_known_issue_is_reported_as_a_warning(make_scheme):
-    rows = list(SNP_ROWS)
-    rows[1] = "A\ts\tTest2026\tG\tseq1\t200\t/\tC"
-    problems, warnings = validate.validate(make_scheme(snp_rows=rows, known_issues=["A"]))
+    rows = list(CANSNP_ROWS)
+    rows[1] = row("A", 200, "/", "C")
+    problems, warnings = validate.validate(make_scheme(cansnp_rows=rows, known_issues=["A"]))
     assert problems == []
     assert any("derived_base '/'" in w for w in warnings)
 
@@ -155,8 +159,24 @@ def test_a_malformed_genomes_row_is_a_problem(make_scheme, row, message):
     assert any(message in problem for problem in problems), problems
 
 
+def test_a_genome_at_an_inner_node_is_a_problem(make_scheme):
+    genomes = GENOMES_HEADER + "GCA_000000002.1\tA\trepresentative\n"
+    problems = problems_of(make_scheme(genomes=genomes))
+    assert any("node 'A' is not a terminal node" in problem for problem in problems), problems
+
+
+def test_an_outgroup_is_not_held_to_the_terminal_node_rule(make_scheme):
+    genomes = GENOMES_HEADER + "GCA_000000004.1\t\toutgroup\n"
+    assert problems_of(make_scheme(genomes=genomes)) == []
+
+
+def test_a_terminal_node_without_a_genome_is_valid(make_scheme):
+    genomes = GENOMES_HEADER + "GCA_000000002.1\tB\trepresentative\n"
+    assert problems_of(make_scheme(genomes=genomes)) == []
+
+
 def test_one_assembly_under_two_accessions_is_a_problem(make_scheme):
-    genomes = GENOMES_HEADER + "GCA_000000002.1\tB\tmember\nGCF_000000002.1\tA\tmember\n"
+    genomes = GENOMES_HEADER + "GCA_000000002.1\tB\tmember\nGCF_000000002.1\tC\tmember\n"
     problems = problems_of(make_scheme(genomes=genomes))
     assert any("one assembly is listed 2 times" in problem for problem in problems)
 
@@ -166,48 +186,105 @@ def test_a_genomes_file_without_its_header_is_a_problem(make_scheme):
     assert any("unexpected header" in problem for problem in problems)
 
 
-# -- the optional ranked canSNP set ------------------------------------------
-
-SNP_SET_HEADER = "node\trank\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\tscore\n"
-SNP_SET = SNP_SET_HEADER + (
-    "R\t1\tG\tseq1\t100\tA\tG\t520\n"
-    "R\t2\tG\tseq1\t1500\tC\tT\t510\n"
-    "A\t1\tG\tseq1\t200\tT\tC\t500\n"
-    "B\t1\tG\tseq2\t50\tC\tT\t495\n"
-    "B\t2\tG\tseq2\t2500\tG\tA\t480.5\n"
-    "C\t1\tG\tseq2\t150\tG\tA\t470\n"
-)
+SOURCE_HEADER = "genome\tnode\trole\tbasis\tsource\n"
 
 
-def test_a_scheme_without_a_snp_set_is_valid(make_scheme):
-    assert validate.validate(make_scheme()) == ([], [])
+def test_genomes_with_basis_and_source_are_valid(make_scheme):
+    genomes = (SOURCE_HEADER + "GCA_000000002.1\tB\tmember\tpublished\tFoster2008\n"
+               "GCF_000000003.2\tC\trepresentative\ttyped\tGTDB r232, CanSNPer2 2.3.0\n"
+               "GCA_000000004.1\t\toutgroup\tpublished\tFoster2008\n")
+    assert problems_of(make_scheme(genomes=genomes)) == []
 
 
-def test_a_snp_set_is_checked_when_present(make_scheme):
-    scheme = make_scheme(snp_set=SNP_SET, readme=readme_text(per_node="up to 2"))
-    assert validate.validate(scheme) == ([], [])
-
-
-@pytest.mark.parametrize("old, new, message", [
-    ("R\t1\tG\tseq1\t100\tA\tG", "R\t1\tG\tseq1\t101\tA\tG", "rank 1 of node 'R' is not the SNP"),
-    ("B\t2\t", "B\t3\t", "ranks of node 'B' are 1, 3"),
-    ("B\t2\tG\tseq2\t2500", "B\t2\tG\tseq2\t50", "position 50 on 'G' sequence 'seq2' is listed 2 times"),
-    ("B\t2\tG\tseq2\t2500\tG\tA", "B\t2\tG\tseq2\t2500\tA\tA", "derived and ancestral base"),
-    ("B\t2\tG\tseq2\t2500\tG\tA", "B\t2\tG\tseq2\t2500\tN\tA", "not both one of A, C, G, T"),
-    ("R\t2\tG", "X\t2\tG", "node 'X' does not appear"),
-    ("R\t2\tG", "R\t2\tH", "genome 'H' is not listed"),
-    ("\t480.5", "\thigh", "score 'high' is not a number"),
-    ("C\t1\tG\tseq2\t150\tG\tA\t470\n", "", "node 'C' has no canSNP of rank 1"),
+@pytest.mark.parametrize("row,message", [
+    ("GCA_000000002.1\tB\tmember\tverified\tFoster2008", "basis 'verified' is not one of"),
+    ("GCA_000000002.1\tB\tmember\tpublished\t", "source is empty"),
+    ("GCA_000000002.1\tB\tmember\tpublished", "expected 5 columns"),
 ])
-def test_a_snp_set_that_breaks_the_rules_is_a_problem(make_scheme, old, new, message):
-    assert old in SNP_SET
-    problems, _warnings = validate.validate(make_scheme(snp_set=SNP_SET.replace(old, new)))
+def test_a_malformed_basis_or_source_is_a_problem(make_scheme, row, message):
+    problems = problems_of(make_scheme(genomes=SOURCE_HEADER + row + "\n"))
     assert any(message in problem for problem in problems), problems
 
 
-def test_a_snp_set_without_its_header_is_a_problem(make_scheme):
-    problems, _warnings = validate.validate(make_scheme(snp_set=SNP_SET[len(SNP_SET_HEADER):]))
-    assert problems
+# -- the ranks, scores and typed marks of the canSNP file --------------------
+
+SET_ROWS = [
+    row("R", 100, "A", "G", rank=1, score="520", typed="yes"),
+    row("R", 1500, "C", "T", rank=2, score="510", typed="no"),
+    row("A", 200, "T", "C", rank=1, score="500", typed="yes"),
+    row("B", 50, "C", "T", sequence="seq2", rank=1, score="495", typed="yes"),
+    row("B", 2500, "G", "A", sequence="seq2", rank=2, score="480.5", typed="no"),
+    row("C", 150, "G", "A", sequence="seq2", rank=1, score="470", typed="yes"),
+]
+SET_TEXT = "\n".join(SET_ROWS)
+UP_TO_2 = readme_text(per_node="up to 2")
+
+
+def test_a_scheme_with_one_canSNP_per_node_is_valid(make_scheme):
+    assert validate.validate(make_scheme()) == ([], [])
+
+
+def test_several_canSNPs_per_node_are_valid(make_scheme):
+    scheme = make_scheme(cansnp_rows=SET_ROWS, readme=UP_TO_2)
+    assert validate.validate(scheme) == ([], [])
+
+
+def test_a_publication_canSNP_may_have_no_score_and_a_reference_of_NA(make_scheme):
+    rows = list(SET_ROWS)
+    rows[1] = row("R", 1500, "C", "T", rank=2, reference="NA", score="", typed="no")
+    assert validate.validate(make_scheme(cansnp_rows=rows, readme=UP_TO_2)) == ([], [])
+
+
+@pytest.mark.parametrize("old, new, message", [
+    ("B\t2\t", "B\t3\t", "ranks of node 'B' are 1, 3"),
+    ("B\t2\t", "B\t0\t", "rank '0' is not a positive integer"),
+    ("B\t2\t", "B\t02\t", "rank '02' is not a positive integer"),
+    ("B\t2\t", "B\tsecond\t", "rank 'second' is not a positive integer"),
+    ("B\t2\t", "B\t1\t", "ranks of node 'B' are 1, 1"),
+    ("B\t2\tTest2026\tG\tseq2\t2500", "B\t2\tTest2026\tG\tseq2\t50",
+     "position 50 on 'G' sequence 'seq2' is annotated 2 times"),
+    ("B\t2\tTest2026\tG\tseq2\t2500\tG\tA", "B\t2\tTest2026\tG\tseq2\t2500\tA\tA",
+     "derived and ancestral base"),
+    ("B\t2\tTest2026\tG\tseq2\t2500\tG\tA", "B\t2\tTest2026\tG\tseq2\t2500\tN\tA",
+     "derived_base 'N' is not one of A, C, G, T"),
+    ("R\t2\tTest2026\tG", "X\t2\tTest2026\tG", "node 'X' does not appear"),
+    ("R\t2\tTest2026\tG", "R\t2\tTest2026\tH", "genome 'H' is not listed"),
+    ("R\t2\tTest2026", "R\t2\t", "reference is empty"),
+    ("\t480.5\t", "\thigh\t", "score 'high' is not a number"),
+    ("\t480.5\tno", "\t480.5\tmaybe", "typed 'maybe' is not yes or no"),
+    ("\t510\tno", "\t510\tyes", "node 'R' has 2 canSNPs marked typed yes"),
+    ("\t520\tyes", "\t520\tno", "node 'R' has no canSNP marked typed yes"),
+])
+def test_a_canSNP_file_that_breaks_the_rules_is_a_problem(make_scheme, old, new, message):
+    assert old in SET_TEXT, old
+    rows = SET_TEXT.replace(old, new).split("\n")
+    problems, _warnings = validate.validate(make_scheme(cansnp_rows=rows, readme=UP_TO_2))
+    assert any(message in problem for problem in problems), problems
+
+
+def test_ranks_out_of_order_are_a_problem(make_scheme):
+    rows = list(SET_ROWS)
+    rows[0], rows[1] = rows[1], rows[0]
+    problems, _warnings = validate.validate(make_scheme(cansnp_rows=rows, readme=UP_TO_2))
+    assert any("ranks of node 'R' are 2, 1, not 1, 2, 3 ... in order" in p for p in problems)
+
+
+def test_a_node_without_a_canSNP_is_a_problem(make_scheme):
+    rows = [r for r in CANSNP_ROWS if not r.startswith("C\t")]
+    problems = problems_of(make_scheme(cansnp_rows=rows))
+    assert any("node 'C' has no canSNP" in problem for problem in problems), problems
+
+
+def test_a_canSNP_file_without_its_header_is_a_problem(make_scheme):
+    raw = ("\n".join(SET_ROWS) + "\n").encode()
+    assert problems_of(make_scheme(raw_cansnps=raw, readme=UP_TO_2))
+
+
+def test_a_canSNP_file_with_a_missing_column_is_a_problem(make_scheme):
+    rows = list(CANSNP_ROWS)
+    rows[0] = "R\t1\tTest2026\tG\tseq1\t100\tA\tG\t520"
+    problems = problems_of(make_scheme(cansnp_rows=rows))
+    assert any("expected 10 columns, found 9" in problem for problem in problems), problems
 
 
 # -- one folder per scheme under schemes/ ------------------------------------
@@ -215,7 +292,7 @@ def test_a_snp_set_without_its_header_is_a_problem(make_scheme):
 def _scheme_folder(root, folder, name):
     d = root / folder
     d.mkdir(parents=True)
-    for kind in ("tree", "snp", "references"):
+    for kind in ("tree", "canSNPs", "references"):
         (d / f"{name}_{kind}.txt").write_text("")
 
 
@@ -227,13 +304,13 @@ def test_discover_finds_a_scheme_by_its_folder(tmp_path, monkeypatch):
     monkeypatch.setattr(validate, "CONFIG", str(tmp_path / "none.toml"))
     found = validate.discover()
     assert [s.name for s in found] == ["abc"]
-    assert found[0].snp == os.path.join("schemes", "abc", "abc_snp.txt")
+    assert found[0].cansnps == os.path.join("schemes", "abc", "abc_canSNPs.txt")
 
 
-def test_discover_reports_a_snp_file_in_the_wrong_folder(tmp_path, monkeypatch, capsys):
+def test_discover_reports_a_canSNP_file_in_the_wrong_folder(tmp_path, monkeypatch, capsys):
     schemes = tmp_path / "schemes"
     _scheme_folder(schemes, "abc", "xyz")
-    (schemes / "loose_snp.txt").write_text("")
+    (schemes / "loose_canSNPs.txt").write_text("")
     monkeypatch.setattr(validate, "REPO", str(tmp_path))
     monkeypatch.setattr(validate, "SCHEMES_DIR", str(schemes))
     monkeypatch.setattr(validate, "CONFIG", str(tmp_path / "none.toml"))
@@ -241,8 +318,8 @@ def test_discover_reports_a_snp_file_in_the_wrong_folder(tmp_path, monkeypatch, 
         validate.discover()
     assert stop.value.code == 2
     err = capsys.readouterr().err
-    assert "schemes/abc/xyz_snp.txt" in err
-    assert "schemes/loose_snp.txt" in err
+    assert "schemes/abc/xyz_canSNPs.txt" in err
+    assert "schemes/loose_canSNPs.txt" in err
 
 
 # -- the README of each scheme ------------------------------------------------
@@ -283,12 +360,11 @@ def test_an_empty_section_is_reported(make_scheme):
     assert any("'Known issues' is empty" in p for p in problems_of(make_scheme(readme=readme)))
 
 
-def test_canSNPs_per_node_follows_the_ranked_file(make_scheme):
-    snp_set = ("node\trank\tgenome\tsequence\tsequence_position\tderived_base\tancestral_base\tscore\n"
-               "R\t1\tG\tseq1\t100\tA\tG\t1\nA\t1\tG\tseq1\t200\tT\tC\t1\nA\t2\tG\tseq1\t250\tT\tC\t1\n"
-               "B\t1\tG\tseq2\t50\tC\tT\t1\nC\t1\tG\tseq2\t150\tG\tA\t1\n")
-    assert problems_of(make_scheme(snp_set=snp_set, readme=readme_text(per_node="up to 2"))) == []
-    problems = problems_of(make_scheme(snp_set=snp_set))
+def test_canSNPs_per_node_follows_the_largest_rank(make_scheme):
+    rows = list(CANSNP_ROWS)
+    rows.insert(2, row("A", 250, "T", "C", rank=2, typed="no"))
+    assert problems_of(make_scheme(cansnp_rows=rows, readme=readme_text(per_node="up to 2"))) == []
+    problems = problems_of(make_scheme(cansnp_rows=rows))
     assert any("canSNPs per node is '1'" in p for p in problems)
 
 

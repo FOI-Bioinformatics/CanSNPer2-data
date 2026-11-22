@@ -1,7 +1,7 @@
 # Scheme declarations for CanSNPer2-data.
 #
 # SNP schemes are discovered by convention and need no entry here: a file named
-# schemes/<name>/<name>_snp.txt declares the scheme <name>, and its tree and
+# schemes/<name>/<name>_canSNPs.txt declares the scheme <name>, and its tree and
 # reference files are inferred as <name>_tree.txt and <name>_references.txt in
 # the same folder.
 #
@@ -10,11 +10,9 @@
 #
 #   kind      "snp" (default) or "taxonomy"
 #   tree      path to the tree file
-#   snp       path to the SNP annotation file   (snp schemes)
+#   cansnps   path to the canSNP file           (snp schemes)
 #   genomes   path to the genome-to-node file   (<name>_genomes.txt in its
 #             folder by default; required for taxonomy schemes, optional for snp)
-#   snp_set   path to the ranked canSNPs of each node (snp schemes; the
-#             optional <name>_canSNPs.txt in its folder by default)
 #   verify    compare a rebuild against the committed database (default true)
 #   source_type  tree reader to use (default "CanSNPer")
 #   wip       validated, but built only when named with --scheme or when

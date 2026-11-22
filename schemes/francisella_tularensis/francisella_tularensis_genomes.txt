@@ -1,0 +1,220 @@
+genome	node	role	basis	source
+GCF_000008985.1	A.I.13	representative	published	scheme reference
+GCA_009813935.1	B.53	member	published	Kevin2020
+GCA_009813955.1	B.53	member	published	Kevin2020
+GCA_009814835.1	B.53	member	published	Kevin2020
+GCA_009814845.1	B.53	member	published	Kevin2020
+GCA_009816945.1	B.53	member	published	Kevin2020
+GCF_002100415.1	B.53	member	published	Dwibedi2016
+GCF_002101085.1	B.53	member	published	Dwibedi2016
+GCF_002857715.1	B.53	member	published	Wittwer2018
+GCF_002857875.1	B.53	member	published	Wittwer2018
+GCF_002858065.1	B.53	member	published	Wittwer2018
+GCF_002100605.1	B.57	member	published	Dwibedi2016
+GCF_002100765.1	B.57	member	published	Dwibedi2016
+GCF_002100335.1	B.58	member	published	Dwibedi2016
+GCA_009812715.1	B.59	member	published	Kevin2020
+GCA_009814545.1	B.59	member	published	Kevin2020
+GCA_009823555.1	B.59	member	published	Kevin2020
+GCF_002027745.1	B.59	member	published	Dwibedi2016
+GCF_002027765.1	B.59	member	published	Dwibedi2016
+GCF_002857915.1	B.59	member	published	Wittwer2018
+GCF_002857955.1	B.59	member	published	Wittwer2018
+GCA_009815575.1	B.63	member	published	Kevin2020
+GCF_002100195.1	B.63	member	published	Dwibedi2016
+GCF_002100665.1	B.63	member	published	Dwibedi2016
+GCF_002100365.1	B.64	member	published	Dwibedi2016
+GCF_002100585.1	B.64	member	published	Dwibedi2016
+GCA_001574905.1	B.67	member	published	Karadenizli2015
+GCA_001574935.1	B.67	member	published	Karadenizli2015
+GCA_001574855.1	B.68	member	published	Karadenizli2015
+GCA_001574865.1	B.68	member	published	Karadenizli2015
+GCA_001574885.1	B.68	member	published	Karadenizli2015
+GCA_001574945.1	B.68	member	published	Karadenizli2015
+GCF_002102465.1	B.71	representative	published	Schulze2016
+GCF_002102515.1	B.74	representative	published	Schulze2016
+GCF_002102455.2	B.75	representative	published	Schulze2016
+GCA_009815765.1	B.77	member	published	Kevin2020
+GCF_000009245.1	B.77	representative	published	scheme reference
+GCA_009815065.1	B.91	member	published	Kevin2020
+GCA_009817975.1	B.92	member	published	Kevin2020
+GCA_009818065.1	B.92	member	published	Kevin2020
+GCF_000014605.1	B.126	representative	published	scheme reference
+GCA_009814215.1	B.230	member	published	Kevin2020
+GCA_009817815.1	B.230	member	published	Kevin2020
+GCA_009817305.1	B.233	member	published	Kevin2020
+GCA_009817335.1	B.233	member	published	Kevin2020
+GCA_009817965.1	B.233	member	published	Kevin2020
+GCA_009818735.1	B.233	member	published	Kevin2020
+GCA_009817115.1	B.235	member	published	Kevin2020
+GCA_009817955.1	B.235	member	published	Kevin2020
+GCA_009812755.1	B.236	member	published	Kevin2020
+GCA_009814315.1	B.236	member	published	Kevin2020
+GCA_009814885.1	B.237	member	published	Kevin2020
+GCA_009815155.1	B.237	member	published	Kevin2020
+GCA_009816395.1	B.237	member	published	Kevin2020
+GCA_009818215.1	B.237	member	published	Kevin2020
+GCA_009816695.1	B.239	member	published	Kevin2020
+GCA_009816715.1	B.239	member	published	Kevin2020
+GCA_009814095.1	B.241	member	published	Kevin2020
+GCA_009814145.1	B.241	member	published	Kevin2020
+GCA_009814175.1	B.244	member	published	Kevin2020
+GCA_009814195.1	B.244	member	published	Kevin2020
+GCA_009814615.1	B.245	member	published	Kevin2020
+GCA_009818055.1	B.245	member	published	Kevin2020
+GCA_009813235.1	B.246	member	published	Kevin2020
+GCA_009817845.1	B.246	member	published	Kevin2020
+GCA_009812965.1	B.249	member	published	Kevin2020
+GCA_009816455.1	B.249	member	published	Kevin2020
+GCA_009816335.1	B.250	member	published	Kevin2020
+GCA_009816655.1	B.250	member	published	Kevin2020
+GCA_009816735.1	B.250	member	published	Kevin2020
+GCA_009817155.1	B.250	member	published	Kevin2020
+GCA_009817225.1	B.250	member	published	Kevin2020
+GCA_009818225.1	B.250	member	published	Kevin2020
+GCA_009818555.1	B.250	member	published	Kevin2020
+GCA_009818605.1	B.250	member	published	Kevin2020
+GCA_009819055.1	B.250	member	published	Kevin2020
+GCA_009819095.1	B.250	member	published	Kevin2020
+GCA_009812615.1	B.254	member	published	Kevin2020
+GCA_009812865.1	B.254	member	published	Kevin2020
+GCA_009812745.1	B.255	member	published	Kevin2020
+GCA_009813185.1	B.255	member	published	Kevin2020
+GCA_009816465.1	B.255	member	published	Kevin2020
+GCA_009817055.1	B.257	member	published	Kevin2020
+GCA_009817915.1	B.257	member	published	Kevin2020
+GCA_009812895.1	B.258	member	published	Kevin2020
+GCA_009816565.1	B.258	member	published	Kevin2020
+GCA_009814485.1	B.259	member	published	Kevin2020
+GCA_009816935.1	B.259	member	published	Kevin2020
+GCA_009818515.1	B.259	member	published	Kevin2020
+GCA_009814115.1	B.260	member	published	Kevin2020
+GCA_009817835.1	B.260	member	published	Kevin2020
+GCA_009814425.1	B.261	member	published	Kevin2020
+GCA_009819355.1	B.261	member	published	Kevin2020
+GCA_009816885.1	B.265	member	published	Kevin2020
+GCA_009816895.1	B.265	member	published	Kevin2020
+GCA_009815235.1	B.267	member	published	Kevin2020
+GCA_009816665.1	B.267	member	published	Kevin2020
+GCA_009815435.1	B.270	member	published	Kevin2020
+GCA_009815445.1	B.270	member	published	Kevin2020
+GCA_009812645.1	B.271	member	published	Kevin2020
+GCA_009813395.1	B.271	member	published	Kevin2020
+GCA_009817315.1	B.271	member	published	Kevin2020
+GCA_009819185.1	B.271	member	published	Kevin2020
+GCA_009815105.1	B.272	member	published	Kevin2020
+GCA_009815145.1	B.272	member	published	Kevin2020
+GCA_009813455.1	B.273	member	published	Kevin2020
+GCA_009817375.1	B.273	member	published	Kevin2020
+GCA_009814915.1	B.274	member	published	Kevin2020
+GCA_009817735.1	B.274	member	published	Kevin2020
+GCA_009817745.1	B.275	member	published	Kevin2020
+GCA_009817795.1	B.275	member	published	Kevin2020
+GCA_009814445.1	B.277	member	published	Kevin2020
+GCA_009817265.1	B.277	member	published	Kevin2020
+GCA_009814595.1	B.278	member	published	Kevin2020
+GCA_009814645.1	B.278	member	published	Kevin2020
+GCA_009813275.1	B.279	member	published	Kevin2020
+GCA_009816595.1	B.279	member	published	Kevin2020
+GCA_009819375.1	B.279	member	published	Kevin2020
+GCA_009817095.1	B.280	member	published	Kevin2020
+GCA_009817105.1	B.280	member	published	Kevin2020
+GCA_009815295.1	B.281	member	published	Kevin2020
+GCA_009815385.1	B.281	member	published	Kevin2020
+GCA_009815535.1	B.281	member	published	Kevin2020
+GCA_009813295.1	B.282	member	published	Kevin2020
+GCA_009817495.1	B.282	member	published	Kevin2020
+GCA_009814935.1	B.283	member	published	Kevin2020
+GCA_009814965.1	B.283	member	published	Kevin2020
+GCA_009814975.1	B.283	member	published	Kevin2020
+GCA_009817035.1	B.283	member	published	Kevin2020
+GCA_009815585.1	B.284	member	published	Kevin2020
+GCA_009817715.1	B.284	member	published	Kevin2020
+GCA_009816285.1	B.286	member	published	Kevin2020
+GCA_009816295.1	B.286	member	published	Kevin2020
+GCA_009818445.1	B.286	member	published	Kevin2020
+GCA_009813715.1	B.288	member	published	Kevin2020
+GCA_009813725.1	B.288	member	published	Kevin2020
+GCA_009813755.1	B.288	member	published	Kevin2020
+GCA_009812845.1	B.289	member	published	Kevin2020
+GCA_009813945.1	B.289	member	published	Kevin2020
+GCA_009815045.1	B.289	member	published	Kevin2020
+GCA_009817695.1	B.289	member	published	Kevin2020
+GCA_009815795.1	B.291	member	published	Kevin2020
+GCA_009815805.1	B.291	member	published	Kevin2020
+GCA_009815835.1	B.291	member	published	Kevin2020
+GCA_009813625.1	B.292	member	published	Kevin2020
+GCA_009813005.1	B.294	member	published	Kevin2020
+GCA_009813035.1	B.294	member	published	Kevin2020
+GCA_009813105.1	B.295	member	published	Kevin2020
+GCA_009813145.1	B.295	member	published	Kevin2020
+GCA_009817405.1	B.297	member	published	Kevin2020
+GCA_009817475.1	B.297	member	published	Kevin2020
+GCA_009813915.1	B.298	member	published	Kevin2020
+GCA_009817005.1	B.298	member	published	Kevin2020
+GCA_009815355.1	B.299	member	published	Kevin2020
+GCA_009817395.1	B.299	member	published	Kevin2020
+GCA_009817565.1	B.299	member	published	Kevin2020
+GCA_009813845.1	B.300	member	published	Kevin2020
+GCA_009814335.1	B.300	member	published	Kevin2020
+GCA_009813385.1	B.302	member	published	Kevin2020
+GCA_009817065.1	B.302	member	published	Kevin2020
+GCA_009813375.1	B.303	member	published	Kevin2020
+GCA_009817935.1	B.303	member	published	Kevin2020
+GCA_009813995.1	B.304	member	published	Kevin2020
+GCA_009814865.1	B.304	member	published	Kevin2020
+GCA_009813835.1	B.306	member	published	Kevin2020
+GCA_009818365.1	B.306	member	published	Kevin2020
+GCA_009812765.1	B.308	member	published	Kevin2020
+GCA_009817875.1	B.308	member	published	Kevin2020
+GCA_009816355.1	B.309	member	published	Kevin2020
+GCA_009818175.1	B.309	member	published	Kevin2020
+GCA_009814675.1	B.314	member	published	Kevin2020
+GCA_009814685.1	B.314	member	published	Kevin2020
+GCF_002857625.1	B.91	member	published	Wittwer2018
+GCF_002857705.1	B.91	member	published	Wittwer2018
+GCF_002858505.1	B.91	member	published	Wittwer2018
+GCF_002857505.1	B.92	member	published	Wittwer2018
+GCF_002857865.1	B.92	member	published	Wittwer2018
+GCF_002101045.1	B.90	member	published	Wittwer2018
+GCF_002858075.1	B.90	member	published	Wittwer2018
+GCF_002857425.1	B.90	member	published	Wittwer2018
+GCF_001267475.1	A.I.4	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016605695.1	A.I.9	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_003797955.1	A.I.11	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_019134835.1	A.I.14	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000833475.1	A.II.4	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_001011135.1	A.II.6	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_019134815.1	A.II.8	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCA_000153845.1	B.25	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016601415.1	B.70	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_015666705.1	B.76	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_015666825.2	B.78	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_002857635.1	B.86	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_002857605.1	B.88	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016601955.1	B.95	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602155.1	B.97	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602065.1	B.98	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602175.1	B.99	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_002100525.1	B.107	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_015686455.1	B.108	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_002100275.1	B.109	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000478845.1	B.122	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016601335.1	B.127	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_003955775.1	B.129	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_001574835.1	B.140	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_001574705.1	B.147	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_001574475.1	B.150	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602595.1	B.160	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602745.1	B.163	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602575.1	B.164	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000833515.1	B.165	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016602605.1	B.166	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_016601975.1	B.193	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_017089125.1	B.197	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_009815995.1	B.202	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_001574785.1	B.213	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000524575.1	B.217	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_000154145.1	B.224	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCF_015686435.1	B.315	representative	typed	GTDB r232, CanSNPer2 2.3.0
+GCA_000018925.1	M.1	representative	typed	GTDB r232, CanSNPer2 2.3.0
