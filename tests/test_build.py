@@ -9,6 +9,7 @@ import sqlite3
 import pytest
 
 import build
+from validate import Scheme
 from conftest import CANSNP_HEADER, CANSNP_ROWS, readme_text
 
 try:
@@ -470,6 +471,17 @@ def test_the_version_of_the_package_that_will_be_imported_is_read(monkeypatch):
     monkeypatch.setattr(build.importlib, "import_module",
                         lambda name, *a, **k: (_ for _ in ()).throw(ImportError(name)))
     assert build.cansnper2_version() == "2.3.0"
+
+
+def test_the_manifest_records_the_version_that_built_the_database(monkeypatch):
+    """The gate reads the imported package and the manifest has to agree with
+    it: a checkout on PYTHONPATH builds with a version the installed
+    distribution metadata does not know, and a manifest naming the other one
+    would credit a version that did not build the database."""
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "2.3.0")
+    monkeypatch.setattr(build, "cansnper2_version", lambda: "2.4.0")
+    scheme = Scheme("x")
+    assert build.tool_versions(scheme)["cansnper2"] == "2.4.0"
 
 
 def test_cansnper2_without_scheme_info_is_refused(monkeypatch):
