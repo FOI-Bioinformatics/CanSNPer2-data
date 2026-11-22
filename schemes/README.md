@@ -136,6 +136,23 @@ listed once, under either accession. `node` names a node in the tree file.
 - `outgroup`: aligned, but placed at no node, so that it gives the root its
   polarity. Its `node` is empty.
 
+Two columns may follow, both or neither, to record where each genome comes
+from:
+
+```
+genome	node	role	basis	source
+```
+
+`basis` is `published`, when a publication places the genome at the node, or
+`typed`, when CanSNPer2 placed it there itself. `source` names the publication
+by the key of the scheme README, or, for `typed`, the genome collection and
+CanSNPer2 version, such as `GTDB r232, CanSNPer2 2.3.0`. A `typed` genome
+confirms that the scheme calls the node; it is not independent evidence for the
+node. Where a node has several typed genomes, one is listed: the type material
+if there is one, otherwise the GTDB representative, otherwise the genome with
+the fewest contigs and the best CheckM2 completeness and contamination. Its role
+is `representative`, in the sense that it stands for the node.
+
 A node may list no genome. CanSNPer2 does not read this file, and the database
 does not depend on it. `CanSNPCreator export --genome-map ... --alignment ...`
 writes it, and `CanSNPCreator audit` reads it to check every canSNP in those

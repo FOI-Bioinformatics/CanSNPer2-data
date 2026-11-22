@@ -124,3 +124,5 @@ typing run agreed with those assignments.
 - 2026-11-21: added `coxiella_burnetii_genomes.txt`, the eight genomes the
   canSNPs were selected from that have an assembly (Karlsson et al. 2014,
   Tables 1 and 4).
+- 2026-11-22: `coxiella_burnetii_genomes.txt` gained the columns `basis` and `source` (all
+  rows `published`).

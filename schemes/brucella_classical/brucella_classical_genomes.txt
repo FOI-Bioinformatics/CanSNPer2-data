@@ -1,7 +1,7 @@
-genome	node	role
-GCF_000054005.1	2366A	representative
-GCF_000008145.1	3740D	representative
-GCF_000007505.1	8306I	representative
-GCF_000016845.1	cysW_234	representative
-GCF_000018525.1	omp25_256	representative
-GCF_000007125.1	8872G	representative
+genome	node	role	basis	source
+GCF_000054005.1	2366A	representative	published	Foster2008
+GCF_000008145.1	3740D	representative	published	Foster2008
+GCF_000007505.1	8306I	representative	published	Foster2008
+GCF_000016845.1	cysW_234	representative	published	Foster2008
+GCF_000018525.1	omp25_256	representative	published	Foster2008
+GCF_000007125.1	8872G	representative	published	Foster2008
