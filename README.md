@@ -64,6 +64,25 @@ requests into `master`, continuous integration also runs
 pip install git+https://github.com/FOI-Bioinformatics/CanSNPer2.git
 ```
 
+## CanSNPer2 older than 2.4.0 sees no schemes here
+
+Every scheme now describes its canSNPs in `schemes/<name>/<name>_canSNPs.txt`;
+the `<name>_snp.txt` files that CanSNPer2 up to 2.3.0 read are gone. Those
+versions find a scheme only by its `_snp.txt` file, so against this branch they
+list nothing and refuse to download, naming the scheme rather than the version:
+
+```
+$ CanSNPer2-download --list_schemes
+SNP schemes in master of FOI-Bioinformatics/CanSNPer2-data:
+
+$ CanSNPer2-download --scheme francisella_tularensis
+There is no scheme francisella_tularensis in master of FOI-Bioinformatics/CanSNPer2-data
+```
+
+The remedy is to upgrade to CanSNPer2 2.4.0 or later, which reads both files.
+The databases under `database/` are built for 2.4.0 as well; `database/archive/`
+keeps the databases of earlier formats.
+
 Since CanSNPer2 2.3.0 the scheme files and the databases give each SNP as a
 reference sequence (the GenBank accession of a chromosome or plasmid) and a
 1-based position on that sequence. Earlier versions counted positions along the
