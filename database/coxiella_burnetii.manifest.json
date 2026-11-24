@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 11
   },
-  "database_sha256": "f5d376b0e092fbc0dfd93f92f0c5b08bb2ffc72377f2d35cc67658d3d7de4a1e",
+  "database_sha256": "f0c97ce4aec762766c2bf166dfb8eab7126fd19115891268389e909118100174",
   "format": "2.4",
   "kind": "snp",
   "scheme": "coxiella_burnetii",
@@ -21,7 +21,7 @@
     "schemes/coxiella_burnetii/coxiella_burnetii_tree.txt": "57a076c9e2531c54d375949944a4ae67e1c7d344d872ed9369d12c1de35b8bb3"
   },
   "versions": {
-    "cansnper2": "2.3.0",
+    "cansnper2": "2.4.0",
     "python": "3.11.14"
   }
 }

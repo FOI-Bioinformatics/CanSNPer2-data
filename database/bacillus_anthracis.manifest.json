@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 13
   },
-  "database_sha256": "60b34afb01fd4a2e8be3a25fa9626f844b737975b5605be06953e4c4c0abc123",
+  "database_sha256": "7fc8eb49be7b7a51e87d80713c87cf85059c1f0dfb83674896ad59d5862e7f51",
   "format": "2.4",
   "kind": "snp",
   "scheme": "bacillus_anthracis",
@@ -21,7 +21,7 @@
     "schemes/bacillus_anthracis/bacillus_anthracis_tree.txt": "d6781159c6be44f2757de5846d8650f257a006131dba3a060804442204e4c39d"
   },
   "versions": {
-    "cansnper2": "2.3.0",
+    "cansnper2": "2.4.0",
     "python": "3.11.14"
   }
 }
