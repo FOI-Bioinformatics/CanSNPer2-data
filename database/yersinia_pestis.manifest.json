@@ -1,7 +1,7 @@
 {
-  "built": "2026-11-22",
+  "built": "2026-11-25",
   "counts": {
-    "genomes": 0,
+    "genomes": 20,
     "nodes": 97,
     "rank": 2,
     "scheme_info": 8,
@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 97
   },
-  "database_sha256": "0412213f266e558cd749ee311c9b8191cfaf65eec9dd464696688c8d28ae41c8",
+  "database_sha256": "0bfc0caed18cf988bf80c46f57212e7135fd5293a0c42dc2749cda97fe5bc739",
   "format": "2.4",
   "kind": "snp",
   "scheme": "yersinia_pestis",
@@ -21,7 +21,7 @@
     "schemes/yersinia_pestis/yersinia_pestis_tree.txt": "dfae993493f8727b52461b3f76aee8a3af46a4cee212169db8164633e9880e3e"
   },
   "versions": {
-    "cansnper2": "2.4.0",
-    "python": "3.11.14"
+    "cansnper2": "2.6.0",
+    "python": "3.13.18"
   }
 }

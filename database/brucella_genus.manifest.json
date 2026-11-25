@@ -1,7 +1,7 @@
 {
-  "built": "2026-11-24",
+  "built": "2026-11-25",
   "counts": {
-    "genomes": 0,
+    "genomes": 1198,
     "nodes": 283,
     "rank": 2,
     "scheme_info": 8,
@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 283
   },
-  "database_sha256": "c1ba1e7f746d517bb2f306ffab6e912244b49d4fac97bf92fd21e7ae9ba5feeb",
+  "database_sha256": "b161a95e4b27f90888623a6a2cc9741fa53ea3020af81a5ca6ef844e1542b9f7",
   "format": "2.4",
   "kind": "snp",
   "scheme": "brucella_genus",
@@ -21,7 +21,7 @@
     "schemes/brucella_genus/brucella_genus_tree.txt": "d51241b8c08250f9c30727f39ddaafc0940c4d114195f7e3d65826a061cdf6c1"
   },
   "versions": {
-    "cansnper2": "2.4.0",
+    "cansnper2": "2.6.0",
     "python": "3.13.18"
   }
 }

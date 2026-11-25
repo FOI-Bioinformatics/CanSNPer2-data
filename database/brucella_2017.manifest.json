@@ -1,7 +1,7 @@
 {
-  "built": "2026-11-22",
+  "built": "2026-11-25",
   "counts": {
-    "genomes": 0,
+    "genomes": 53,
     "nodes": 43,
     "rank": 2,
     "scheme_info": 8,
@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 43
   },
-  "database_sha256": "99ad67e9ebaa1b6219fbc5d3eabd273f9747a57580f96c044b02fea5e50a10cb",
+  "database_sha256": "43966ece3aad04363700cf1599379a7ff0bda9eb33a0ebf771e8b5fd55bc9a3a",
   "format": "2.4",
   "kind": "snp",
   "scheme": "brucella_2017",
@@ -21,7 +21,7 @@
     "schemes/brucella_2017/brucella_2017_tree.txt": "a939219f23e106b10329a8220614e38c8b43b2ef2e6a308b9f15b95bb49d14b5"
   },
   "versions": {
-    "cansnper2": "2.4.0",
-    "python": "3.11.14"
+    "cansnper2": "2.6.0",
+    "python": "3.13.18"
   }
 }
