@@ -1,7 +1,7 @@
 {
-  "built": "2026-11-22",
+  "built": "2026-11-25",
   "counts": {
-    "genomes": 0,
+    "genomes": 33,
     "nodes": 42,
     "rank": 2,
     "scheme_info": 8,
@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 42
   },
-  "database_sha256": "f74ab53ed54f3d6a5ffcb5bb17d3f2055aa72e117912dff037a1b298baeeb9be",
+  "database_sha256": "1fff79a959e76ae04e474ba335a97a12ea0e61979a9db6fcce50d35263f3485a",
   "format": "2.4",
   "kind": "snp",
   "scheme": "brucella_anthropi",
@@ -21,7 +21,7 @@
     "schemes/brucella_anthropi/brucella_anthropi_tree.txt": "8b20ee98404c1233866946948e38c40e428c3afd486a445b235d7fcc7fdefbf2"
   },
   "versions": {
-    "cansnper2": "2.4.0",
-    "python": "3.11.14"
+    "cansnper2": "2.6.0",
+    "python": "3.13.18"
   }
 }
