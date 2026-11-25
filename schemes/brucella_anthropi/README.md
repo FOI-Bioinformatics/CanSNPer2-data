@@ -71,7 +71,7 @@ conversion gave the same calls with all three aligners.
 - One *B. cytisi* representative (GCF_058245555.1) sits directly at
   `Bant.cytisi` and carries only two derived canSNPs on its path, `Bant` and
   `Bant.cytisi`, so it is not called with the default
-  `--min_required_hits 3`.
+  `--min-required-hits 3`.
 
 ## References
 

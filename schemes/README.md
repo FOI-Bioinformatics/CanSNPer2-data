@@ -91,7 +91,7 @@ CanSNPer2 calls those. Exactly one canSNP of each node is `yes`, because
 CanSNPer2 calls one canSNP per node; the file allows several so that a later
 release can call more than one without another change of format. The other
 canSNPs of a node are its alternatives, which an assay may use and which
-`CanSNPer2-database --export` writes back.
+`cansnper2 db export` writes back.
 
 `typed` is the last column and is never empty, because an empty last field
 means a line ending in a tab, which is trailing whitespace.
@@ -100,16 +100,18 @@ Before this format the canSNPs of a scheme were in `<name>_snp.txt`, one per
 node, with a `snp_id` and a `strain` column and no rank, score or typed. Before
 CanSNPer2 2.3.0 that file had a single `position` column as well, counted along
 the sequences of the reference genome joined in the order of its assembly file.
-`validate.py` refuses both. A file in either can be converted with
+`validate.py` refuses both. A file in either can be converted with CanSNPer2
+2.6.0:
 
 ```
-CanSNPer2-database --convert --annotation <name>_snp.txt \
-    --references <name>_references.txt --refdir <folder> -o <outdir>
+cansnper2 db convert --cansnps <name>_snp.txt --ref-dir <folder> -o <outdir>
 ```
 
-which writes `<outdir>/<name>_canSNPs.txt`. `--refdir` is needed only for a file
-with joined positions, where each canSNP is checked against its reference genome
-(`<folder>/<genome>.fna`, downloaded from NCBI when missing).
+which writes `<outdir>/<name>_canSNPs.txt`. `--ref-dir` is needed only for a
+file with joined positions, where each canSNP is checked against its reference
+genome; the files `<folder>/<genome>.fna` must be present. (Before 2.6.0 the
+command was `CanSNPer2-database --convert --annotation ... --references ...
+--refdir ...`, which also downloaded missing reference files.)
 
 A canSNP whose bases are published in another form can be listed under
 `known_issues` in `schemes.toml`, which reports it as a warning instead of an
@@ -131,7 +133,7 @@ underscore, because CanSNPer2 recovers the reference name from alignment file
 names by splitting on the first one. `genbank_id` and `refseq_id`
 must be well formed accessions: `genbank_id` of the form `GCA_000000000.0`
 (`GCF_000000000.0` is accepted as well, as CanSNPer2 does) and `refseq_id` of
-the form `GCF_000000000.0`. `CanSNPer2-download` builds NCBI paths from the
+the form `GCF_000000000.0`. `cansnper2 ref get` builds NCBI paths from the
 digit triplets, so a malformed accession is only noticed when a download fails.
 Two rows may not give the same `genbank_id`: CanSNPer2 downloads one reference
 per row and refuses a references file that repeats one.
@@ -181,8 +183,10 @@ is `representative`, in the sense that it stands for the node.
 A terminal node may list no genome, and the scheme README lists the ones that
 have none. The genomes a published scheme was discovered from often sit at inner
 nodes, so they are not listed here; the Origin section of the scheme README
-names them. CanSNPer2 does not read this file, and the database does not depend
-on it. `CanSNPCreator export --genome-map ... --alignment ...`
+names them. From CanSNPer2 2.6.0 the file is stored in the database
+(`cansnper2 db create --genomes`; `cansnper2 scheme get` loads it), and its
+`representative` genomes are used by read typing with `--local-references`.
+Typing of assemblies does not use it. `CanSNPCreator export --genome-map ... --alignment ...`
 writes it, and `CanSNPCreator audit` reads it to check every canSNP in those
 genomes.
 

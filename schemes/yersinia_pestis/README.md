@@ -75,7 +75,7 @@ Typed with CanSNPer2 2.2.2 (`--aligner minimap2`, default settings) on
   *Y. wautersii* genomes and one further genome received no call.
 
 Of the 66 *Y. pestis* genomes without a call, 56 carry fewer than three
-derived canSNPs, which the default `--min_required_hits 3` requires; see Known
+derived canSNPs, which the default `--min-required-hits 3` requires; see Known
 issues for the rest. The calls have not been compared with an independent
 typing of these genomes.
 

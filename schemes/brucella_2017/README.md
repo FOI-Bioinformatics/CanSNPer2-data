@@ -61,8 +61,8 @@ repository. The 56 *Brucella* genomes of the 2023 assignment were typed against
 it with CanSNPer2 2.4.0 and minimap2: 53 are called at the node they were
 assigned to, and the outgroup is `NA`, as it should be. The three that are not
 are the `B.2` genomes, which are called `NA` at the default
-`--min_required_hits 3` because `B.2` lies two nodes from the root; with
-`--min_required_hits 2` all three are called `B.2`.
+`--min-required-hits 3` because `B.2` lies two nodes from the root; with
+`--min-required-hits 2` all three are called `B.2`.
 
 Before it is moved to master it needs what the other schemes have: a run
 against the GTDB species cluster of the genus, and genomes typed that were not
@@ -79,8 +79,8 @@ used to find the canSNPs.
 - The root `B.1` is the node every *Brucella* carries. Its canSNP rests on one
   outgroup genome, *O. teleogrylli*, which covers 42% of the reference.
 - `B.2` and `B.3` lie fewer than three nodes from the root, so CanSNPer2's
-  default `--min_required_hits 3` returns `NA` for a genome that belongs to
-  either. `--min_required_hits 2` is needed to call them. The same applies to
+  default `--min-required-hits 3` returns `NA` for a genome that belongs to
+  either. `--min-required-hits 2` is needed to call them. The same applies to
   the other schemes whose shallowest nodes sit close to the root.
 
 ## References
