@@ -145,14 +145,39 @@ def scheme_info(scheme):
     }
 
 
+def cansnper2_loads_genomes():
+    """Whether the CanSNPer2 that will be imported loads a genomes file into the
+    database (the genomes option of CanSNPer2-database, with read typing)."""
+    try:
+        importlib.import_module("CanSNPer2.modules.SchemeGenomes")
+    except ImportError:
+        return False
+    return True
+
+
 def build_snp_scheme(scheme, target):
     """Build a canSNP database with CanSNPer2's own loader.
 
     CanSNPer2.SNPDatabase parses command line arguments at import time, so the
     loader class is imported directly instead of going through that module.
+    The genomes file of the scheme, when it has one, is loaded too: read typing
+    with local references takes its representative genomes from the database.
+    A CanSNPer2 that cannot load it builds the database without it, as before.
     """
     require_cansnper2()
     from CanSNPer2.modules.InitiateDatabase import CanSNPDatabase
+
+    options = {}
+    genomes = scheme.path(scheme.genomes)
+    if os.path.exists(genomes):
+        if cansnper2_loads_genomes():
+            options["genomes"] = genomes
+        else:
+            # not a warning: build() takes the warnings of a build as problems,
+            # and a database without genomes is what this CanSNPer2 builds
+            logging.getLogger(__name__).info(
+                f"CanSNPer2 {cansnper2_version()} cannot load the genomes file "
+                f"{scheme.genomes}, the database is built without it")
 
     CanSNPDatabase(
         database=target,
@@ -163,6 +188,7 @@ def build_snp_scheme(scheme, target):
         source_type=scheme.source_type,
         verbose=False,
         scheme_info=scheme_info(scheme),
+        **options,
     )
 
 
@@ -367,11 +393,14 @@ def content(path):
                                   JOIN nodes c ON c.id = t.child
                                   LEFT JOIN rank r ON r.rank_i = t.rank_i""")),
             "rank": {row[0] for row in query("SELECT rank FROM rank")},
-            # The genomes table gained a "reference" column in later flextaxd
-            # versions, so only the columns common to every vintage are compared.
-            "genomes": set(query("""SELECT n.name, g.genome FROM genomes g
-                                    LEFT JOIN nodes n ON n.id = g.id""")),
         }
+        # The genomes table gained a "reference" column in later flextaxd
+        # versions, so only the columns common to every vintage are compared,
+        # and the role that CanSNPer2 stores for the genomes of a canSNP scheme.
+        genome_columns = {row[1] for row in query("PRAGMA table_info(genomes)")}
+        role = "g.role" if "role" in genome_columns else "NULL"
+        result["genomes"] = set(query(f"""SELECT n.name, g.genome, {role} FROM genomes g
+                                          LEFT JOIN nodes n ON n.id = g.id"""))
         if "snp_annotation" in tables:
             # A database built before CanSNPer2 2.3.0 has a single position
             # column, counted along the joined reference sequences. It is read

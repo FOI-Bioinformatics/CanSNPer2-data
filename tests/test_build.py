@@ -2,6 +2,7 @@
 
 import importlib.metadata
 import json
+import logging
 import os
 import shutil
 import sqlite3
@@ -495,3 +496,63 @@ def test_cansnper2_without_scheme_info_is_refused(monkeypatch):
     monkeypatch.setattr(build.importlib, "import_module", without_scheme_info)
     with pytest.raises(RuntimeError, match="does not write scheme_info"):
         build.require_cansnper2()
+
+
+# -- the genomes file -------------------------------------------------------
+
+GENOMES = ("genome\tnode\trole\tbasis\tsource\n"
+           "GCA_000000002.1\tB\trepresentative\tcluster\tGTDB\n"
+           "GCA_000000003.1\tB\tmember\tcluster\tGTDB\n"
+           "GCA_000000004.1\tC\trepresentative\tcluster\tGTDB\n"
+           "GCA_000000009.1\t\toutgroup\t\tGTDB\n")
+
+
+def genomes_of(path):
+    connection = sqlite3.connect(path)
+    try:
+        columns = {row[1] for row in connection.execute("PRAGMA table_info(genomes)")}
+        role = "g.role" if "role" in columns else "NULL"
+        return set(connection.execute(f"""SELECT n.name, g.genome, {role} FROM genomes g
+                                          LEFT JOIN nodes n ON n.id = g.id"""))
+    finally:
+        connection.close()
+
+
+def test_the_genomes_file_is_loaded_into_the_database(built):
+    if not build.cansnper2_loads_genomes():
+        pytest.skip("this CanSNPer2 has no genomes option")
+    _scheme, target, warnings = built(genomes=GENOMES)
+    assert warnings == []
+    assert genomes_of(target) == {("B", "GCA_000000002.1", "representative"),
+                                  ("B", "GCA_000000003.1", "member"),
+                                  ("C", "GCA_000000004.1", "representative"),
+                                  (None, "GCA_000000009.1", "outgroup")}
+
+
+def test_a_scheme_without_a_genomes_file_builds_without_genomes(built):
+    _scheme, target, warnings = built()
+    assert warnings == []
+    assert genomes_of(target) == set()
+
+
+def test_a_cansnper2_without_the_genomes_option_builds_without_them(built, monkeypatch, caplog):
+    monkeypatch.setattr(build, "cansnper2_loads_genomes", lambda: False)
+    with caplog.at_level(logging.INFO):
+        _scheme, target, warnings = built(genomes=GENOMES)
+    assert warnings == [], "the database this CanSNPer2 builds, not a problem of the scheme"
+    assert genomes_of(target) == set()
+    assert "cannot load the genomes file" in caplog.text
+
+
+def test_the_comparison_sees_a_changed_role(built, tmp_path):
+    if not build.cansnper2_loads_genomes():
+        pytest.skip("this CanSNPer2 has no genomes option")
+    _scheme, target, _warnings = built(genomes=GENOMES)
+    changed = str(tmp_path / "changed.db")
+    shutil.copy(target, changed)
+    connection = sqlite3.connect(changed)
+    connection.execute("UPDATE genomes SET role = 'member' WHERE genome = 'GCA_000000004.1'")
+    connection.commit()
+    connection.close()
+    differences = build.compare(build.content(target), build.content(changed))
+    assert [table for table, _, _ in differences] == ["genomes"]
