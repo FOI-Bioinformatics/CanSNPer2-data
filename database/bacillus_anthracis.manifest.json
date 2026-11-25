@@ -1,7 +1,7 @@
 {
-  "built": "2026-11-22",
+  "built": "2026-11-25",
   "counts": {
-    "genomes": 0,
+    "genomes": 6,
     "nodes": 13,
     "rank": 2,
     "scheme_info": 8,
@@ -9,7 +9,7 @@
     "snp_references": 1,
     "tree": 13
   },
-  "database_sha256": "7fc8eb49be7b7a51e87d80713c87cf85059c1f0dfb83674896ad59d5862e7f51",
+  "database_sha256": "f877b8a9231c83107d9e715e35273b7a7bf1abfb16ba2ad933db3bab5b1c0b9a",
   "format": "2.4",
   "kind": "snp",
   "scheme": "bacillus_anthracis",
@@ -21,7 +21,7 @@
     "schemes/bacillus_anthracis/bacillus_anthracis_tree.txt": "d6781159c6be44f2757de5846d8650f257a006131dba3a060804442204e4c39d"
   },
   "versions": {
-    "cansnper2": "2.4.0",
-    "python": "3.11.14"
+    "cansnper2": "2.6.0",
+    "python": "3.13.18"
   }
 }
