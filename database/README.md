@@ -68,27 +68,31 @@ convention being automated but follow the same pattern.
 The databases built before 2026-11-21 count SNP positions along the reference
 sequences joined in file order. They are read by CanSNPer2 2.2 and earlier;
 CanSNPer2 2.3.0 and later refuse them unless they are converted with
-`CanSNPer2-database --convert --database <file> --refdir <folder> -o <outdir>`.
+`cansnper2 db convert -d <file> --ref-dir <folder> -o <outdir>`.
 
 The databases built on 2026-11-21 hold one canSNP per node, without the rank,
 score and typed columns. They are read by CanSNPer2 2.3.0; CanSNPer2 2.4.0
 refuses them unless they are upgraded with
-`CanSNPer2-database --convert --database <file> -o <outdir>`, which needs no
+`cansnper2 db convert -d <file> -o <outdir>`, which needs no
 reference files, because no position moves.
 
 ## Using a database
 
 ```sh
-CanSNPer2-download --database database/francisella_tularensis.db
-CanSNPer2 --database database/francisella_tularensis.db sample.fasta --summary
+cansnper2 ref get -d database/francisella_tularensis.db
+cansnper2 type -d database/francisella_tularensis.db sample.fasta --summary
 ```
 
-The `genomes` table is empty in these databases, which is expected:
-`CanSNPer2-download` reads reference genomes from `snp_references`.
+`cansnper2 ref get` downloads the reference genomes listed in `snp_references`.
+The `genomes` table holds the genomes file of the scheme; `cansnper2 ref get
+--local-references` also downloads its representative genomes, which read typing
+with `--local-references` uses. CanSNPer2 2.6.0 or later is needed for these
+commands; `cansnper2 scheme get <name>` builds the same database from the scheme
+files.
 
 ## Changing a database directly
 
-`CanSNPer2-database --mod_file` can change the tree of an existing database
+`cansnper2 db modify --mod-file` can change the tree of an existing database
 without rebuilding it. This repository does not use it: a database changed that
 way no longer matches the scheme files it was built from, and `build.py` reports
 the difference. Change the scheme files and run `python build.py --write`

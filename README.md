@@ -87,12 +87,14 @@ Since CanSNPer2 2.3.0 the scheme files and the databases give each SNP as a
 reference sequence (the GenBank accession of a chromosome or plasmid) and a
 1-based position on that sequence. Earlier versions counted positions along the
 reference sequences joined in the order of the assembly file. CanSNPer2 2.3.0
-refuses scheme files and databases in that format; `CanSNPer2-database
---convert` converts them (see `schemes/README.md`). The databases built in the
+refuses scheme files and databases in that format; `cansnper2 db convert`
+(`CanSNPer2-database --convert` before CanSNPer2 2.6.0) converts them (see
+`schemes/README.md`). The databases built in the
 earlier format, which CanSNPer2 2.2 reads, are kept under `database/archive/`.
 
-No aligner is needed to build a database. Typing a sample needs one of the
-aligners CanSNPer2 supports: progressiveMauve, minimap2 or MUMmer4.
+No aligner is needed to build a database. Typing an assembly needs one of the
+aligners CanSNPer2 supports: minimap2 (the default from CanSNPer2 2.6.0),
+progressiveMauve or MUMmer4. Typing sequencing reads needs minimap2 and samtools.
 
 The scripts have their own tests, which CI also runs:
 

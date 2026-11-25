@@ -105,7 +105,7 @@ called.
 All 1,785 genomes were typed with CanSNPer2 2.4.0 (`--aligner minimap2`) on
 2026-11-24, with this scheme and with `brucella_classical` for comparison.
 
-| | `brucella_genus`, default (`--min_required_hits 3`) | `brucella_genus`, `--min_required_hits 2` | `brucella_classical`, default | `brucella_classical`, `--min_required_hits 2` |
+| | `brucella_genus`, default (`--min-required-hits 3`) | `brucella_genus`, `--min-required-hits 2` | `brucella_classical`, default | `brucella_classical`, `--min-required-hits 2` |
 |---|---|---|---|---|
 | the species cluster, 1,337 genomes | 1,337 called | 1,337 called | 304 called | 1,237 called |
 | other *Brucella* species, 448 genomes | 440 called | 443 called | none called | none called |
@@ -153,7 +153,7 @@ on the path of the call):
 
 The ten genomes filed as *B. abortus* that are called in `melitensis_bv2` are
 also called on the *B. melitensis* branch (`cysW_288`) by `brucella_classical`
-at `--min_required_hits 2`; its README discusses the genomes called on the
+at `--min-required-hits 2`; its README discusses the genomes called on the
 branch of another species than their NCBI record names. Of the 23 reference
 strains, 18 were called at the node named after their label. *B. abortus*
 biovars 2, 4, 5 and 6 were called at `BR.classical.abortus` and *B. suis*
@@ -166,7 +166,7 @@ against genomes outside GTDB r232.
 
 - 26 nodes carry fewer than three canSNPs (14 one, 12 two), most of them deep
   in *B. melitensis* biovar 2 and in *B. pseudogrignonensis*. A genome is
-  called at such a node with the default `--min_required_hits 3` only when
+  called at such a node with the default `--min-required-hits 3` only when
   enough canSNPs of the path above it are derived.
 - Labels that name no node, because their reference strains share every node
   with a strain of another label: *B. abortus* biovars 4, 5 and 6 and *B. suis*
@@ -178,7 +178,7 @@ against genomes outside GTDB r232.
   `suis`.
 - Eight of the 448 genomes outside the species cluster are not called at the
   default threshold, three of them below `BR.ovis-A` and three below
-  `BR.anthropi.1.1.1.1`; five remain uncalled at `--min_required_hits 2`.
+  `BR.anthropi.1.1.1.1`; five remain uncalled at `--min-required-hits 2`.
 - The genus tier was built from 300 core genes and its canSNPs from an
   alignment against 16M, which covers less than half of most genomes of the
   former *Ochrobactrum*. Eleven nodes of the species tree had no canSNP in

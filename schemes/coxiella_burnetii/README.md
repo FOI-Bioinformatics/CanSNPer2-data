@@ -48,14 +48,14 @@ Typed with CanSNPer2 2.2.2 (`--aligner minimap2`) on 2026-11-19 against all
 cluster `s__Coxiella burnetii`, and 144 of twelve other species, which are
 tick endosymbionts, among them *Candidatus* Coxiella mudrowiae.
 
-| | Default (`--min_required_hits 3`) | `--min_required_hits 2` |
+| | Default (`--min-required-hits 3`) | `--min-required-hits 2` |
 |---|---|---|
 | *C. burnetii*, 156 genomes | 151 called | 155 called |
 | other *Coxiella* species, 144 genomes | none called | none called |
 
 The calls of the species cluster at the default threshold are `C.11` 60 times,
 `C.10` 40, `C.4` 20, `C.3` 18, `C.8` 9, `C.9` 3 and `C.5` once. The four
-genomes that only `--min_required_hits 2` calls are placed at `C.6` three
+genomes that only `--min-required-hits 2` calls are placed at `C.6` three
 times and `C.1` once, the two nodes directly below the root; see Known issues.
 
 Genomes of the same strain received the same call, and the strains of the
@@ -89,12 +89,12 @@ typing run agreed with those assignments.
   for lack of an outgroup, and made one assay for the two. That assay is
   `C.1` here, so `C.1` may sit on either branch, and the scheme has no `C.2`.
 - `C.6` and `C.1` carry two derived canSNPs on their path including `Root`,
-  so CanSNPer2 does not call them with its default `--min_required_hits 3`.
-  Use `--min_required_hits 2` to type to these nodes.
+  so CanSNPer2 does not call them with its default `--min-required-hits 3`.
+  Use `--min-required-hits 2` to type to these nodes.
 - Karlsson et al. (2014) name the branches `C.12` to `C.15` but give no assay
   for them, so genomes on those branches stop at a node above.
 - GCF_000826165.1 has N at five of the ten positions and is not called. It is
-  the only genome of the species cluster that `--min_required_hits 2` does not
+  the only genome of the species cluster that `--min-required-hits 2` does not
   call either.
 - Three genomes carry the organism name of RSA 493 but are not placed at
   `C.10`: two are called at `C.8` and one is GCF_000826165.1 above. They are

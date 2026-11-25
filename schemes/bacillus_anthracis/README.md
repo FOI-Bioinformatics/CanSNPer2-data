@@ -69,7 +69,7 @@ Typed with CanSNPer2 2.2.2 (`--aligner minimap2`, default settings) on
   *B. thuringiensis*, received a call.
 
 Of the 84 *B. anthracis* genomes without a call, 83 carry fewer than three
-derived canSNPs, which the default `--min_required_hits 3` requires; see Known
+derived canSNPs, which the default `--min-required-hits 3` requires; see Known
 issues for the rest. The calls have not been compared with an independent
 typing of these genomes.
 

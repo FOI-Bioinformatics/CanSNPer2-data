@@ -66,7 +66,7 @@ Typed with CanSNPer2 2.2.2 (`--aligner minimap2`) on 2026-11-19 against all
 cluster `s__Brucella melitensis`, which holds the classical species, and 448
 of 43 other species, which are the former genus *Ochrobactrum*.
 
-| | Default (`--min_required_hits 3`) | `--min_required_hits 2` |
+| | Default (`--min-required-hits 3`) | `--min-required-hits 2` |
 |---|---|---|
 | the species cluster, 1,337 genomes | 304 called | 1,237 called |
 | other *Brucella* species, 448 genomes | none called | none called |
@@ -75,7 +75,7 @@ Not one genome of the 448 outside the cluster received a call at either
 threshold. The default threshold calls only 304 of the cluster because the
 species-level nodes lie directly below the root; see Known issues.
 
-At `--min_required_hits 2`, the species-level node each genome reached is this,
+At `--min-required-hits 2`, the species-level node each genome reached is this,
 against the species in its NCBI record:
 
 | NCBI species | Genomes | Node reached |
@@ -102,7 +102,7 @@ deposited as *B. melitensis* and called at `5754E` is 99.96% to 2308, and
 strain 104M, deposited as *B. abortus*, is 99.99% to *B. suis* 1330. No call
 contradicts the identity of its genome.
 
-Of the 100 genomes of the cluster that `--min_required_hits 2` does not call,
+Of the 100 genomes of the cluster that `--min-required-hits 2` does not call,
 94 carry fewer than two derived canSNPs: 51 are *B. suis*, whose biovars 2 and
 5 no canSNP of the scheme marks, and 12 are the atypical species *B. microti*,
 *B. inopinata*, *B. vulpis* and *B. amazoniensis*, which the scheme does not
@@ -113,7 +113,7 @@ cover.
 Earlier, 24 *Brucella* reference and type strains were typed, and every call
 agreed with the species of the strain:
 
-| Strain | Species and biovar | Call, default | Call, `--min_required_hits 2` |
+| Strain | Species and biovar | Call, default | Call, `--min-required-hits 2` |
 |---|---|---|---|
 | 544 | *B. abortus* bv1 | `2366A` | `2366A` |
 | 86/8/59 | *B. abortus* bv2 | `5754E` | `5754E` |
@@ -148,7 +148,7 @@ these genomes below species level.
 - Nodes at depth one or two, `abc_205`, `cysW_288`, `abc_246`, `cysW_234`,
   `trpE_290` and `rpoB_2673`, carry two derived canSNPs on their path including
   `Root`, so CanSNPer2 does not call them with its default
-  `--min_required_hits 3`. Use `--min_required_hits 2` to type to these nodes.
+  `--min-required-hits 3`. Use `--min-required-hits 2` to type to these nodes.
   Over the species cluster of GTDB r232 this is the difference between 304 and
   1,237 of 1,337 genomes called.
 - No canSNP of the scheme marks the lineages of *B. suis* biovars 2 and 5, so
@@ -190,7 +190,7 @@ scheme were typed against this scheme on 2026-11-22 (CanSNPer2 2.4.0,
 | *B. suis* bv1 | 6 | `8306I` (5), `5362I` (1) |
 | *B. suis* bv4 | 2 | `10621J` |
 | *B. canis* | 11 | `omp25_256` |
-| *B. suis* bv3 | 2 | `abc_246`, only with `--min_required_hits 2` |
+| *B. suis* bv3 | 2 | `abc_246`, only with `--min-required-hits 2` |
 | *B. suis* bv2 | 11 | no call: derived at `Root` alone |
 | *B. suis* bv5 | 3 | no call: derived at `Root` alone |
 
