@@ -1,7 +1,7 @@
 {
-  "built": "2026-11-22",
+  "built": "2026-11-25",
   "counts": {
-    "genomes": 0,
+    "genomes": 219,
     "nodes": 328,
     "rank": 2,
     "scheme_info": 8,
@@ -9,7 +9,7 @@
     "snp_references": 5,
     "tree": 328
   },
-  "database_sha256": "5382fa0468e9c32c603be6b0f0c53de3dfcb1baa7c2cd89d789be5f2f57c08da",
+  "database_sha256": "f74dde106c5c2fa69e2d08eb29070d9de79a5cfd17c88c685148431374161673",
   "format": "2.4",
   "kind": "snp",
   "scheme": "francisella_tularensis",
@@ -21,7 +21,7 @@
     "schemes/francisella_tularensis/francisella_tularensis_tree.txt": "5b59747e468d5fcef452b5f5a3dcdc9d10a4a6ab5ae67bec8ec4f19d4fe72887"
   },
   "versions": {
-    "cansnper2": "2.4.0",
-    "python": "3.11.14"
+    "cansnper2": "2.6.0",
+    "python": "3.13.18"
   }
 }
